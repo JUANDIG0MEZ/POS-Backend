@@ -1,5 +1,5 @@
 const express = require('express')
-const { cargarClientes, tiposClientes} = require('../servicios/obtenerDatos')
+const { cargarClientes, tiposClientes, cargarCliente} = require('../servicios/obtenerDatos')
 
 const router = express.Router()
 
@@ -15,8 +15,7 @@ router.get('/tipos', (req, res)=>{
 
 router.get('/:id', (req, res)=>{
     const { id } = req.params
-    const clientes = cargarClientes()
-    const cliente = clientes.find(cliente => cliente.id == id)
+    const cliente = cargarCliente(id)
     res.send(cliente)
 })
 

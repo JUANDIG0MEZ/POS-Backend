@@ -37,6 +37,18 @@ function cargarClientes() {
     return clientes
 }
 
+function cargarCliente(id){
+    return {
+        id: id,
+        nombre: faker.person.fullName(),
+        direccion: faker.location.streetAddress(),
+        telefono: faker.phone.number(),
+        email: faker.internet.email(),
+        tipo: faker.helpers.arrayElement(['Proveedor', 'Cliente', 'Ambos']),
+        porPagarle: faker.finance.amount(),
+        debe: faker.finance.amount()            
+    }
+}
 
 function cargarMedidas() {
     return ['Kg', 'Unidad', 'Litro']
@@ -125,7 +137,6 @@ function facturaCompra(id){
 
 
 function facturaVenta(id){
-    console.log("factura de venta", id)
     const facturas ={
         info: {},
         data: []
@@ -168,5 +179,6 @@ module.exports = {
     cargarFacturasCompra,
     cargarFacturasVenta,
     facturaCompra,
-    facturaVenta
+    facturaVenta,
+    cargarCliente
 }
