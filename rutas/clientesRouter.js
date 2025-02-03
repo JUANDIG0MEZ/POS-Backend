@@ -7,6 +7,12 @@ router.get('/', (req, res)=>{
     res.send(cargarClientes())
 })
 
+
+router.get('/tipos', (req, res)=>{
+    const tipos = tiposClientes()
+    res.send(tipos)
+})
+
 router.get('/:id', (req, res)=>{
     const { id } = req.params
     const clientes = cargarClientes()
@@ -14,10 +20,7 @@ router.get('/:id', (req, res)=>{
     res.send(cliente)
 })
 
-router.get('/tipoClientes', (req, res)=>{
-    const tipos = tiposClientes()
-    res.send(tipos)
-})
+
 
 
 

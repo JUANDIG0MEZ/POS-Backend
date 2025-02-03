@@ -90,8 +90,7 @@ function cargarFacturasVenta(){
     return facturas
 }
 
-function ejemploFacturaCompra(id){
-    console.log(id)
+function facturaCompra(id){
     const facturas ={
         info: {},
         data: []
@@ -99,7 +98,7 @@ function ejemploFacturaCompra(id){
 
 
     facturas.info = {
-        id: 450,
+        id: id,
         fecha: "23/12/2023",
         nombre: "juan diego gomez",
         direccion: faker.location.streetAddress(),
@@ -123,6 +122,42 @@ function ejemploFacturaCompra(id){
     return facturas
 }
 
+
+
+function facturaVenta(id){
+    console.log("factura de venta", id)
+    const facturas ={
+        info: {},
+        data: []
+    }
+
+
+    facturas.info = {
+        id: id,
+        fecha: "23/12/2023",
+        nombre: "juan diego gomez",
+        direccion: faker.location.streetAddress(),
+        telefono: faker.phone.number(),
+        email: faker.internet.email(),
+        estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
+        porPagar: faker.finance.amount(),
+        total: faker.finance.amount()
+    }
+
+
+    for (let i = 0; i<10; i++){
+        facturas.data.push({
+            id: i, 
+            nombre: faker.commerce.productName(),
+            cantidad: faker.number.int({min: 1, max: 100}),
+            precio: faker.commerce.price({min: 10000, max: 50000}),
+            total: faker.commerce.price({min: 10000, max: 50000})
+        })
+    }
+    return facturas
+}
+
+
 module.exports = {
     cargarProductos,
     cargarClientes,
@@ -132,5 +167,6 @@ module.exports = {
     tiposClientes,
     cargarFacturasCompra,
     cargarFacturasVenta,
-    ejemploFacturaCompra
+    facturaCompra,
+    facturaVenta
 }

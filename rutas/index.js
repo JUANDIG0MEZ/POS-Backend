@@ -8,8 +8,8 @@ function routerAPI (app){
     const router = express.Router()
     app.use('/api/v1', router)
     router.use('/productos', productosRouter)
-    router.use('/facturasventa', facturasVentaRouter)
-    router.use('/facturascompra', facturasCompraRouter)
+    router.use('/facturas/venta', facturasVentaRouter)
+    router.use('/facturas/compra', facturasCompraRouter)
     router.use('/clientes', usuariosRouter)
 }
 

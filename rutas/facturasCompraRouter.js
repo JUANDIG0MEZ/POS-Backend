@@ -1,5 +1,5 @@
 const express = require('express')
-const { ejemploFacturaCompra, cargarFacturasCompra } = require('../servicios/obtenerDatos')
+const { facturaCompra, cargarFacturasCompra } = require('../servicios/obtenerDatos')
 
 const router = express.Router()
 
@@ -9,7 +9,7 @@ router.get('/', (req, res)=> {
 
 router.get('/:id', (req, res)=> {
     const { id } = req.params
-    const factura = ejemploFacturaCompra(id)
+    const factura = facturaCompra(id)
     res.send(factura)
 })
 
