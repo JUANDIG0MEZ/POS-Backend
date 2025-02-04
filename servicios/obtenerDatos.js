@@ -168,6 +168,63 @@ function facturaVenta(id){
     return facturas
 }
 
+function clienteAbonos(){
+    const facturas = []
+    for(let i = 0; i < 24; i++){
+        facturas.push({
+            id: i,
+            recibio: faker.person.fullName(),
+            precio: faker.finance.amount(),
+            fecha: faker.date.birthdate()
+        }   
+        )
+    }
+    return facturas
+
+}
+
+function clienteFacturaCompra(){
+    const facturas = []
+    for(let i = 0; i < 24; i++){
+        facturas.push({
+            id: i,
+            precio: faker.finance.amount(),
+            porPagarle: faker.finance.amount(),
+            fecha: faker.date.birthdate(),
+            estado: faker.helpers.arrayElement(['Entregado', 'Por entregar'])
+        }   
+        )
+    }
+    return facturas
+}
+
+function clienteFacturaVenta(){
+    const facturas = []
+    for(let i = 0; i < 24; i++){
+        facturas.push({
+            id: i,
+            precio: faker.finance.amount(),
+            debe: faker.finance.amount(),
+            fecha: faker.date.birthdate(),
+            estado: faker.helpers.arrayElement(['Entregado', 'Por entregar'])
+        }   
+        )
+    }
+    return facturas
+}
+
+function clientePagos(){
+    const facturas = []
+    for(let i = 0; i < 24; i++){
+        facturas.push({
+            id: i,
+            valor: faker.finance.amount(),
+            fecha: faker.date.birthdate()
+        }   
+        )
+    }
+    return facturas
+}
 
 module.exports = {
     cargarProductos,
@@ -180,5 +237,9 @@ module.exports = {
     cargarFacturasVenta,
     facturaCompra,
     facturaVenta,
-    cargarCliente
+    cargarCliente,
+    clienteAbonos,
+    clienteFacturaCompra,
+    clienteFacturaVenta,
+    clientePagos
 }

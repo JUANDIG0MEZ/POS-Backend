@@ -23,17 +23,6 @@ router.get('/cliente/:id/ventas', (req, res)=>{
 
 })
 
-router.get('/cliente/:id/abonos', (req, res)=>{
-    const { id } = req.params
-    res.send(`Abonos ${id}`)
-})
-
-router.get('/cliente/:id/pagos', (req, res)=>{
-    const { id } = req.params
-    res.send(`Pagos ${id}`)
-})
-
-router.get('/cliente/:id/abono')
 
 router.get('/venta/', (req, res)=> {
     res.send(cargarFacturasCompra())
