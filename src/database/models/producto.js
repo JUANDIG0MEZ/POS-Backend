@@ -3,17 +3,29 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Product extends Model {
+  class Producto extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Producto.belongsTo(models.ProductoCategoria, {
+        foreignKey: 'categoria_id',
+        as: 'categoria'
+      })
+
+      Producto.belongsTo(models.ProductoMarca,{
+        foreignKey: 'marca_id',
+        as: 'marca'
+      })
+      Producto.belongsTo(models.ProductoMedida,{
+        foreignKey: 'medida_id',
+        as: 'medida'
+      })
     }
   }
-  Product.init({
+  Producto.init({
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -24,19 +36,33 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(350),
       allowNull: false,
     },
-    marca: {
-      type: DataTypes.STRING(50),
+    marca_id: {
+      type: DataTypes.STRING,
       allowNull: true,
+      references: {
+        model: 'productos_marcas',
+        key: 'id',
+      }
     },
-    categoria: {
-      type: DataTypes.STRING(50),
+    categoria_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+      references: {
+        model: 'productos_categorias',
+        key: 'id',
+      },
+      onDelete: "CASCADE"
+    },
+    medida_id: {
+      type: DataTypes.STRING,
       allowNull: true,
+      references: {
+        model: 'productos_medidas',
+        key: 'id',
+      }
     },
-    medida: {
-      type: DataTypes.STRING(50),
-      allowNull: true,
-    },
-    precioCompra: {
+    precio_compra: {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
@@ -44,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
         min: 0,
       },
     },
-    precioVenta: {
+    precio_venta: {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
@@ -56,9 +82,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
-      validate: {
-        min: 0,
-      },
     },
     total: {
       type: DataTypes.BIGINT,
@@ -69,8 +92,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Product',
-    timestamps: true,
+    modelName: 'Producto',
+    timestamps: false,
+    tableName: 'productos'
   });
-  return Product;
+  return Producto;
 };

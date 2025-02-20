@@ -1,0 +1,76 @@
+'use strict';
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('productos', {
+      id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      nombre: {
+        type: Sequelize.STRING(350),
+        allowNull: false,
+      },
+      marca_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        references: {
+          model: 'productos_marcas',
+          key: 'id'
+        }
+      },
+      categoria_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        references: {
+          model: 'productos_categorias',
+          key: 'id'
+        }
+      },
+      medida_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        references: {
+          model: 'productos_medidas',
+          key: 'id'
+        }
+      },
+      precio_compra: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+          min: 0,
+        },
+      },
+      precio_venta: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+          min: 0,
+        },
+      },
+      cantidad: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      total: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        validate: {
+          min: 0,
+        },
+      }
+    });
+  },
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('productos');
+  }
+};

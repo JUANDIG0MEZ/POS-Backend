@@ -3,68 +3,58 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Cliente extends Model {
+  class Venta extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Cliente.belongsTo(models.ClienteTipo, {
-        foreignKey: 'tipo_id',
-        as: 'tipo'
-      })
+      // define association here
     }
   }
-  Cliente.init({
+  Venta.init({
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    nombre: {
-      type: DataTypes.STRING,
+    fecha: {
+      type: DataTypes.DATEONLY,
       allowNull: false,
+    },
+    hora: {
+      type: DataTypes.TIME,
+      allowNull: false,
+    },
+    cliente: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     direccion: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 'Recogido en tienda',
     },
-    telefono: {
+    porPagar: {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
     },
-    email: {
+    total: {
+      type: DataTypes.BIGINT,
+      allowNull: false
+    },
+    estado: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 0,
+      defaultValue: 'pendiente'
     },
-    tipo_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'clientes_tipos',
-        key: 'id'
-      }
-    },
-    por_pagarle: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    debe: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
-      defaultValue: 0,
-    }
   }, {
     sequelize,
-    modelName: 'Cliente',
-    timestamps: false,
-    tableName: 'clientes'
+    modelName: 'Ventas',
+    tableName: 'ventas'
   });
-  return Cliente;
+  return Venta;
 };
