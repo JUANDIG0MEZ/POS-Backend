@@ -2,56 +2,47 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('clientes', {
+    await queryInterface.createTable('compras', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nombre: {
-        type: Sequelize.STRING,
+      fecha: {
+        type: Sequelize.DATEONLY,
         allowNull: false,
-        unique: true,
       },
-      direccion: {
-        type: Sequelize.STRING,
-        allowNull: true
+      hora: {
+        type: Sequelize.TIME,
+        allowNull: false,
       },
-      telefono: {
-        type: Sequelize.BIGINT,
-        allowNull: true
-      },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      tipo_id: {
+      cliente_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'clientes_tipos',
-          key: 'id'
+          model: 'clientes',
+          key: "id"
         }
-
       },
-      por_pagarle: {
+      por_pagar: {
         type: Sequelize.BIGINT,
         allowNull: false,
         defaultValue: 0,
-
       },
-      debe: {
+      total: {
         type: Sequelize.BIGINT,
         allowNull: false,
         defaultValue: 0,
-        validate: {
-          min: 0
-        }
-      }
+      },
+      estado: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'Recibido'
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('clientes');
+    await queryInterface.dropTable('compras');
   }
 };

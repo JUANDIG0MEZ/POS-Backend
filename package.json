@@ -21,12 +21,16 @@
   "homepage": "https://github.com/JUANDIG0MEZ/inventarioBackend#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "4.21.2"
+    "express": "4.21.2",
+    "mysql2": "^3.12.0",
+    "sequelize": "^6.37.5",
+    "sequelize-cli": "^6.6.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
     "@faker-js/faker": "^9.4.0",
     "eslint": "^9.19.0",
-    "globals": "^15.14.0"
+    "globals": "^15.14.0",
+    "sequelize-auto": "^0.8.8"
   }
 }

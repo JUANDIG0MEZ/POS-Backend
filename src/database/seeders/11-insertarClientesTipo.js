@@ -5,7 +5,6 @@ const { tiposClientes} = require('../datosFaker')
 module.exports = {
   async up (queryInterface, Sequelize) {
     const clientes = tiposClientes()
-    console.log(clientes)
     await queryInterface.bulkInsert('clientes_tipos', clientes, {})
   },
 

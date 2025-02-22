@@ -6,7 +6,7 @@ const { cargarProductos } = require('../datosFaker');
 module.exports = {
   async up (queryInterface, Sequelize) {
     const productos = cargarProductos()
-    return await queryInterface.bulkInsert('productos', productos, {})
+    await queryInterface.bulkInsert('productos', productos, {})
   },
 
   async down (queryInterface, Sequelize) {

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('compras', {
+    await queryInterface.createTable('abonos', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,31 +13,25 @@ module.exports = {
         type: Sequelize.DATEONLY,
         allowNull: false,
       },
+      cliente_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'clientes',
+          key: 'id'
+        }
+      }, 
       hora: {
         type: Sequelize.TIME,
         allowNull: false,
       },
-      cliente: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      por_pagar: {
+      valor: {
         type: Sequelize.BIGINT,
         allowNull: false,
-        defaultValue: 0,
-      },
-      total: {
-        type: Sequelize.BIGINT,
-        allowNull: false
-      },
-      estado: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'pendiente'
-      },
+      }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('compras');
+    await queryInterface.dropTable('abonos');
   }
 };

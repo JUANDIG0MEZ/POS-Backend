@@ -2,7 +2,7 @@ const {faker} = require('@faker-js/faker')
 
 function cargarProductos() {
     const productos = []
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 50; i++) {
         productos.push({
             nombre: faker.commerce.productName(),
             marca_id: faker.number.int({min: 1, max: 4}),
@@ -21,7 +21,7 @@ function cargarProductos() {
 function cargarClientes() {
     const clientes = []
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 200; i++) {
         clientes.push({
             nombre: faker.person.fullName(),
             direccion: faker.location.streetAddress(),
@@ -49,12 +49,20 @@ function cargarCliente(id){
 }
 
 function cargarMedidas() {
-    return [{nombre: 'Kg'}, {nombre:"Unidad"}, {nombre:"Litro"}, {nombre:"Metro"}]
+    return [
+        {nombre: 'kG'}, 
+        {nombre: "UniDad"}, 
+        {nombre: "Litro"}, 
+        {nombre: "Metro"},
+        {nombre: "Gramo"},
+        {nombre: "Mililitro"},
+        {nombre: "Centimetro"}
+    ]
 }
 
 
 function cargarCategorias() {
-    const lista = ['','Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
+    const lista = ['Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
     const categorias = []
     for (let i = 0; i < lista.length; i++) {
         categorias.push({
@@ -65,11 +73,10 @@ function cargarCategorias() {
 }
 
 function cargarMarcas() {
-    const lista = ['','Coca Cola', 'Pepsi', 'Postobon', 'Bavaria', 'Aguila', 'Pilsen', 'Poker', 'Club Colombia', 'Bavaria', 'Aguila', 'Pilsen', 'Poker', 'Club Colombia']
     const marcas = []
-    for (let i = 0; i < lista.length; i++) {
+    for (let i = 0; i < 30; i++) {
         marcas.push({
-            nombre: lista[i]
+            nombre: faker.company.name()
         })
     }
     return marcas
@@ -91,7 +98,7 @@ function cargarFacturasCompra(){
             facturas.push({
                 fecha: fecha.toISOString().split('T')[0],
                 hora: fecha.toTimeString().split(' ')[0],  
-                cliente: faker.company.name(),
+                cliente_id: faker.number.int({min: 1, max: 10}),
                 por_pagar: faker.finance.amount(),
                 total: faker.finance.amount(),
                 estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
@@ -107,7 +114,7 @@ function cargarFacturasVenta(){
             facturas.push({
                 fecha: fecha.toISOString().split('T')[0], // Formato YYYY-MM-DD (DATEONLY en Sequelize)
                 hora: fecha.toTimeString().split(' ')[0], // Formato HH:MM:SS (TIME en Sequelize)   
-                cliente: faker.company.name(),
+                cliente_id: faker.number.int({min: 1, max: 10}),
                 direccion: faker.location.streetAddress(),
                 por_pagar: faker.finance.amount(),
                 total: faker.finance.amount(),
@@ -183,14 +190,16 @@ function facturaVenta(id){
     return facturas
 }
 
-function clienteAbonos(){
+function cargarAbonos(){
     const facturas = []
-    for(let i = 0; i < 24; i++){
+    for(let i = 0; i < 100; i++){
+        const fecha = faker.date.recent();
         facturas.push({
-            id: i,
-            recibio: faker.person.fullName(),
-            precio: faker.finance.amount(),
-            fecha: faker.date.birthdate()
+            fecha: fecha.toISOString().split('T')[0],
+            hora: fecha.toTimeString().split(' ')[0], 
+            cliente_id: faker.number.int({min: 1, max: 10}),
+            valor: faker.number.int({min: 10000, max: 50000}),
+            
         }   
         )
     }
@@ -198,43 +207,17 @@ function clienteAbonos(){
 
 }
 
-function clienteFacturaCompra(){
-    const facturas = []
-    for(let i = 0; i < 24; i++){
-        facturas.push({
-            id: i,
-            precio: faker.finance.amount(),
-            por_pagarle: faker.finance.amount(),
-            fecha: faker.date.birthdate(),
-            estado: faker.helpers.arrayElement(['Entregado', 'Por entregar'])
-        }   
-        )
-    }
-    return facturas
-}
 
-function clienteFacturaVenta(){
+function cargarPagos(){
     const facturas = []
-    for(let i = 0; i < 24; i++){
+    for(let i = 0; i < 100; i++){
+        const fecha = faker.date.recent();
         facturas.push({
-            id: i,
-            precio: faker.finance.amount(),
-            debe: faker.finance.amount(),
-            fecha: faker.date.birthdate(),
-            estado: faker.helpers.arrayElement(['Entregado', 'Por entregar'])
-        }   
-        )
-    }
-    return facturas
-}
-
-function clientePagos(){
-    const facturas = []
-    for(let i = 0; i < 24; i++){
-        facturas.push({
-            id: i,
-            valor: faker.finance.amount(),
-            fecha: faker.date.birthdate()
+            fecha: fecha.toISOString().split('T')[0],
+            hora: fecha.toTimeString().split(' ')[0], 
+            cliente_id: faker.number.int({min: 1, max:10}),
+            valor: faker.number.int({min: 10000, max: 50000}),
+            
         }   
         )
     }
@@ -253,8 +236,6 @@ module.exports = {
     facturaCompra,
     facturaVenta,
     cargarCliente,
-    clienteAbonos,
-    clienteFacturaCompra,
-    clienteFacturaVenta,
-    clientePagos
+    cargarAbonos,
+    cargarPagos
 }

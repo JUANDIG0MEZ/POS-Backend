@@ -17,14 +17,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductoCategoria.init({
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER
-    },
+
     nombre: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      set(value) {
+        this.setDataValue('nombre', value.toLowerCase().trim());
+      },
+      get() {
+        const nombre = this.getDataValue('nombre');
+        return nombre? nombre.charAt(0).toUppercase() + nombre.slice(1): '';
+      }
     }
   }, {
     sequelize,

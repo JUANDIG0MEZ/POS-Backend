@@ -10,13 +10,11 @@ module.exports = {
         primaryKey: true,
       },
       nombre: {
-        type: Sequelize.STRING(350),
-        allowNull: false,
+        type: Sequelize.STRING,
+        allowNull: false
       },
       marca_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 1,
         references: {
           model: 'productos_marcas',
           key: 'id'
@@ -24,8 +22,6 @@ module.exports = {
       },
       categoria_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 1,
         references: {
           model: 'productos_categorias',
           key: 'id'
@@ -33,8 +29,6 @@ module.exports = {
       },
       medida_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 1,
         references: {
           model: 'productos_medidas',
           key: 'id'
@@ -44,17 +38,12 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false,
         defaultValue: 0,
-        validate: {
-          min: 0,
-        },
       },
       precio_venta: {
         type: Sequelize.BIGINT,
         allowNull: false,
         defaultValue: 0,
-        validate: {
-          min: 0,
-        },
+
       },
       cantidad: {
         type: Sequelize.INTEGER,
@@ -64,11 +53,14 @@ module.exports = {
       total: {
         type: Sequelize.BIGINT,
         allowNull: false,
-        validate: {
-          min: 0,
-        },
       }
     });
+
+    await queryInterface.addConstraint('productos', {
+      fields: ['nombre', 'marca_id'],
+      type: 'unique',
+      name: 'unique_nombre_marca'
+    })
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('productos');

@@ -12,13 +12,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ClienteTipo.init({
-    id: {
+    nombre: {
+      type: DataTypes.STRING,
       allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER
-    },
-    nombre: DataTypes.STRING
+      unique: true,
+
+      set(value) {
+        this.setDataValue('nombre', value.toLowerCase().trim());
+      },
+
+      get() {
+        const nombre = this.getDataValue('nombre');
+        return nombre? nombre.charAt(0).toUppercase() + nombre.slice(1): '';
+      }
+
+
+    }
+      
   }, {
     sequelize,
     modelName: 'ClienteTipo',

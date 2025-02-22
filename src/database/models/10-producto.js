@@ -26,19 +26,20 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Producto.init({
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-    },
     nombre: {
-      type: DataTypes.STRING(350),
+      type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
+      set(value) {
+        this.setDataValue('nombre', value.toLowerCase().trim());
+      },
+      get() {
+        const nombre = this.getDataValue('nombre');
+        return nombre ? nombre.replace(/\b\w/g, (char) => char.toUpperCase()) : '';
+      }
     },
     marca_id: {
-      type: DataTypes.STRING,
-      allowNull: true,
+      type: DataTypes.INTEGER,
       references: {
         model: 'productos_marcas',
         key: 'id',
@@ -46,17 +47,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     categoria_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 1,
       references: {
         model: 'productos_categorias',
         key: 'id',
-      },
-      onDelete: "CASCADE"
+      }
     },
     medida_id: {
-      type: DataTypes.STRING,
-      allowNull: true,
+      type: DataTypes.INTEGER,
       references: {
         model: 'productos_medidas',
         key: 'id',
@@ -82,6 +79,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
+      validate: {
+        min: 0
+      }
     },
     total: {
       type: DataTypes.BIGINT,

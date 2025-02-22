@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Compra.belongsTo(models.Cliente, {
+        foreignKey: "cliente_id"
+      })
     }
   }
   Compra.init({
@@ -22,36 +24,45 @@ module.exports = (sequelize, DataTypes) => {
     },
     fecha: {
       type: DataTypes.DATEONLY,
-      allowNull: false,
-      defaultValue: DataTypes.NOW
+      allowNull: false
     },
     hora: {
       type: DataTypes.TIME,
-      allowNull: false,
-      defaultValue: DataTypes.NOW
-    },
-    cliente: {
-      type: DataTypes.STRING,
       allowNull: false
+    },
+    cliente_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'clientes',
+        key: 'id'
+      }
     },
     por_pagar: {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
+      validate: {
+        min: 0
+      }
     },
     total: {
       type: DataTypes.BIGINT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        min: 0
+      }
     },
     estado: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'pendiente'
+      defaultValue: 'Recibido'
     },
   }, {
     sequelize,
     modelName: 'Compra',
-    tableName: 'compras'
+    tableName: 'compras',
+    timestamps: false
   });
   return Compra;
 };

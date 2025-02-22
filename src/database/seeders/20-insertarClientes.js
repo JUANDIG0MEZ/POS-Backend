@@ -6,10 +6,10 @@ const {cargarClientes} = require('../datosFaker');
 module.exports = {
   async up (queryInterface, Sequelize) {
     const clientes = cargarClientes()
-    return await queryInterface.bulkInsert('clientes', clientes, {})
+    await queryInterface.bulkInsert('clientes', clientes, {})
   },
 
   async down (queryInterface, Sequelize) {
-    return await queryInterface.bulkDelete('clientes', null, { truncate: true})
+    await queryInterface.bulkDelete('clientes', null, { truncate: true})
   }
 };

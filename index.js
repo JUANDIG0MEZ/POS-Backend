@@ -1,7 +1,6 @@
 const express = require('express')
-const routerAPI = require('./rutas/index')
+const routerAPI = require('./src/rutas/index')
 const cors = require('cors')
-
 
 const app = express()
 const port = 3000

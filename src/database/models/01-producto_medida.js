@@ -12,7 +12,20 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductoMedida.init({
-    nombre: DataTypes.STRING
+
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      set(value) {
+        this.setDataValue('nombre', value.toLowerCase().trim());
+      },
+      get() {
+        const nombre = this.getDataValue('nombre');
+        return nombre? nombre.charAt(0).toUppercase() + nombre.slice(1): '';
+      }
+    },
+
   }, {
     sequelize,
     modelName: 'ProductoMedida',

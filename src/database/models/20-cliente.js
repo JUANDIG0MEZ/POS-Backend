@@ -14,33 +14,48 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'tipo_id',
         as: 'tipo'
       })
+
+      Cliente.hasMany(models.Compra, {
+        foreignKey: 'cliente_id'
+      })
+
+      Cliente.hasMany(models.Venta, {
+        foreignKey: 'cliente_id'
+      })
+
+      Cliente.hasMany(models.Pago, {
+        foreignKey: 'cliente_id'
+      })
+
+      Cliente.hasMany(models.Abono, {
+        foreignKey: 'cliente_id'
+      })
     }
   }
   Cliente.init({
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER
-    },
     nombre: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
+      set(value) {
+        this.setDataValue('nombre', value.toLowerCase().trim());
+      },
+      get() {
+        const nombre = this.getDataValue('nombre');
+        return nombre ? nombre.replace(/\b\w/g, (char) => char.toUpperCase()) : '';
+      }
     },
     direccion: {
       type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true
     },
     telefono: {
       type: DataTypes.BIGINT,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 0,
+      allowNull: true,
     },
     tipo_id: {
       type: DataTypes.INTEGER,
@@ -54,11 +69,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
+      validate: {
+        min: 0
+      }
     },
     debe: {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
+      validate: {
+        min: 0
+      }
     }
   }, {
     sequelize,

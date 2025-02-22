@@ -17,9 +17,13 @@ module.exports = {
         type: Sequelize.TIME,
         allowNull: false,
       },
-      cliente: {
-        type: Sequelize.STRING,
-        allowNull: false
+      cliente_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'clientes',
+          key: "id" 
+        }
       },
       direccion: {
         type: Sequelize.STRING,
@@ -29,7 +33,6 @@ module.exports = {
       por_pagar: {
         type: Sequelize.BIGINT,
         allowNull: false,
-        defaultValue: 0,
       },
       total: {
         type: Sequelize.BIGINT,
