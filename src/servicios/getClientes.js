@@ -32,7 +32,8 @@ async function cargarCliente(id){
     const cliente = await Cliente.findByPk(id, {
         include: { model: ClienteTipo, as: 'tipo', attributes: ['nombre']}
     })
-    return {
+    console.log(cliente)
+    const clienteFormateado = {
         id: cliente.id,
         nombre: cliente.nombre,
         direccion: cliente.direccion,
@@ -42,6 +43,8 @@ async function cargarCliente(id){
         por_pagarle: cliente.por_pagarle,
         debe: cliente.debe
     }
+    console.log(clienteFormateado)
+    return clienteFormateado
 }
 
 async function cargarVentaCliente(id){

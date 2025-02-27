@@ -8,7 +8,6 @@ const {
     cargarPagosCliente
 
 } = require('../servicios/getClientes')
-const { cargarPagos } = require('../database/datosFaker')
 
 const router = express.Router()
 
@@ -23,9 +22,9 @@ router.get('/', async (req, res)=>{
 //     res.send(tipos)
 // })
 
-router.get('/:id', (req, res)=>{
+router.get('/:id', async (req, res)=>{
     const { id } = req.params
-    const cliente = cargarCliente(id)
+    const cliente = await cargarCliente(id)
     res.send(cliente)
 })
 

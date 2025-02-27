@@ -147,7 +147,7 @@ function facturaCompra(id){
     for (let i = 0; i<10; i++){
         facturas.data.push({
             id: i, 
-            nombre: faker.commerce.productName(),
+            producto_id: faker.number.int({min: 1, max: 10}),
             cantidad: faker.number.int({min: 1, max: 100}),
             precio: faker.commerce.price({min: 10000, max: 50000}),
             total: faker.commerce.price({min: 10000, max: 50000})
@@ -157,13 +157,46 @@ function facturaCompra(id){
 }
 
 
+function cargarDetallesCompras(){
+    const detalles = []
+    for (let j=0; j<10; j++){
+        const num_productos = faker.number.int({min: 2, max: 8})
+        for (let i = 0; i < num_productos; i++) {
+            detalles.push({
+                compra_id: j+1,
+                producto_id: i+1,
+                cantidad: faker.number.int({min: 1, max: 100}),
+                precio: faker.commerce.price({min: 10000, max: 50000}),
+                subtotal: faker.commerce.price({min: 10000, max: 50000})
+            })
+        }
+    }
+    return detalles 
+}
+
+function cargarDetallesVentas() {
+    const detalles = []
+    for (let j=0; j<10; j++){
+        const num_productos = faker.number.int({min: 2, max: 8})
+        for (let i = 0; i < num_productos; i++) {
+            detalles.push({
+                venta_id: j+1,
+                producto_id: i+1,
+                cantidad: faker.number.int({min: 1, max: 100}),
+                precio: faker.commerce.price({min: 10000, max: 50000}),
+                subtotal: faker.commerce.price({min: 10000, max: 50000})
+            })
+        }
+    }
+    
+    return detalles 
+}
 
 function facturaVenta(id){
     const facturas ={
         info: {},
         data: []
     }
-
 
     facturas.info = {
         id: id,
@@ -237,5 +270,7 @@ module.exports = {
     facturaVenta,
     cargarCliente,
     cargarAbonos,
-    cargarPagos
+    cargarPagos,
+    cargarDetallesCompras,
+    cargarDetallesVentas
 }

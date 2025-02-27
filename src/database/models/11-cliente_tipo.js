@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 
       get() {
         const nombre = this.getDataValue('nombre');
-        return nombre? nombre.charAt(0).toUppercase() + nombre.slice(1): '';
+        return nombre? nombre.charAt(0).toUpperCase() + nombre.slice(1): '';
       }
 
 

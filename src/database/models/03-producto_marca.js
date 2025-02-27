@@ -22,11 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false,
       set(value) {
-        this.setDataValue('nombre',value.toLowerCase().trim());
+        
+        this.setDataValue('nombre', value.toLowerCase().trim());
       },
       get() {
         const nombre = this.getDataValue('nombre');
-        return nombre? nombre.charAt(0).toUppercase() + nombre.slice(1): '';
+        return nombre? nombre.charAt(0).toUpperCase() + nombre.slice(1): '';
       }
     }
   }, {

@@ -1,4 +1,4 @@
-const { Compra, Venta} = require('../database/models')
+const { Compra, Venta, DetalleCompra, DetalleVenta} = require('../database/models')
 
 async function cargarFacturasCompra(){
     const facturas = await Compra.findAll()
@@ -7,7 +7,12 @@ async function cargarFacturasCompra(){
 
 async function cargarFacturaCompra(id){
     const factura = await Compra.findByPk(id)
-    return factura
+    const datos = await DetalleCompra.findAll({
+        where: {
+            compra_id: id
+        }
+    })
+    return {info: factura,  datos: datos}
 
 }
 
@@ -18,7 +23,12 @@ async function cargarFacturasVenta(){
 
 async function cargarFacturaVenta(id){
     const factura = await Venta.findByPk(id)
-    return factura
+    const datos = await DetalleVenta.findAll({
+        where: {
+            venta_id: id
+        }
+    })
+    return {info: factura, datos: datos}
 }
 
 module.exports = {
