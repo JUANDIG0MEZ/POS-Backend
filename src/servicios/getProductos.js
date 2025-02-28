@@ -9,26 +9,26 @@ async function cargarProductos() {
     const productos = await Producto.findAll({
             attributes: { exclude: ['marca_id', 'categoria_id', 'medida_id'] },
             include: [
-                { model: ProductoMedida, as: 'medida',  attributes: ['nombre'] },
-                { model: ProductoCategoria, as: 'categoria', attributes: ['nombre'] },
-                { model: ProductoMarca, as: 'marca', attributes: ['nombre'] }
+                { model: ProductoMedida, attributes: ['nombre'], as: 'medidaProducto' },
+                { model: ProductoCategoria, attributes: ['nombre'], as: 'categoriaProducto' },
+                { model: ProductoMarca,attributes: ['nombre'], as: 'marcaProducto' }
             ]
         })
     
-        const productosFormateados = productos.map(producto => {
-            return {
-                id: producto.id,
-                nombre: producto.nombre,
-                marca: producto.marca.nombre,
-                categoria: producto.categoria.nombre,
-                medida: producto.medida.nombre,
-                precio_compra: producto.precio_compra,
-                precio_venta: producto.precio_venta,
-                cantidad: producto.cantidad,
-                total: producto.total
-            }
-        })
-    return productosFormateados
+        // const productosFormateados = productos.map(producto => {
+        //     return {
+        //         id: producto.id,
+        //         nombre: producto.nombre,
+        //         marca: producto.marca.nombre,
+        //         categoria: producto.categoria.nombre,
+        //         medida: producto.medida.nombre,
+        //         precio_compra: producto.precio_compra,
+        //         precio_venta: producto.precio_venta,
+        //         cantidad: producto.cantidad,
+        //         total: producto.total
+        //     }
+        // })
+    return productos
 }
 
 async function cargarProducto(id){

@@ -11,23 +11,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Cliente.belongsTo(models.ClienteTipo, {
-        foreignKey: 'tipo_id'
+        foreignKey: 'tipo_id',
+        as: 'tipoCliente'
       })
 
       Cliente.hasMany(models.Compra, {
-        foreignKey: 'cliente_id'
+        foreignKey: 'cliente_id',
+        as: 'clienteCompra'
       })
 
       Cliente.hasMany(models.Venta, {
-        foreignKey: 'cliente_id'
+        foreignKey: 'cliente_id',
+        as: 'clienteVenta'
       })
 
       Cliente.hasMany(models.Pago, {
-        foreignKey: 'cliente_id'
+        foreignKey: 'cliente_id',
+        as: 'clientePago'
       })
 
       Cliente.hasMany(models.Abono, {
-        foreignKey: 'cliente_id'
+        foreignKey: 'cliente_id',
+        as: 'clienteAbono'
       })
     }
   }
