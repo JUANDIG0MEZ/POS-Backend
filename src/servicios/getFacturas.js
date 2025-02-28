@@ -1,3 +1,4 @@
+const { Cliente } = require('../database/models')
 const { Compra, Venta, DetalleCompra, DetalleVenta} = require('../database/models')
 
 async function cargarFacturasCompra(){
@@ -6,11 +7,18 @@ async function cargarFacturasCompra(){
 }
 
 async function cargarFacturaCompra(id){
-    const factura = await Compra.findByPk(id)
+    const factura = await Compra.findByPk(id, {
+        include: {
+            model: Cliente,
+            as: "cliente",
+            attributes: ['nombre']
+        }
+    })
     const datos = await DetalleCompra.findAll({
         where: {
             compra_id: id
-        }
+        },
+        
     })
     return {info: factura,  datos: datos}
 
@@ -27,6 +35,7 @@ async function cargarFacturaVenta(id){
         where: {
             venta_id: id
         }
+    
     })
     return {info: factura, datos: datos}
 }

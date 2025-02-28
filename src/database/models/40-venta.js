@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       Venta.belongsTo(models.Cliente, {
         foreignKey: 'cliente_id'
       })
+
+      Venta.hasMany(models.DetalleVenta, {
+        foreignKey: 'venta_id'
+      })
     }
   }
   Venta.init({

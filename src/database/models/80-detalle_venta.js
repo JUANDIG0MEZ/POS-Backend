@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       DetalleVenta.belongsTo(models.Venta, {
         foreignKey: 'venta_id'
       }),
+
       DetalleVenta.belongsTo(models.Producto, {
         foreignKey: 'producto_id'
       })
