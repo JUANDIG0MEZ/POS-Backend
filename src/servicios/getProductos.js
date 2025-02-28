@@ -7,7 +7,7 @@ const {
 
 async function cargarProductos() {
     const productos = await Producto.findAll({
-            attributes: { exclude: ['marca_id', 'categoria_id', 'medida_id'] },
+            //attributes: { exclude: ['marca_id', 'categoria_id', 'medida_id'] },
             include: [
                 { model: ProductoMedida, attributes: ['nombre'], as: 'medidaProducto' },
                 { model: ProductoCategoria, attributes: ['nombre'], as: 'categoriaProducto' },
@@ -15,40 +15,37 @@ async function cargarProductos() {
             ]
         })
     
-        // const productosFormateados = productos.map(producto => {
-        //     return {
-        //         id: producto.id,
-        //         nombre: producto.nombre,
-        //         marca: producto.marca.nombre,
-        //         categoria: producto.categoria.nombre,
-        //         medida: producto.medida.nombre,
-        //         precio_compra: producto.precio_compra,
-        //         precio_venta: producto.precio_venta,
-        //         cantidad: producto.cantidad,
-        //         total: producto.total
-        //     }
-        // })
-    return productos
+        const productosFormateados = productos.map(producto => {
+            return {
+                id: producto.id,
+                nombre: producto.nombre,
+                marca: producto.marcaProducto.nombre,
+                categoria: producto.categoriaProducto.nombre,
+                medida: producto.medidaProducto.nombre,
+                precio_compra: producto.precio_compra,
+                precio_venta: producto.precio_venta,
+                cantidad: producto.cantidad,
+                total: producto.total
+            }
+        })
+    return productosFormateados
 }
 
 async function cargarProducto(id){
     const producto = await Producto.findByPk(id, {
         include: [
-            { model: ProductoMedida, as: 'medida', attributes: ['nombre'] },
-            { model: ProductoCategoria, as: 'categoria', attributes: ['nombre'] },
-            { model: ProductoMarca, as: 'marca', attributes: ['nombre'] }
+            { model: ProductoMedida, as: 'medidaProducto', attributes: ['nombre'] },
+            { model: ProductoCategoria, as: 'categoriaProducto', attributes: ['nombre'] },
+            { model: ProductoMarca, as: 'marcaProducto', attributes: ['nombre'] }
         ]
     })
 
     const productoFormateado = {
         id: producto.id,
         nombre: producto.nombre,
-        marca: producto.marca.nombre,
-        marcad_id: producto.marca_id,
-        categoria: producto.categoria.nombre,
-        categoria_id: producto.categoria_id,
-        medida: producto.medida.nombre,
-        medida_id: producto.medida_id,
+        marca: producto.marcaProducto.nombre,
+        categoria: producto.categoriaProducto.nombre,
+        medida: producto.medidaProducto.nombre,
         precio_compra: producto.precio_compra,
         precio_venta: producto.precio_venta,
         cantidad: producto.cantidad,

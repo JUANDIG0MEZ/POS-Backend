@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
   class ClienteTipo extends Model {
     static associate(models) {
       ClienteTipo.hasMany(models.Cliente, {
-        foreignKey: 'tipo_id'
+        foreignKey: 'tipo_id',
+        as: 'tipoCliente'
       })
     }
   }
@@ -25,10 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         const nombre = this.getDataValue('nombre');
         return nombre? nombre.charAt(0).toUpperCase() + nombre.slice(1): '';
       }
-
-
-    }
-      
+    }     
   }, {
     sequelize,
     modelName: 'ClienteTipo',
