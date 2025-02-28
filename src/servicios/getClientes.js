@@ -32,7 +32,6 @@ async function cargarCliente(id){
     const cliente = await Cliente.findByPk(id, {
         include: { model: ClienteTipo, as: 'tipoCliente', attributes: ['nombre']}
     })
-    console.log(cliente)
     const clienteFormateado = {
         id: cliente.id,
         nombre: cliente.nombre,
@@ -43,6 +42,7 @@ async function cargarCliente(id){
         por_pagarle: cliente.por_pagarle,
         debe: cliente.debe
     }
+
     return clienteFormateado
 }
 
@@ -56,7 +56,20 @@ async function cargarVentaCliente(id){
             model: Cliente, as: 'clienteVenta', attributes: ['nombre']
         }
     })
-    return ventas
+
+    const ventasFormateadas = ventas.map(venta =>{
+        return {
+            id: venta.id,
+            fecha: venta.fecha,
+            hora: venta.hora,
+            cliente: venta.clienteVenta.nombre,
+            por_pagar: venta.por_pagar,
+            total: venta.total,
+            estado: venta.estado,
+            
+        }
+    })
+    return ventasFormateadas
 }
 
 
@@ -65,9 +78,23 @@ async function cargarCompraCliente(id){
     const compras = await Compra.findAll({
         where: {
             cliente_id: id
-        }
+        },
+        include: { model: Cliente, as: 'clienteCompra', attributes: ['nombre']}
     })
-    return compras
+
+    const comprasFormateadas = compras.map(compra =>{
+        return {
+            id: compra.id,
+            fecha: compra.fecha,
+            hora: compra.hora,
+            cliente: compra.clienteCompra.nombre,
+            por_pagar: compra.por_pagar,
+            total: compra.total,
+            estado: compra.estado
+        }})
+    
+
+    return comprasFormateadas
 }
 
 
