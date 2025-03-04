@@ -32,4 +32,44 @@ router.get('/compras/:id', async (req, res)=> {
 })
 
 
+
+// router.post('/ventas', async (req, res)=> {
+//     const body = req.body
+//     try {
+//         const factura = await crearFacturaVenta(body)
+//         res.json({
+//             message: 'Factura creada',
+//             body: factura
+//         })
+//     }
+//     catch (error) {
+//         res.json({
+//             message: 'Error al crear la factura',
+//             error
+//         })
+//     }
+// })
+
+
+// router.post('/compras', async (req, res)=> {
+//     const body = req.body
+//     try {
+//         const factura = await crearFacturaCompra(body)
+//         res.json({
+//             message: 'Factura creada',
+//             body: factura
+//         })
+//     }
+//     catch (error) {
+//         res.json({
+//             message: 'Error al crear la factura',
+//             error
+//         })
+//     }
+// })
+
+
+router.post()
+
+
 module.exports = router

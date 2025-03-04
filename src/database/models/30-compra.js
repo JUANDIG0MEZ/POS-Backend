@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    por_pagar: {
+    pagado: {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,

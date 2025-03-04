@@ -91,6 +91,7 @@ module.exports = (sequelize, DataTypes) => {
     total: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      defaultValue: 0,
       validate: {
         min: 0,
       },
@@ -99,7 +100,15 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Producto',
     timestamps: false,
-    tableName: 'productos'
+    tableName: 'productos',
+    hooks: {
+      beforeSave(producto) {
+        producto.total = producto.cantidad * producto.precio_compra;
+      },
+      beforeUpdate(producto) {
+        producto.total = producto.cantidad * producto.precio_compra;
+      }
+    }
   });
   return Producto;
 };

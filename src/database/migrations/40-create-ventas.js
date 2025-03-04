@@ -30,7 +30,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 'Recogido en tienda',
       },
-      por_pagar: {
+      pagado: {
         type: Sequelize.BIGINT,
         allowNull: false,
       },

@@ -29,6 +29,7 @@ module.exports = {
       tipo_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 0,
         references: {
           model: 'clientes_tipos',
           key: 'id'

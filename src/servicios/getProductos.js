@@ -14,6 +14,7 @@ async function cargarProductos() {
                 { model: ProductoMarca,attributes: ['nombre'], as: 'marcaProducto' }
             ]
         })
+
     
         const productosFormateados = productos.map(producto => {
             return {
@@ -28,8 +29,9 @@ async function cargarProductos() {
                 total: producto.total
             }
         })
-    return productosFormateados
+    return productosFormateados 
 }
+
 
 async function cargarProducto(id){
     const producto = await Producto.findByPk(id, {

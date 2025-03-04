@@ -1,0 +1,59 @@
+// const {
+//     Venta,
+//     Compra,
+//     DetalleCompra,
+//     DetalleVenta,
+//     sequelize
+// } = require('../database/models')
+
+
+// async function crearFacturaVenta(body){
+//     const dataVenta = body.info
+//     const dataDetalleVenta = body.datos
+//     // Una transaccion me permitira hacer varias operaciones en la base de datos y si alguna falla, se deshacen todas
+//     const transaction = await sequelize.transaction();
+//     try {
+//         const nuevaVenta = await Venta.create(dataVenta, {transaction})
+//         const detalles = await DetalleVenta.bulkCreate( dataDetalleVenta.map( detalle => {
+//             return {
+//                 ...detalle,
+//                 idVenta: nuevaVenta.id
+//             }
+//         }), {transaction})
+//         await transaction.commit()
+//         return {nuevaVenta, detalles}
+//     }
+//     catch (error){
+//         await transaction.rollback()
+//         throw new Error('No se pudo crear la factura de venta')
+//     }
+// }
+
+
+// async function crearFacturaCompra(body){
+//     const dataCompra = body.info
+//     const dataDetalleCompra = body.datos
+//     // Una transaccion me permitira hacer varias operaciones en la base de datos y si alguna falla, se deshacen todas
+//     const transaction = await sequelize.transaction();
+//     try {
+//         const nuevaCompra = await Compra.create(dataCompra, {transaction})
+//         const detalles = await DetalleCompra.bulkCreate( dataDetalleCompra.map( detalle => {
+//             return {
+//                 ...detalle,
+//                 idCompra: nuevaCompra.id
+//             }
+//         }), {transaction})
+//         await transaction.commit()
+//         return {nuevaCompra, detalles}
+//     }
+//     catch (error){
+//         await transaction.rollback()
+//         throw new Error('No se pudo crear la factura de compra')
+//     }
+// }
+
+
+// module.exports = {
+//     crearFacturaVenta, 
+//     crearFacturaCompra
+// }

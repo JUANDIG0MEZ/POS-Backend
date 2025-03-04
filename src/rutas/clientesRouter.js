@@ -9,6 +9,15 @@ const {
 
 } = require('../servicios/getClientes')
 
+
+// const {
+//     crearCliente,
+//     crearAbono,
+//     crearPago 
+// } = require('../servicios/otherClientes')
+
+
+
 const router = express.Router()
 
 router.get('/', async (req, res)=>{
@@ -52,5 +61,61 @@ router.get('/:id/ventas', async (req, res)=>{
     const ventas = await cargarVentaCliente(id)
     res.send(ventas)
 })
+
+
+
+// router.post('/', async (req, res)=> {
+//     const body = req.body
+//     try {
+//         const cliente = await crearCliente(body)
+//         res.json({
+//             message: 'Cliente creado',
+//             body: cliente
+//         })
+//     }
+//     catch (error) {
+//         res.json({
+//             message: 'Error al crear el cliente',
+//             error
+//         })
+//     }
+// })
+
+
+
+// router.post('/abonos', async (req, res)=> {
+//     const body = req.body
+//     try {
+//         const abono = await crearAbono(body)
+//         res.json({
+//             message: 'Abono creado',
+//             body: abono
+//         })
+//     }
+//     catch (error) {
+//         res.json({
+//             message: 'Error al crear el abono',
+//             error
+//         })
+//     }
+// })
+
+
+// router.post('/pagos', async (req, res)=> {
+//     const body = req.body
+//     try {
+//         const pago = await crearPago(body)
+//         res.json({
+//             message: 'Pago creado',
+//             body: pago
+//         })
+//     }
+//     catch (error) {
+//         res.json({
+//             message: 'Error al crear el pago',
+//             error
+//         })
+//     }
+// })
 
 module.exports = router

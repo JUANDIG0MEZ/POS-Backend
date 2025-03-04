@@ -64,6 +64,7 @@ module.exports = (sequelize, DataTypes) => {
     tipo_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 3,
       references: {
         model: 'clientes_tipos',
         key: 'id'

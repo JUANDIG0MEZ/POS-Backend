@@ -99,8 +99,8 @@ function cargarFacturasCompra(){
                 fecha: fecha.toISOString().split('T')[0],
                 hora: fecha.toTimeString().split(' ')[0],  
                 cliente_id: faker.number.int({min: 1, max: 10}),
-                por_pagar: faker.finance.amount(),
-                total: faker.finance.amount(),
+                pagado: faker.number.int({min: 10, max: 10000}),
+                total: faker.number.int({min: 10000, max: 50000}),
                 estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
             })
         }
@@ -116,8 +116,8 @@ function cargarFacturasVenta(){
                 hora: fecha.toTimeString().split(' ')[0], // Formato HH:MM:SS (TIME en Sequelize)   
                 cliente_id: faker.number.int({min: 1, max: 10}),
                 direccion: faker.location.streetAddress(),
-                por_pagar: faker.finance.amount(),
-                total: faker.finance.amount(),
+                pagado: faker.number.int({min: 10, max: 10000}),
+                total: faker.number.int({min: 10000, max: 50000}),
                 estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
             })
         }
@@ -139,8 +139,8 @@ function facturaCompra(id){
         telefono: faker.phone.number(),
         email: faker.internet.email(),
         estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
-        por_pagar: faker.finance.amount(),
-        total: faker.finance.amount()
+        pagado: faker.number.int({min: 10, max: 10000}),
+        total: faker.number.int({min: 10000, max: 50000})
     }
 
 
@@ -149,7 +149,7 @@ function facturaCompra(id){
             id: i, 
             producto_id: faker.number.int({min: 1, max: 10}),
             cantidad: faker.number.int({min: 1, max: 100}),
-            precio: faker.commerce.price({min: 10000, max: 50000}),
+            precio: faker.commerce.price({min: 100, max: 10000}),
             total: faker.commerce.price({min: 10000, max: 50000})
         })
     }
@@ -166,7 +166,7 @@ function cargarDetallesCompras(){
                 compra_id: j+1,
                 producto_id: i+1,
                 cantidad: faker.number.int({min: 1, max: 100}),
-                precio: faker.commerce.price({min: 10000, max: 50000}),
+                precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
             })
         }
@@ -183,7 +183,7 @@ function cargarDetallesVentas() {
                 venta_id: j+1,
                 producto_id: i+1,
                 cantidad: faker.number.int({min: 1, max: 100}),
-                precio: faker.commerce.price({min: 10000, max: 50000}),
+                precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
             })
         }
@@ -206,8 +206,8 @@ function facturaVenta(id){
         telefono: faker.phone.number(),
         email: faker.internet.email(),
         estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
-        por_pagar: faker.finance.amount(),
-        total: faker.finance.amount()
+        pagado: faker.number.int({min: 10, max: 10000}),
+        total: faker.number.int({min: 10000, max: 50000})
     }
 
 
