@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 'Recogido en tienda',
     },
-    por_pagar: {
+    pagado: {
       type: DataTypes.BIGINT,
       allowNull: false,
       validate: {

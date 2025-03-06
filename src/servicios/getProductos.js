@@ -14,22 +14,20 @@ async function cargarProductos() {
                 { model: ProductoMarca,attributes: ['nombre'], as: 'marcaProducto' }
             ]
         })
-
-    
         const productosFormateados = productos.map(producto => {
             return {
                 id: producto.id,
                 nombre: producto.nombre,
-                marca: producto.marcaProducto.nombre,
-                categoria: producto.categoriaProducto.nombre,
-                medida: producto.medidaProducto.nombre,
+                marca: producto.marcaProducto ? producto.marcaProducto.nombre : "",
+                categoria: producto.categoriaProducto ? producto.categoriaProducto.nombre : "",
+                medida: producto.medidaProducto ? producto.medidaProducto.nombre : "",
                 precio_compra: producto.precio_compra,
                 precio_venta: producto.precio_venta,
                 cantidad: producto.cantidad,
                 total: producto.total
             }
         })
-    return productosFormateados 
+    return productosFormateados
 }
 
 
@@ -57,18 +55,34 @@ async function cargarProducto(id){
 }
 
 async function cargarCategorias() {
-    const categorias = await ProductoCategoria.findAll()
-    return categorias
+    const categorias = await ProductoCategoria.findAll({
+        attributes: { exclude: ['id']}
+    })
+    const categoriasFormateadas = categorias.map(categoria => {
+        return categoria.nombre
+    })
+    return categoriasFormateadas
 }
 
 async function cargarMedidas() {
-    const medidas = await ProductoMedida.findAll()
-    return medidas
+    const medidas = await ProductoMedida.findAll({
+        attributes: { exclude: ['id']}
+    })
+    const medidasFormateadas = medidas.map(medida => {
+        return medida.nombre
+    })
+    return medidasFormateadas
 }
 
 async function cargarMarcas() {
-    const marcas = await ProductoMarca.findAll()
-    return marcas
+    const marcas = await ProductoMarca.findAll({
+        attributes: { exclude: ['id']}
+    })
+
+    const marcasFormateadas = marcas.map(marca => {
+        return marca.nombre
+    })
+    return marcasFormateadas
 }
 
 

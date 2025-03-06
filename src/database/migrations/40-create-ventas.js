@@ -20,11 +20,13 @@ module.exports = {
       cliente_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 1,
         references: {
           model: 'clientes',
           key: "id" 
         }
       },
+
       direccion: {
         type: Sequelize.STRING,
         allowNull: false,

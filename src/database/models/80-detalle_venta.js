@@ -38,6 +38,14 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
+    marca: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    medida: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     cantidad: {
       type: DataTypes.DECIMAL(10, 0),
       allowNull: false,

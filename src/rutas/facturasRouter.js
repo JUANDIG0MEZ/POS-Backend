@@ -69,7 +69,6 @@ router.get('/compras/:id', async (req, res)=> {
 // })
 
 
-router.post()
 
 
 module.exports = router

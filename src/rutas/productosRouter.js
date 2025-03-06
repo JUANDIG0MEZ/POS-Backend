@@ -7,10 +7,10 @@ const {
     cargarMedidas
 } = require('../servicios/getProductos')
 
-// const {
-//     crearProducto,
-//     modificarProducto
-// } = require('../servicios/otherProductos')
+const {
+    crearProducto,
+    //modificarProducto
+} = require('../servicios/otherProductos')
 const router = express.Router()
 
 
@@ -19,10 +19,8 @@ router.get('/', async (req, res)=>{
     res.send(productos)
 })
 
-
 router.get('/categorias', async (req, res)=>{
     const categorias = await cargarCategorias()
-    console.log(categorias)
     res.send(categorias)
 })
 
@@ -43,26 +41,24 @@ router.get('/:id', async (req, res)=>{
 })
 
 
+router.post('/', async (req, res)=> {
+    const body = req.body
 
+    try {       
+        const producto = await crearProducto(body)
+        res.json({
+            message: 'Producto creado',
+            body: producto
+        })
+    }
+    catch (error) {
+        res.json({
+            message: 'Error al crear el producto',
+            error: error
+        })
+    }
 
-
-// router.post('/', async (req, res)=> {
-//     const body = req.body
-//     try {
-//         const producto = await crearProducto(body)
-//         res.json({
-//             message: 'Producto creado',
-//             body: producto
-//         })
-//     }
-//     catch (error) {
-//         res.json({
-//             message: 'Error al crear el producto',
-//             error: error
-//         })
-//     }
-
-// })
+})
 
 
 // router.patch('/:id', async (req, res)=> {

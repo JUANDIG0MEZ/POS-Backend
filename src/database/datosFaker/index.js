@@ -149,6 +149,8 @@ function facturaCompra(id){
             id: i, 
             producto_id: faker.number.int({min: 1, max: 10}),
             cantidad: faker.number.int({min: 1, max: 100}),
+            medida: faker.helpers.arrayElement(['kG', 'Litro', 'Unidad']),
+            marca: faker.company.name(),
             precio: faker.commerce.price({min: 100, max: 10000}),
             total: faker.commerce.price({min: 10000, max: 50000})
         })
@@ -165,6 +167,8 @@ function cargarDetallesCompras(){
             detalles.push({
                 compra_id: j+1,
                 producto_id: i+1,
+                medida: faker.helpers.arrayElement(['kG', 'Litro', 'Unidad']),
+                marca: faker.company.name(),
                 cantidad: faker.number.int({min: 1, max: 100}),
                 precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
@@ -182,6 +186,8 @@ function cargarDetallesVentas() {
             detalles.push({
                 venta_id: j+1,
                 producto_id: i+1,
+                medida: faker.helpers.arrayElement(['kG', 'Litro', 'Unidad']),
+                marca: faker.company.name(),
                 cantidad: faker.number.int({min: 1, max: 100}),
                 precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
