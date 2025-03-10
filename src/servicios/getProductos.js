@@ -30,6 +30,29 @@ async function cargarProductos() {
     return productosFormateados
 }
 
+async function cargarProducto(id) {
+    const producto = await Producto.findByPk(id, {
+        include: [
+            { model: ProductoMedida, as: 'medidaProducto', attributes: ['nombre'] },
+            { model: ProductoCategoria, as: 'categoriaProducto', attributes: ['nombre'] },
+            { model: ProductoMarca, as: 'marcaProducto', attributes: ['nombre'] }
+        ]
+
+    })
+    const productoFormateado = {
+        id: producto.id,
+        nombre: producto.nombre,
+        marca: producto.marcaProducto ? producto.marcaProducto.nombre : "",
+        categoria: producto.categoriaProducto ? producto.categoriaProducto.nombre : "",
+        medida: producto.medidaProducto ? producto.medidaProducto.nombre : "",
+        precio_compra: producto.precio_compra,
+        precio_venta: producto.precio_venta,
+        cantidad: producto.cantidad,
+        total: producto.total
+    }
+    return productoFormateado
+}
+
 
 async function cargarProducto(id){
     const producto = await Producto.findByPk(id, {

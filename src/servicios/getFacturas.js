@@ -1,5 +1,5 @@
 const { Cliente } = require('../database/models')
-const { Compra, Venta, DetalleCompra, DetalleVenta, Producto} = require('../database/models')
+const { Compra, Venta, DetalleCompra, DetalleVenta, Producto, ProductoMarca, ProductoMedida} = require('../database/models')
 
 async function cargarFacturasCompra(){
     const facturas = await Compra.findAll(
@@ -20,7 +20,7 @@ async function cargarFacturasCompra(){
             fecha: factura.fecha,
             hora: factura.hora,
             cliente: factura.clienteCompra.nombre,
-            por_pagar: factura.por_pagar,
+            pagado: factura.pagado,
             total: factura.total,
             estado: factura.estado
         }
@@ -46,7 +46,7 @@ async function cargarFacturasVenta(){
             fecha: factura.fecha,
             hora: factura.hora,
             cliente: factura.clienteVenta.nombre,   
-            por_pagar: factura.por_pagar,
+            pagado: factura.pagado,
             total: factura.total,
             estado: factura.estado,
         }
@@ -69,9 +69,9 @@ async function cargarFacturaCompra(id){
         hora: info.hora,
         cliente: info.clienteCompra.nombre,
         email: info.clienteCompra.email,
-        telefono: info.clienteCompra.telefono,
-        por_pagar: info.por_pagar,
-        total: info.total,
+        telefono: parseInt(info.clienteCompra.telefono),
+        pagado: parseInt(info.pagado),
+        total: parseInt(info.total),
         estado: info.estado
     }
     const datos = await DetalleCompra.findAll({
@@ -79,7 +79,14 @@ async function cargarFacturaCompra(id){
             compra_id: id
         },
         include: {
-            model: Producto, as: 'productoDetalle', attributes: ['nombre']
+            model: Producto,
+            as: 'productoDetalle',
+            attributes: ['nombre'],
+            include: [
+                {model: ProductoMarca, as: 'marcaProducto', attributes: ['nombre']},
+                {model: ProductoMedida, as: 'medidaProducto', attributes: ['nombre']}
+
+            ]
         }
         
     })
@@ -87,10 +94,12 @@ async function cargarFacturaCompra(id){
     const datosFormateados = datos.map(dato => {
         return {
             id: dato.producto_id,
-            producto: dato.productoDetalle.nombre,
-            cantidad: dato.cantidad,
-            precio: dato.precio,
-            total: dato.total
+            cantidad: parseInt(dato.cantidad),
+            nombre: dato.productoDetalle.nombre,
+            marca: dato.productoDetalle.marcaProducto.nombre,
+            medida: dato.productoDetalle.medidaProducto.nombre,
+            precio: parseInt(dato.precio),
+            subtotal: parseInt(dato.subtotal)
         }
     })
 
@@ -112,7 +121,7 @@ async function cargarFacturaVenta(id){
         email: factura.clienteVenta.email,
         direccion: factura.clienteVenta.direccion,
         telefono: factura.clienteVenta.telefono,
-        por_pagar: factura.por_pagar,
+        pagado: factura.pagado,
         total: factura.total,
         estado: factura.estado
 
@@ -121,16 +130,18 @@ async function cargarFacturaVenta(id){
         where: {
             venta_id: id
         },
-        include: {model: Producto, as: 'productoDetalle', attributes: ['nombre']}
+        include: {model: Producto, as: 'productoDetalle', attributes: ['nombre', 'marca_id', 'medida_id']}
     
     })
     const datosFormateados = datos.map( dato => {
         return {
             id: dato.producto_id,
-            producto: dato.productoDetalle.nombre,
-            cantidad: dato.cantidad,
+            cantidad: dato.productoDetalle.cantidad,
+            nombre: dato.productoDetalle.nombre,
+            marca: dato.productoDetalle.marca_id,
+            medida: dato.productoDetalle.medida_id,
             precio: dato.precio,
-            total: dato.total
+            subtotal: dato.subtotal
         }
     })
     return {info: facturaFormateada, datos: datosFormateados}

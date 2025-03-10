@@ -124,40 +124,6 @@ function cargarFacturasVenta(){
     return facturas
 }
 
-function facturaCompra(id){
-    const facturas ={
-        info: {},
-        data: []
-    }
-
-
-    facturas.info = {
-        id: id,
-        fecha: "23/12/2023",
-        nombre: "juan diego gomez",
-        direccion: faker.location.streetAddress(),
-        telefono: faker.phone.number(),
-        email: faker.internet.email(),
-        estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
-        pagado: faker.number.int({min: 10, max: 10000}),
-        total: faker.number.int({min: 10000, max: 50000})
-    }
-
-
-    for (let i = 0; i<10; i++){
-        facturas.data.push({
-            id: i, 
-            producto_id: faker.number.int({min: 1, max: 10}),
-            cantidad: faker.number.int({min: 1, max: 100}),
-            medida: faker.helpers.arrayElement(['kG', 'Litro', 'Unidad']),
-            marca: faker.company.name(),
-            precio: faker.commerce.price({min: 100, max: 10000}),
-            total: faker.commerce.price({min: 10000, max: 50000})
-        })
-    }
-    return facturas
-}
-
 
 function cargarDetallesCompras(){
     const detalles = []
@@ -167,8 +133,6 @@ function cargarDetallesCompras(){
             detalles.push({
                 compra_id: j+1,
                 producto_id: i+1,
-                medida: faker.helpers.arrayElement(['kG', 'Litro', 'Unidad']),
-                marca: faker.company.name(),
                 cantidad: faker.number.int({min: 1, max: 100}),
                 precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
@@ -186,8 +150,6 @@ function cargarDetallesVentas() {
             detalles.push({
                 venta_id: j+1,
                 producto_id: i+1,
-                medida: faker.helpers.arrayElement(['kG', 'Litro', 'Unidad']),
-                marca: faker.company.name(),
                 cantidad: faker.number.int({min: 1, max: 100}),
                 precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
@@ -198,36 +160,7 @@ function cargarDetallesVentas() {
     return detalles 
 }
 
-function facturaVenta(id){
-    const facturas ={
-        info: {},
-        data: []
-    }
 
-    facturas.info = {
-        id: id,
-        fecha: "23/12/2023",
-        nombre: "juan diego gomez",
-        direccion: faker.location.streetAddress(),
-        telefono: faker.phone.number(),
-        email: faker.internet.email(),
-        estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
-        pagado: faker.number.int({min: 10, max: 10000}),
-        total: faker.number.int({min: 10000, max: 50000})
-    }
-
-
-    for (let i = 0; i<10; i++){
-        facturas.data.push({
-            id: i, 
-            nombre: faker.commerce.productName(),
-            cantidad: faker.number.int({min: 1, max: 100}),
-            precio: faker.commerce.price({min: 10000, max: 50000}),
-            total: faker.commerce.price({min: 10000, max: 50000})
-        })
-    }
-    return facturas
-}
 
 function cargarAbonos(){
     const facturas = []
@@ -272,8 +205,6 @@ module.exports = {
     tiposClientes,
     cargarFacturasCompra,
     cargarFacturasVenta,
-    facturaCompra,
-    facturaVenta,
     cargarCliente,
     cargarAbonos,
     cargarPagos,

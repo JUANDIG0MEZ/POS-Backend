@@ -25,14 +25,6 @@ module.exports = {
           key: 'id'
         }
       },
-      marca: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      medida: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
       cantidad: {
         type: Sequelize.DECIMAL(10, 0),
         allowNull: false,

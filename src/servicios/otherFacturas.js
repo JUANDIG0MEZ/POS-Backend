@@ -1,11 +1,9 @@
-// const {
-//     Venta,
-//     Compra,
-//     DetalleCompra,
-//     DetalleVenta,
-//     sequelize
-// } = require('../database/models')
-
+const {
+    Venta,
+    Compra,
+    DetalleCompra,
+    sequelize
+} = require('../database/models')
 
 // async function crearFacturaVenta(body){
 //     const dataVenta = body.info
@@ -53,7 +51,40 @@
 // }
 
 
-// module.exports = {
-//     crearFacturaVenta, 
-//     crearFacturaCompra
-// }
+async function modificarCompra(body, idCompra){
+    const transaction = await sequelize.transaction();
+    // Se van a modificar todos los producto de la compra\
+    const total = body.reduce((acc, item) => acc + item.subtotal, 0)
+    console.log(total)
+    try {
+        for (let i=0; i< body.length; i++){
+
+            await DetalleCompra.update(body[i], {
+                where: {
+                    compra_id: idCompra,
+                    producto_id: body[i].producto_id
+                },
+                transaction
+            })
+            
+        }
+        // Se actualiza el total de la compra
+        await Compra.update({total: total}, {
+            where: {
+                id: idCompra
+            },
+            transaction
+        })
+
+        await transaction.commit()
+        return true
+    }
+    catch (error){
+        await transaction.rollback()
+        throw new Error(error)
+    }
+}
+
+module.exports = {
+    modificarCompra
+}

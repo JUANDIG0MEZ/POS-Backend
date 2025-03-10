@@ -21,8 +21,22 @@ const {
 const router = express.Router()
 
 router.get('/', async (req, res)=>{
-    const clientes = await cargarClientes()
-    res.send(clientes)
+    try {
+        const clientes = await cargarClientes()
+        res.json({
+            status: 'success',
+            message: 'Clientes cargados.',
+            body: clientes
+        })
+    }
+    catch {
+        res.json({
+            status: 'error',
+            message: 'Error al cargar los clientes.',
+            error: null
+        })
+    }
+
 })
 
 

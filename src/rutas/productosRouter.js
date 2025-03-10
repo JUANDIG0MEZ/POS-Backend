@@ -9,14 +9,27 @@ const {
 
 const {
     crearProducto,
-    //modificarProducto
+    modificarProducto
 } = require('../servicios/otherProductos')
 const router = express.Router()
 
 
 router.get('/', async (req, res)=>{
-    const productos = await cargarProductos()
-    res.send(productos)
+    try {
+        const productos = await cargarProductos()
+        res.json({
+            status: 'success',
+            message: 'Productos cargados.',
+            body: productos
+        })
+    }
+    catch {
+        res.json({
+            status: 'error',
+            message: 'Error al cargar los productos.',
+            error: null
+        })
+    }
 })
 
 router.get('/categorias', async (req, res)=>{
@@ -41,43 +54,48 @@ router.get('/:id', async (req, res)=>{
 })
 
 
-router.post('/', async (req, res)=> {
-    const body = req.body
 
-    try {       
+router.post('/', async (req, res)=> {
+    
+    try {     
+        const body = req.body
         const producto = await crearProducto(body)
         res.json({
+            status: 'success',
             message: 'Producto creado',
             body: producto
         })
     }
     catch (error) {
         res.json({
+            status: 'error',
             message: 'Error al crear el producto',
-            error: error
+            data: null
         })
     }
 
 })
 
 
-// router.patch('/:id', async (req, res)=> {
-//     const {id} = req.params
-//     const body = req.body
-//     try {
-//         const producto = await modificarProducto(id, body)
-//         res.json({
-//             message: 'Producto modificado',
-//             body: producto
-//         })
-//     }
-//     catch (error) {
-//         res.json({
-//             message: 'Error al modificar el producto',
-//             error: error
-//         })
-//     }
-// })
+router.patch('/', async (req, res)=> {
+
+    try {
+        const body = req.body
+        const producto = await modificarProducto(body)
+        res.json({
+            status: "success",
+            message: 'Producto modificado',
+            data: producto
+        })
+    }
+    catch {
+        res.json({
+            status: "error",
+            message: 'Error al modificar el producto',
+            data: null
+        })
+    }
+})
 
 
 
