@@ -2,6 +2,7 @@ const {
     Venta,
     Compra,
     DetalleCompra,
+    DetalleVenta,
     sequelize,
     Producto
 } = require('../database/models')
@@ -81,9 +82,7 @@ async function modificarCompra(body, idCompra){
             })
 
             // se obtiene la diferencia entre la cantidad original y la nueva cantidad
-            const diferencia = body[i].cantidad - detalleOriginal.cantidad
-            // cantidad de productos en el inventario
-            console.log(body[i].producto_id, body[i].producto_id === 1)
+            const diferencia = detalleOriginal.cantidad -  body[i].cantidad
             const producto = await Producto.findByPk(body[i].producto_id, {transaction})
             // si la diferencia es positiva, se suma al inventario
 
@@ -123,6 +122,72 @@ async function modificarCompra(body, idCompra){
     }
 }
 
+async function modificarVenta(body, idVenta){
+    const transaction = await sequelize.transaction();
+    // Se van a modificar todos los producto de la compra
+    try {
+        for (let i=0; i< body.length; i++){
+            // si se realiza una modificacion de la factura se debe modificar el inventario o stock de los productos.
+            // se obtiene el detalle de la compra original
+            const detalleOriginal = await DetalleVenta.findOne({
+                where: {
+                    venta_id: idVenta,
+                    producto_id: body[i].producto_id
+                },
+                transaction
+            })
+
+            // se actualiza el detalle de la compra
+
+            await DetalleVenta.update(body[i], {
+                where: {
+                    venta_id: idVenta,
+                    producto_id: body[i].producto_id
+                },
+                transaction
+            })
+
+            // se obtiene la diferencia entre la cantidad original y la nueva cantidad
+            const diferencia = body[i].cantidad - detalleOriginal.cantidad
+            const producto = await Producto.findByPk(body[i].producto_id, {transaction})
+            // si la diferencia es positiva, se suma al inventario
+
+            // se actualiza el inventario
+            await Producto.update({
+                cantidad: producto.cantidad - diferencia
+            }, {
+                where: {
+                    id: body[i].producto_id
+                },
+                transaction
+            })
+        }
+        // se obtiene el total y la cantidad pagada por el cliente de la compra
+        const total = body.reduce((acc, item) => acc + item.subtotal, 0)
+        const ventaOriginal = await Venta.findByPk(idVenta, {transaction})
+        const actualiza = {total: total}
+        
+        if (total <= ventaOriginal.pagado){
+            actualiza.pagado = total
+        }
+        await Venta.update(actualiza, {
+            where: {
+                id: idVenta
+            },
+            transaction
+        })
+        await transaction.commit()
+
+
+        return actualiza
+    }
+    catch (error){
+        await transaction.rollback()
+        throw new Error(error)
+    }
+}
+
 module.exports = {
-    modificarCompra
+    modificarCompra,
+    modificarVenta
 }

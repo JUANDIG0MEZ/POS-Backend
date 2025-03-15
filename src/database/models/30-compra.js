@@ -66,8 +66,9 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     estado_id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 1,
       references: {
         model: 'compras_estados',
         key: 'id'

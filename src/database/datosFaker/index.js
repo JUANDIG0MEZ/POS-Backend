@@ -101,7 +101,7 @@ function cargarFacturasCompra(){
                 cliente_id: faker.number.int({min: 1, max: 10}),
                 pagado: faker.number.int({min: 10, max: 10000}),
                 total: faker.number.int({min: 10000, max: 50000}),
-                estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
+                estado_id: faker.number.int({min: 1, max: 2}),
             })
         }
     return facturas
@@ -118,7 +118,7 @@ function cargarFacturasVenta(){
                 direccion: faker.location.streetAddress(),
                 pagado: faker.number.int({min: 10, max: 10000}),
                 total: faker.number.int({min: 10000, max: 50000}),
-                estado: faker.helpers.arrayElement(['Entregado', 'Por entregar']),
+                estado_id: faker.number.int({min: 1, max: 2})
             })
         }
     return facturas

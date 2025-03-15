@@ -11,7 +11,7 @@ async function cargarProductos() {
             include: [
                 { model: ProductoMedida, attributes: ['nombre'], as: 'medidaProducto' },
                 { model: ProductoCategoria, attributes: ['nombre'], as: 'categoriaProducto' },
-                { model: ProductoMarca,attributes: ['nombre'], as: 'marcaProducto' }
+                { model: ProductoMarca,attributes: ['nombre'], as: 'marcaProducto' },
             ]
         })
         const productosFormateados = productos.map(producto => {

@@ -8,6 +8,7 @@ const {
 
 const {
     modificarCompra,
+    modificarVenta
 } = require('../servicios/otherFacturas')
 const router = express.Router()
 
@@ -31,10 +32,24 @@ router.get('/ventas/', async (req, res)=> {
 })
 
 router.get('/ventas/:id', async (req, res)=> {
-    const id = req.params.id
-    const factura = await cargarFacturaVenta(id)
-    res.send(factura)
+    try {
+        const id = req.params.id
+        const factura = await cargarFacturaVenta(id)
+        res.json({
+            status: 'success',
+            message: 'Factura cargada',
+            body: factura
+        })
+    }
+    catch{
+        res.json({
+            status: 'error',
+            message: 'Error al cargar la factura',
+            error: null
+        })
+    }
 })
+
 
 
 router.get('/compras/', async (req, res)=> {
@@ -62,6 +77,8 @@ router.get('/compras/:id', async (req, res)=> {
 })
 
 
+
+
 router.patch('/compras/:id', async (req, res)=> {
     try {
         const body = req.body
@@ -81,6 +98,29 @@ router.patch('/compras/:id', async (req, res)=> {
         })
     }
 })
+
+
+router.patch('/ventas/:id', async (req, res)=> {
+    
+    try {
+        const id = req.params.id
+        const body = req.body
+        const factura = await modificarVenta(body, id)
+        res.json({
+            status: 'success',
+            message: 'Factura creada',
+            body: factura
+        })
+    }
+    catch (error) {
+        res.json({
+            status: 'error',
+            message: 'Error al crear la factura',
+            error: error
+        })
+    }
+})
+
 
 
 

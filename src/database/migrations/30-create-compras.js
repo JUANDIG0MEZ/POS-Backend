@@ -38,6 +38,7 @@ module.exports = {
       estado_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 1,
         references: {
           model: 'compras_estados',
           key: "id"
