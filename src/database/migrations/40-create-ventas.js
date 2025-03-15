@@ -26,7 +26,6 @@ module.exports = {
           key: "id" 
         }
       },
-
       direccion: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -40,10 +39,14 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false
       },
-      estado: {
-        type: Sequelize.STRING,
+      estado_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 'pendiente'
+        defaultValue: 1,
+        references: {
+          model: 'ventas_estados',
+          key: "id"
+        }
       },
     });
   },

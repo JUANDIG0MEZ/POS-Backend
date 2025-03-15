@@ -19,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'compra_id',
         as: 'compraDetalle'
       })
+      Compra.belongsTo(models.CompraEstado,
+        {
+          foreignKey: 'estado_id',
+          as: 'estadoCompra'
+        }
+      )
     }
   }
   Compra.init({
@@ -59,10 +65,13 @@ module.exports = (sequelize, DataTypes) => {
         min: 0
       }
     },
-    estado: {
+    estado_id: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'Recibido'
+      references: {
+        model: 'compras_estados',
+        key: 'id'
+      }
     },
   }, {
     sequelize,

@@ -9,8 +9,10 @@ const {
 const {
     cargarProducto
 } = require('./getProductos');
-async function crearProducto(datos) {
 
+
+
+async function crearProducto(datos) {
     const transaction = await sequelize.transaction();
     try {
         await crearCategoria(datos, transaction)
@@ -22,17 +24,18 @@ async function crearProducto(datos) {
             transaction,
         });
 
-        const id = producto.id;
         
-        transaction.commit();
-        const productoFormateado = await cargarProducto(id);
+        await transaction.commit()
+
+        const id = producto.id  
+        const productoFormateado = await cargarProducto(id)
         return productoFormateado;
-        
     }
     catch (error) {
         await transaction.rollback();
         throw error;
     }
+    
     
 }
 
@@ -57,13 +60,6 @@ async function modificarProducto(datos) {
         throw error;
     }
 }
-
-
-
-
-
-
-
 
 async function crearMarca(datos, transaction) {
     if (datos.marca) {

@@ -2,7 +2,8 @@ const {
     Venta,
     Compra,
     DetalleCompra,
-    sequelize
+    sequelize,
+    Producto
 } = require('../database/models')
 
 // async function crearFacturaVenta(body){
@@ -53,11 +54,23 @@ const {
 
 async function modificarCompra(body, idCompra){
     const transaction = await sequelize.transaction();
-    // Se van a modificar todos los producto de la compra\
-    const total = body.reduce((acc, item) => acc + item.subtotal, 0)
-    console.log(total)
+    // Se van a modificar todos los producto de la compra
     try {
+
+
+
         for (let i=0; i< body.length; i++){
+            // si se realiza una modificacion de la factura se debe modificar el inventario o stock de los productos.
+            // se obtiene el detalle de la compra original
+            const detalleOriginal = await DetalleCompra.findOne({
+                where: {
+                    compra_id: idCompra,
+                    producto_id: body[i].producto_id
+                },
+                transaction
+            })
+
+            // se actualiza el detalle de la compra
 
             await DetalleCompra.update(body[i], {
                 where: {
@@ -66,18 +79,43 @@ async function modificarCompra(body, idCompra){
                 },
                 transaction
             })
-            
+
+            // se obtiene la diferencia entre la cantidad original y la nueva cantidad
+            const diferencia = body[i].cantidad - detalleOriginal.cantidad
+            // cantidad de productos en el inventario
+            console.log(body[i].producto_id, body[i].producto_id === 1)
+            const producto = await Producto.findByPk(body[i].producto_id, {transaction})
+            // si la diferencia es positiva, se suma al inventario
+
+            // se actualiza el inventario
+            await Producto.update({
+                cantidad: producto.cantidad - diferencia
+            }, {
+                where: {
+                    id: body[i].producto_id
+                },
+                transaction
+            })
         }
-        // Se actualiza el total de la compra
-        await Compra.update({total: total}, {
+        // se obtiene el total y la cantidad pagada por el cliente de la compra
+        const total = body.reduce((acc, item) => acc + item.subtotal, 0)
+        const compraOriginal = await Compra.findByPk(idCompra, {transaction})
+        const actualiza = {total: total}
+        
+        if (total <= compraOriginal.pagado){
+            actualiza.pagado = total
+        }
+        console.log(actualiza)
+        await Compra.update(actualiza, {
             where: {
                 id: idCompra
             },
             transaction
         })
-
         await transaction.commit()
-        return true
+
+
+        return actualiza
     }
     catch (error){
         await transaction.rollback()

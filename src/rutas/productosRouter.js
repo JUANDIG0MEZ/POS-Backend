@@ -33,18 +33,57 @@ router.get('/', async (req, res)=>{
 })
 
 router.get('/categorias', async (req, res)=>{
-    const categorias = await cargarCategorias()
-    res.send(categorias)
+    try {
+        const categorias = await cargarCategorias()
+        res.json({
+            status: 'success',
+            message: 'Categorias cargadas.',
+            body: categorias
+        })
+    }
+    catch {
+        res.json({
+            status: 'error',
+            message: 'Error al cargar las categorias.',
+            error: null
+        })
+    }
 })
 
 router.get('/medidas', async (req, res)=>{
-    const medidas = await cargarMedidas()
-    res.send(medidas)
+    try {
+        const medidas = await cargarMedidas()
+        res.json({
+            status: 'success',
+            message: 'Medidas cargadas.',
+            body: medidas
+        })
+    }
+    catch {
+        res.json({
+            status: 'error',
+            message: 'Error al cargar las medidas.',
+            error: null
+        })
+    }
 })
 
 router.get('/marcas', async (req, res)=>{
-    const marcas = await cargarMarcas()
-    res.send(marcas)
+    try {
+        const marcas = await cargarMarcas()
+        res.json({
+            status: 'success',
+            message: 'Marcas cargadas.',
+            body: marcas
+        })
+    }
+    catch {
+        res.json({
+            status: 'error',
+            message: 'Error al cargar las marcas.',
+            error: null
+        })
+    }
 })
 
 router.get('/:id', async (req, res)=>{

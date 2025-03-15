@@ -94,10 +94,10 @@ async function cargarFacturaCompra(id){
     const datosFormateados = datos.map(dato => {
         return {
             id: dato.producto_id,
-            cantidad: parseInt(dato.cantidad),
             nombre: dato.productoDetalle.nombre,
             marca: dato.productoDetalle.marcaProducto.nombre,
             medida: dato.productoDetalle.medidaProducto.nombre,
+            cantidad: parseInt(dato.cantidad),
             precio: parseInt(dato.precio),
             subtotal: parseInt(dato.subtotal)
         }
@@ -136,10 +136,10 @@ async function cargarFacturaVenta(id){
     const datosFormateados = datos.map( dato => {
         return {
             id: dato.producto_id,
-            cantidad: dato.productoDetalle.cantidad,
             nombre: dato.productoDetalle.nombre,
             marca: dato.productoDetalle.marca_id,
             medida: dato.productoDetalle.medida_id,
+            cantidad: dato.productoDetalle.cantidad,
             precio: dato.precio,
             subtotal: dato.subtotal
         }

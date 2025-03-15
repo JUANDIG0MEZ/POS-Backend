@@ -43,21 +43,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(10, 0),
       allowNull: false,
       validate: {
-        min: 1
+        min: 0
       }
     },
     precio: {
       type: DataTypes.DECIMAL(10, 0),
       allowNull: false,
       validate: {
-        min: 1
+        min: 0
       }
     },
     subtotal: {
       type: DataTypes.DECIMAL(12, 0),
       allowNull: false,
       validate: {
-        min: 1
+        min: 0
       }
     }
   }, {

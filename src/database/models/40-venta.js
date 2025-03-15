@@ -19,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'venta_id',
         as: 'ventaDetalle'
       })
+
+      Venta.belongsTo(models.VentasEstados, {
+        foreignKey: 'estado_id',
+        as: 'estadoVenta'
+      })
+
     }
   }
   Venta.init({
@@ -57,11 +63,14 @@ module.exports = (sequelize, DataTypes) => {
         min: 0
       }
     },
-    estado: {
-      type: DataTypes.STRING,
+    estado_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 'pendiente'
-    },
+      defaultValue: 1,
+      references: {
+        model: 'ventas_estados',
+        key: 'id'
+    }},
   }, {
     sequelize,
     modelName: 'Venta',

@@ -35,10 +35,13 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false,
       },
-      estado: {
-        type: Sequelize.STRING,
+      estado_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 'Recibido'
+        references: {
+          model: 'compras_estados',
+          key: "id"
+        }
       },
     });
 

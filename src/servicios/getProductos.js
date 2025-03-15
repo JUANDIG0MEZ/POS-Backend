@@ -37,7 +37,6 @@ async function cargarProducto(id) {
             { model: ProductoCategoria, as: 'categoriaProducto', attributes: ['nombre'] },
             { model: ProductoMarca, as: 'marcaProducto', attributes: ['nombre'] }
         ]
-
     })
     const productoFormateado = {
         id: producto.id,
@@ -53,59 +52,21 @@ async function cargarProducto(id) {
     return productoFormateado
 }
 
-
-async function cargarProducto(id){
-    const producto = await Producto.findByPk(id, {
-        include: [
-            { model: ProductoMedida, as: 'medidaProducto', attributes: ['nombre'] },
-            { model: ProductoCategoria, as: 'categoriaProducto', attributes: ['nombre'] },
-            { model: ProductoMarca, as: 'marcaProducto', attributes: ['nombre'] }
-        ]
-    })
-
-    const productoFormateado = {
-        id: producto.id,
-        nombre: producto.nombre,
-        marca: producto.marcaProducto.nombre,
-        categoria: producto.categoriaProducto.nombre,
-        medida: producto.medidaProducto.nombre,
-        precio_compra: producto.precio_compra,
-        precio_venta: producto.precio_venta,
-        cantidad: producto.cantidad,
-        total: producto.total
-    }
-    return productoFormateado
-}
-
 async function cargarCategorias() {
-    const categorias = await ProductoCategoria.findAll({
-        attributes: { exclude: ['id']}
-    })
-    const categoriasFormateadas = categorias.map(categoria => {
-        return categoria.nombre
-    })
-    return categoriasFormateadas
+    const categorias = await ProductoCategoria.findAll()
+    return categorias
 }
 
 async function cargarMedidas() {
-    const medidas = await ProductoMedida.findAll({
-        attributes: { exclude: ['id']}
-    })
-    const medidasFormateadas = medidas.map(medida => {
-        return medida.nombre
-    })
-    return medidasFormateadas
+    const medidas = await ProductoMedida.findAll()
+
+    return medidas
 }
 
 async function cargarMarcas() {
-    const marcas = await ProductoMarca.findAll({
-        attributes: { exclude: ['id']}
-    })
+    const marcas = await ProductoMarca.findAll()
 
-    const marcasFormateadas = marcas.map(marca => {
-        return marca.nombre
-    })
-    return marcasFormateadas
+    return marcas
 }
 
 
