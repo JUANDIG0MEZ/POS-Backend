@@ -1,4 +1,8 @@
 const express = require('express')
+const multer = require('multer')
+
+const upload = multer({ dest: 'uploads/'})
+
 const { 
     cargarProductos,
     cargarProducto,
@@ -115,6 +119,11 @@ router.post('/', async (req, res)=> {
 
 })
 
+router.post('/:id/imagenes', upload.array('photos', 10) ,async (req, res)=> {
+    console.log(req.files)
+    res.send('Imagenes subidas')
+
+})
 
 router.patch('/', async (req, res)=> {
 

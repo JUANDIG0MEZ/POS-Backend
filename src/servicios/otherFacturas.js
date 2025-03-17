@@ -30,27 +30,62 @@ const {
 // }
 
 
-// async function crearFacturaCompra(body){
-//     const dataCompra = body.info
-//     const dataDetalleCompra = body.datos
-//     // Una transaccion me permitira hacer varias operaciones en la base de datos y si alguna falla, se deshacen todas
-//     const transaction = await sequelize.transaction();
-//     try {
-//         const nuevaCompra = await Compra.create(dataCompra, {transaction})
-//         const detalles = await DetalleCompra.bulkCreate( dataDetalleCompra.map( detalle => {
-//             return {
-//                 ...detalle,
-//                 idCompra: nuevaCompra.id
-//             }
-//         }), {transaction})
-//         await transaction.commit()
-//         return {nuevaCompra, detalles}
-//     }
-//     catch (error){
-//         await transaction.rollback()
-//         throw new Error('No se pudo crear la factura de compra')
-//     }
-// }
+async function crearFacturaCompra(body){
+    console.log(body)
+    console.log('Iniciando transaccion')
+    const transaction = await sequelize.transaction();
+    console.log("transaccion iniciada")
+    try {
+        const fechaActual = new Date();
+        const fechaFormato = fechaActual.toISOString().split('T')[0];
+        const horaFormato = fechaActual.toTimeString().split(' ')[0];
+
+        const total = body.datos.reduce((acc, item) => acc + item.subtotal, 0)
+
+        const compra = {
+            fecha: fechaFormato,
+            hora: horaFormato,
+            cliente_id: body.info.cliente_id,
+            pagado: body.info.pagado,
+            total: total,
+            estado_id: body.info.estado_id
+        }
+
+        const nuevaCompra = await Compra.create(compra, {transaction})
+
+
+        // Ahora se agregan los detalles de la compra
+        const dataDetalleCompra = body.datos
+
+
+        const detalles = await DetalleCompra.bulkCreate( dataDetalleCompra.map( detalle => {
+            return {
+                ...detalle,
+                compra_id: nuevaCompra.id
+            }
+        }), {transaction})
+
+        // Ahora se deben actualizar los productos en el inventario
+        for (let i=0; i< dataDetalleCompra.length; i++){
+            const producto = await Producto.findByPk(dataDetalleCompra[i].producto_id, {transaction})
+            await Producto.update({
+                cantidad: producto.cantidad + dataDetalleCompra[i].cantidad
+            }, {
+                where: {
+                    id: dataDetalleCompra[i].producto_id
+                },
+                transaction
+            })
+        }
+
+        await transaction.commit()
+        return {nuevaCompra, detalles}
+    }
+    catch (error){
+        await transaction.rollback()
+        throw error
+    }
+}
 
 
 async function modificarCompra(body, idCompra){
@@ -189,5 +224,6 @@ async function modificarVenta(body, idVenta){
 
 module.exports = {
     modificarCompra,
-    modificarVenta
+    modificarVenta,
+    crearFacturaCompra
 }

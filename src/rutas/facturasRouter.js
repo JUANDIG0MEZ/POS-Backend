@@ -3,12 +3,13 @@ const {
     cargarFacturasCompra,
     cargarFacturasVenta,
     cargarFacturaCompra,
-    cargarFacturaVenta    
+    cargarFacturaVenta
 } = require('../servicios/getFacturas') 
 
 const {
     modificarCompra,
-    modificarVenta
+    modificarVenta,
+    crearFacturaCompra   
 } = require('../servicios/otherFacturas')
 const router = express.Router()
 
@@ -61,11 +62,11 @@ router.get('/compras/', async (req, res)=> {
             body: facturas
         })
     }
-    catch {
+    catch (error) {
         res.json({
             status: 'error',
             message: 'Error al cargar las facturas de compra.',
-            error: null
+            error: error.errors.message
         })
     }
 })
@@ -75,7 +76,6 @@ router.get('/compras/:id', async (req, res)=> {
     const factura = await cargarFacturaCompra(id)
     res.send(factura)
 })
-
 
 
 
@@ -90,11 +90,11 @@ router.patch('/compras/:id', async (req, res)=> {
             body: factura
         })
     }
-    catch {
+    catch (error) {
         res.json({
             status: 'error',
             message: 'Error al modificar la factura',
-            error : null
+            error : error
         })
     }
 })
@@ -121,6 +121,27 @@ router.patch('/ventas/:id', async (req, res)=> {
     }
 })
 
+
+
+
+router.post('/compras', async (req, res)=> {
+    try {
+        const body = req.body
+        const factura = await crearFacturaCompra(body)
+        res.json({
+            status: 'success',
+            message: 'Factura creada',
+            body: factura
+        })
+    }
+    catch (error) {
+        res.json({
+            status: 'error',
+            message: 'Error al crear la factura',
+            error: error
+        })
+    }
+})
 
 
 
@@ -166,22 +187,7 @@ router.patch('/ventas/:id', async (req, res)=> {
 // })
 
 
-// router.post('/compras', async (req, res)=> {
-//     const body = req.body
-//     try {
-//         const factura = await crearFacturaCompra(body)
-//         res.json({
-//             message: 'Factura creada',
-//             body: factura
-//         })
-//     }
-//     catch (error) {
-//         res.json({
-//             message: 'Error al crear la factura',
-//             error
-//         })
-//     }
-// })
+
 
 
 
