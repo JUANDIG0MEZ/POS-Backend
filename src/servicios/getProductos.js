@@ -1,3 +1,5 @@
+const { ProductoImagen } = require('../database/models')
+
 const {
     Producto,
     ProductoCategoria,
@@ -52,6 +54,14 @@ async function cargarProducto(id) {
     return productoFormateado
 }
 
+async function cargarImagenesProducto(id) {
+    const imagenes = await ProductoImagen.findAll({
+        where: { producto_id: id }
+    })
+    return imagenes.map(imagen => imagen.url_imagen)
+}
+
+
 async function cargarCategorias() {
     const categorias = await ProductoCategoria.findAll()
     return categorias
@@ -76,5 +86,6 @@ module.exports = {
     cargarProducto,
     cargarCategorias,
     cargarMedidas,
-    cargarMarcas
+    cargarMarcas,
+    cargarImagenesProducto
 }

@@ -3,7 +3,9 @@ const {
     ProductoMedida,
     ProductoMarca,
     ProductoCategoria,
-    sequelize
+    ProductoImagen,
+    sequelize,
+
 } = require('../database/models');
 
 const {
@@ -12,9 +14,20 @@ const {
 
 
 
-async function crearProducto(datos) {
+async function crearProducto(req) {
     const transaction = await sequelize.transaction();
     try {
+
+        // Se guardan la url de las imagenes en la base de datos
+        const baseUrl = req.protocol + '://' + req.get('host')+ '/uploads/'
+        const imagenesUrl = req.files.map(imagen => {
+            return baseUrl + imagen.filename
+        })
+
+        
+
+
+        const datos = JSON.parse(req.body.data)
         await crearCategoria(datos, transaction)
         await crearMarca(datos, transaction) 
         await crearMedida(datos, transaction)
@@ -25,9 +38,24 @@ async function crearProducto(datos) {
         });
 
         
-        await transaction.commit()
+        
 
         const id = producto.id  
+
+
+        console.log("Id del producto recien creado", id)
+        await ProductoImagen.bulkCreate(imagenesUrl.map(url => {
+            console.log("id, url: ",id, url)
+            return {
+                producto_id: id,
+                url_imagen: url,
+                
+            }
+        }), {transaction})
+
+        await transaction.commit()
+
+
         const productoFormateado = await cargarProducto(id)
         return productoFormateado;
     }

@@ -9,6 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+
       producto_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -17,8 +18,8 @@ module.exports = {
           key: 'id'
         }
       },
-      imagen: {
-        type: Sequelize.BLOB('medium'),
+      url_imagen: {
+        type: Sequelize.STRING,
         allowNull: false,
       }
 

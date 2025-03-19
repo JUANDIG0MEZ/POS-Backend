@@ -31,10 +31,8 @@ const {
 
 
 async function crearFacturaCompra(body){
-    console.log(body)
-    console.log('Iniciando transaccion')
     const transaction = await sequelize.transaction();
-    console.log("transaccion iniciada")
+
     try {
         const fechaActual = new Date();
         const fechaFormato = fechaActual.toISOString().split('T')[0];

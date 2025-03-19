@@ -1,14 +1,25 @@
 const express = require('express')
 const multer = require('multer')
 
-const upload = multer({ dest: 'uploads/'})
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${Date.now()}-${file.originalname}`)
+    }
+})
+
+const upload = multer({ storage: storage })
 
 const { 
     cargarProductos,
     cargarProducto,
     cargarCategorias,
     cargarMarcas,
-    cargarMedidas
+    cargarMedidas,
+    cargarImagenesProducto
 } = require('../servicios/getProductos')
 
 const {
@@ -35,6 +46,9 @@ router.get('/', async (req, res)=>{
         })
     }
 })
+
+
+
 
 router.get('/categorias', async (req, res)=>{
     try {
@@ -98,11 +112,12 @@ router.get('/:id', async (req, res)=>{
 
 
 
-router.post('/', async (req, res)=> {
+
+
+router.post('/', upload.array("imagenes") ,async (req, res)=> {
     
     try {     
-        const body = req.body
-        const producto = await crearProducto(body)
+        const producto = await crearProducto(req)
         res.json({
             status: 'success',
             message: 'Producto creado',
@@ -110,41 +125,37 @@ router.post('/', async (req, res)=> {
         })
     }
     catch (error) {
+        console.log(error)
         res.json({
             status: 'error',
             message: 'Error al crear el producto',
-            data: null
+            error: error
         })
     }
 
 })
 
-router.post('/:id/imagenes', upload.array('photos', 10) ,async (req, res)=> {
-    console.log(req.files)
-    res.send('Imagenes subidas')
 
-})
 
-router.patch('/', async (req, res)=> {
-
+router.get("/:id/imagenes", async (req, res) => {
     try {
-        const body = req.body
-        const producto = await modificarProducto(body)
+        const { id } = req.params
+        const imagenes = await cargarImagenesProducto(id)
         res.json({
-            status: "success",
-            message: 'Producto modificado',
-            data: producto
+            status: 'success',
+            message: 'Imagenes cargadas.',
+            body: imagenes
         })
     }
-    catch {
+    catch (error) {
         res.json({
-            status: "error",
-            message: 'Error al modificar el producto',
-            data: null
+            status: 'error',
+            message: 'Error al cargar las imagenes.',
+            error: error
         })
     }
+    
 })
-
 
 
 module.exports = router

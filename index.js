@@ -7,6 +7,9 @@ const port = 3000
 
 app.use(cors())
 app.use(express.json())
+
+app.use('/uploads', express.static('uploads'));
+
 app.get('/', (req, res)=>{
     res.send('Esta es la pagina principal')
 })

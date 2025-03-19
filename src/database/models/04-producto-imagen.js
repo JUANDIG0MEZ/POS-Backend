@@ -21,10 +21,10 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    imagen: {
-      type: DataTypes.BLOB('medium'),
+    url_imagen: {
+      type: DataTypes.STRING,
       allowNull: false,
-    }
+    } 
   }, {
     sequelize,
     modelName: 'ProductoImagen',
