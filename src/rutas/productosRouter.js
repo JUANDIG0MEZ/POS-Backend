@@ -26,133 +26,82 @@ const {
     crearProducto,
     modificarProducto
 } = require('../servicios/otherProductos')
+const { respuesta } = require('./funciones')
 const router = express.Router()
 
 
-router.get('/', async (req, res)=>{
+router.get('/', async (req, res, next)=>{
     try {
         const productos = await cargarProductos()
-        res.json({
-            status: 'success',
-            message: 'Productos cargados.',
-            body: productos
-        })
+        res.json(respuesta  ('Productos cargados', productos))
     }
-    catch {
-        res.json({
-            status: 'error',
-            message: 'Error al cargar los productos.',
-            error: null
-        })
+    catch(error) {
+        next(error)
     }
 })
 
-
-
-
-router.get('/categorias', async (req, res)=>{
+router.get('/categorias', async (req, res, next)=>{
     try {
         const categorias = await cargarCategorias()
-        res.json({
-            status: 'success',
-            message: 'Categorias cargadas.',
-            body: categorias
-        })
+        res.json(respuesta('Categorias cargadas', categorias))
     }
-    catch {
-        res.json({
-            status: 'error',
-            message: 'Error al cargar las categorias.',
-            error: null
-        })
+    catch(error) {
+        next(error)
     }
 })
 
-router.get('/medidas', async (req, res)=>{
+router.get('/medidas', async (req, res, next)=>{
     try {
         const medidas = await cargarMedidas()
-        res.json({
-            status: 'success',
-            message: 'Medidas cargadas.',
-            body: medidas
-        })
-    }
-    catch {
-        res.json({
-            status: 'error',
-            message: 'Error al cargar las medidas.',
-            error: null
-        })
-    }
-})
-
-router.get('/marcas', async (req, res)=>{
-    try {
-        const marcas = await cargarMarcas()
-        res.json({
-            status: 'success',
-            message: 'Marcas cargadas.',
-            body: marcas
-        })
-    }
-    catch {
-        res.json({
-            status: 'error',
-            message: 'Error al cargar las marcas.',
-            error: null
-        })
-    }
-})
-
-router.get('/:id', async (req, res)=>{
-    const { id } = req.params
-    const producto = await cargarProducto(id)
-    res.send(producto)
-})
-
-
-
-
-
-router.post('/', upload.array("imagenes") ,async (req, res)=> {
-    
-    try {     
-        const producto = await crearProducto(req)
-        res.json({
-            status: 'success',
-            message: 'Producto creado',
-            body: producto
-        })
+        res.json(respuesta('Medidas cargadas', medidas))
     }
     catch (error) {
-        console.log(error)
-        res.json({
-            status: 'error',
-            message: 'Error al crear el producto',
-            error: error
-        })
+        next(error)
+    }
+})
+
+router.get('/marcas', async (req, res, next)=>{
+    try {
+        const marcas = await cargarMarcas()
+        res.json(respuesta('Marcas cargadas', marcas))
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+router.get('/:id', async (req, res, next)=>{
+    try {
+        const { id } = req.params
+        const producto = await cargarProducto(id)
+        res.send(producto)
+    }
+    catch (error) {
+        next(error)
+    }
+    
+})
+
+router.post('/', upload.array("imagenes", 10) ,async (req, res, next)=> {
+    try {     
+        console.log("Si entro al try")
+        const producto = await crearProducto(req)
+        res.json(respuesta('Producto creado', producto))
+    }
+    catch (error) {
+        next(error)
     }
 
 })
 
-
-
-router.get("/:id/imagenes", async (req, res) => {
+router.get("/:id/imagenes", async (req, res, next) => {
     try {
         const { id } = req.params
         const imagenes = await cargarImagenesProducto(id)
-        res.json({
-            status: 'success',
-            message: 'Imagenes cargadas.',
-            body: imagenes
-        })
+        res.json(respuesta('Imagenes cargadas', imagenes))
     }
     catch (error) {
-        res.json({
-            status: 'error',
-            message: 'Error al cargar las imagenes.',
-            error: error
-        })
+        next(error)
     }
     
 })

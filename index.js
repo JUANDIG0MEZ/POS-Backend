@@ -1,7 +1,7 @@
 const express = require('express')
 const routerAPI = require('./src/rutas/index')
 const cors = require('cors')
-
+const {handlerError} = require('./src/middlewares/errorHandler')
 const app = express()
 const port = 3000
 
@@ -16,6 +16,8 @@ app.get('/', (req, res)=>{
 
 
 routerAPI(app)
+
+app.use(handlerError)
 
 app.listen(port, ()=>{
     console.log(`Server running on port http:localhost:${port}`)

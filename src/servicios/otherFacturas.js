@@ -91,6 +91,7 @@ async function modificarCompra(body, idCompra){
     // Se van a modificar todos los producto de la compra
     try {
 
+        console.log(body)
 
 
         for (let i=0; i< body.length; i++){
@@ -137,7 +138,6 @@ async function modificarCompra(body, idCompra){
         if (total <= compraOriginal.pagado){
             actualiza.pagado = total
         }
-        console.log(actualiza)
         await Compra.update(actualiza, {
             where: {
                 id: idCompra

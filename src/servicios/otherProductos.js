@@ -41,11 +41,7 @@ async function crearProducto(req) {
         
 
         const id = producto.id  
-
-
-        console.log("Id del producto recien creado", id)
         await ProductoImagen.bulkCreate(imagenesUrl.map(url => {
-            console.log("id, url: ",id, url)
             return {
                 producto_id: id,
                 url_imagen: url,

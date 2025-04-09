@@ -11,141 +11,96 @@ const {
     modificarVenta,
     crearFacturaCompra   
 } = require('../servicios/otherFacturas')
+
+const {
+    respuesta
+} = require('./funciones')
+
 const router = express.Router()
 
-
-router.get('/ventas/', async (req, res)=> {
+router.get('/ventas/', async (req, res, next)=> {
     try {
         const facturas = await cargarFacturasVenta()
-        res.json({
-            status: 'success',
-            message: 'Facturas de venta cargadas.',
-            body: facturas
-        })
+        res.json(respuesta('Facturas de venta cargadas', facturas))
     }
-    catch {
-        res.json({
-            status: 'error',
-            message: 'Error al cargar las facturas de venta.',
-            error: null
-        })
+    catch (error) {
+        next(error)
     }
 })
 
-router.get('/ventas/:id', async (req, res)=> {
+router.get('/ventas/:id', async (req, res, next)=> {
     try {
         const id = req.params.id
         const factura = await cargarFacturaVenta(id)
-        res.json({
-            status: 'success',
-            message: 'Factura cargada',
-            body: factura
-        })
+        res.json(respuesta('Factura de venta cargada', factura))
     }
-    catch{
-        res.json({
-            status: 'error',
-            message: 'Error al cargar la factura',
-            error: null
-        })
+    catch (error) {
+        next(error)
     }
 })
 
-
-
-router.get('/compras/', async (req, res)=> {
+router.get('/compras/', async (req, res, next)=> {
     try {
         const facturas = await cargarFacturasCompra()
-        res.json({
-            status: 'success',
-            message: 'Facturas de compra cargadas.',
-            body: facturas
-        })
+        res.json(respuesta('Facturas de compra cargadas', facturas))
     }
     catch (error) {
-        res.json({
-            status: 'error',
-            message: 'Error al cargar las facturas de compra.',
-            error: error.errors.message
-        })
+        next(error)
     }
 })
 
-router.get('/compras/:id', async (req, res)=> {
-    const id = req.params.id 
-    const factura = await cargarFacturaCompra(id)
-    res.send(factura)
+router.get('/compras/:id', async (req, res, next)=> {
+    try {
+        const id = req.params.id 
+        const factura = await cargarFacturaCompra(id)
+        res.send(respuesta('Factura de compra cargada', factura))
+    }
+    catch (error) {
+        next(error)
+    }
+    
 })
 
 
 
-router.patch('/compras/:id', async (req, res)=> {
+router.patch('/compras/:id', async (req, res, next)=> {
     try {
         const body = req.body
+        console.log("Body", "Modificando la compra")
+        console.log(body)
         const id = req.params.id
         const factura = await modificarCompra(body, id)
-        res.json({
-            status: 'success',
-            message: 'Factura modificada',
-            body: factura
-        })
+        res.json(respuesta('Factura de compra modificada', factura))
     }
     catch (error) {
-        res.json({
-            status: 'error',
-            message: 'Error al modificar la factura',
-            error : error
-        })
+        next(error)
     }
 })
 
 
-router.patch('/ventas/:id', async (req, res)=> {
+router.patch('/ventas/:id', async (req, res, next)=> {
     
     try {
         const id = req.params.id
         const body = req.body
         const factura = await modificarVenta(body, id)
-        res.json({
-            status: 'success',
-            message: 'Factura creada',
-            body: factura
-        })
+        res.json(respuesta('Factura de venta modificada', factura))
     }
     catch (error) {
-        res.json({
-            status: 'error',
-            message: 'Error al crear la factura',
-            error: error
-        })
+        next(error)
     }
 })
 
-
-
-
-router.post('/compras', async (req, res)=> {
+router.post('/compras', async (req, res, next)=> {
     try {
         const body = req.body
         const factura = await crearFacturaCompra(body)
-        res.json({
-            status: 'success',
-            message: 'Factura creada',
-            body: factura
-        })
+        res.json(respuesta('Factura de compra creada', factura))
     }
     catch (error) {
-        res.json({
-            status: 'error',
-            message: 'Error al crear la factura',
-            error: error
-        })
+        next(error)
     }
 })
-
-
-
-
 
 // router.patch('/', async (req, res)=> {
 //     const body = req.body
