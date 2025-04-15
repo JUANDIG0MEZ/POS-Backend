@@ -63,6 +63,15 @@ module.exports = (sequelize, DataTypes) => {
         min: 0
       }
     },
+    estado_pago: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    por_pagar: {
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
+    },
+
     estado_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -75,7 +84,18 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Venta',
     tableName: 'ventas',
-    timestamps: false
+    timestamps: false,
+    hooks: {
+      beforeSave(compra) {
+        compra.por_pagar = compra.total - compra.pagado;
+        if (compra.por_pagar == 0) {
+          compra.estado_pago = true;
+        }
+        else {
+          compra.estado_pago = false;
+        }
+      }
+    }
   });
   return Venta;
 };

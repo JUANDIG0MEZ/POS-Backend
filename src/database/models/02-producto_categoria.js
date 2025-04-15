@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductoCategoria.init({
-
     nombre: {
       type: DataTypes.STRING,
       unique: true,

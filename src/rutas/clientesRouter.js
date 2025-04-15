@@ -13,11 +13,11 @@ const {
     respuesta
 } = require('./funciones')
 
-// const {
-//     crearCliente,
-//     crearAbono,
-//     crearPago 
-// } = require('../servicios/otherClientes')
+const {
+    // crearCliente,
+    // crearAbono,
+    crearPago 
+} = require('../servicios/otherClientes')
 
 
 
@@ -95,6 +95,18 @@ router.get('/:id/ventas', async (req, res, next)=>{
     }
 })
 
+
+
+router.post('/:id/pagos', async (req, res, next)=> {
+    try {
+        const {id} = req.params
+        const pago = await crearPago()
+        res.send(respuesta('Pago realizado', pago))
+    }
+    catch (error) {
+        next(error)
+    }
+})
 
 
 // router.post('/', async (req, res)=> {

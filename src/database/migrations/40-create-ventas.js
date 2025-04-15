@@ -39,6 +39,16 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false
       },
+      estado_pago: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+      },
+      por_pagar: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+        defaultValue: 0
+      },
       estado_id: {
         type: Sequelize.INTEGER,
         allowNull: false,

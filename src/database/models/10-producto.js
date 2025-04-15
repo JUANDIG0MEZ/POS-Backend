@@ -102,9 +102,6 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeSave(producto) {
         producto.total = producto.cantidad * producto.precio_compra;
-      },
-      beforeUpdate(producto) {
-        producto.total = producto.cantidad * producto.precio_compra;
       }
     }
   });
