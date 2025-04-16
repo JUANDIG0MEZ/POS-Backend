@@ -1,70 +1,42 @@
 const {faker} = require('@faker-js/faker')
 
-function cargarProductos() {
-    const productos = []
-    for (let i = 0; i < 50; i++) {
-        productos.push({
-            nombre: faker.commerce.productName(),
-            marca_id: faker.number.int({min: 1, max: 4}),
-            categoria_id: faker.number.int({min: 1, max: 4}),
-            medida_id: faker.number.int({min: 1, max: 4}),
-            precio_compra: parseInt(faker.commerce.price({min: 10000, max: 50000})),
-            precio_venta: parseInt(faker.commerce.price({min: 50000, max: 100000})),
-            cantidad: faker.number.int({min: 1, max: 100}),
-            total: faker.number.int({min: 100000000, max: 100000000000})
-            })
-    }
-    return productos
 
-}
+const numeroMedidas = 7
+const numeroCategorias = 5
+const numeroMarcas = 30
+const numeroProductos = 50
 
-function cargarClientes() {
-    const clientes = []
+const numeroTiposClientes = 3
+const numeroClientes = 200
 
-    for (let i = 0; i < 200; i++) {
-        clientes.push({
-            nombre: faker.person.fullName(),
-            direccion: faker.location.streetAddress(),
-            telefono: faker.helpers.arrayElement([3000000000, 3100000000, 3200000000, 3500000000]),
-            email: faker.internet.email(),
-            tipo_id: faker.number.int({min: 1, max: 3}),
-            por_pagarle: faker.number.int({min: 10000, max: 50000}),
-            debe: faker.number.int({min: 10000, max: 50000})           
-        })
-    }
-    return clientes
-}
 
-function cargarCliente(id){
-    return {
-        id: id,
-        nombre: faker.person.fullName(),
-        direccion: faker.location.streetAddress(),
-        telefono: faker.phone.number(),
-        email: faker.internet.email(),
-        tipo: faker.helpers.arrayElement(['Proveedor', 'Cliente', 'Ambos']),
-        por_pagarle: faker.finance.amount(),
-        debe: faker.finance.amount()            
-    }
-}
+
+const numeroEstadoCompras = 2
+const numeroCompras = 40
+
+const numeroEstadoVentas =2
+const numeroVentas = 40
+
+
+const numeroAbonos = 200
+const numeroPagos = 200
 
 function cargarMedidas() {
-    return [
-        {nombre: 'kG'}, 
-        {nombre: "UniDad"}, 
-        {nombre: "Litro"}, 
-        {nombre: "Metro"},
-        {nombre: "Gramo"},
-        {nombre: "Mililitro"},
-        {nombre: "Centimetro"}
-    ]
+    const lista = ['kG', 'UniDad', 'Litro', 'Metro', 'Gramo', 'Mililitro', 'Centimetro']
+    const medidas = []
+    for (let i = 0; i < numeroMedidas; i++) {
+        medidas.push({
+            nombre: lista[i]
+        })
+    }
+    return medidas
 }
 
 
 function cargarCategorias() {
     const lista = ['Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
     const categorias = []
-    for (let i = 0; i < lista.length; i++) {
+    for (let i = 0; i < numeroCategorias; i++) {
         categorias.push({
             nombre: lista[i]
         })
@@ -73,66 +45,134 @@ function cargarCategorias() {
 }
 
 function cargarMarcas() {
+    const lista = faker.helpers.uniqueArray(faker.company.name, numeroMarcas)
     const marcas = []
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < numeroMarcas; i++) {
         marcas.push({
-            nombre: faker.company.name()
+            nombre: lista[i]
         })
     }
     return marcas
 }
 
-function tiposClientes() {
+
+function cargarProductos() {
+    const nombre = faker.helpers.uniqueArray(faker.commerce.productName, numeroProductos)
+    const productos = []
+    for (let i = 0; i < numeroProductos; i++) {
+        productos.push({
+            nombre: nombre[i],
+            marca_id: faker.number.int({min: 1, max: numeroMarcas}),
+            categoria_id: faker.number.int({min: 1, max: numeroCategorias}),
+            medida_id: faker.number.int({min: 1, max: numeroMedidas}),
+            precio_compra: parseInt(faker.commerce.price({min: 10000, max: 50000})),
+            precio_venta: parseInt(faker.commerce.price({min: 50000, max: 100000})),
+            cantidad: faker.number.int({min: 1, max: 100}),
+            total: faker.number.int({min: 100000000, max: 100000000000})
+            })
+    }
+    return productos
+}
+
+
+function cargarTiposCliente() {
     const lista = ['Proveedor', 'Cliente', 'Ambos']
     const tipos = []
-    lista.forEach(tipo => 
-        tipos.push({nombre: tipo})
-    )
+    for(let i = 0; i < numeroTiposClientes; i++) {
+        tipos.push({
+            nombre: lista[i]
+        })
+    }
     return tipos
+}
+
+
+function cargarClientes() {
+    const nombre = faker.helpers.uniqueArray(faker.person.fullName, numeroClientes)
+    
+    const clientes = []
+
+    for (let i = 0; i < numeroClientes; i++) {
+        clientes.push({
+            nombre: nombre[i],
+            direccion: faker.location.streetAddress(),
+            telefono: faker.helpers.arrayElement([3000000000, 3100000000, 3200000000, 3500000000]),
+            email: faker.internet.email(),
+            tipo_id: faker.number.int({min: 1, max: numeroTiposClientes}),
+            por_pagarle: faker.number.int({min: 10000, max: 50000}),
+            debe: faker.number.int({min: 10000, max: 50000})           
+        })
+    }
+    return clientes
+}
+
+function cargarEstadosCompra() {
+    const lista = ['Recibido', 'No recibido']
+    const estados = []
+    for (let i = 0; i < numeroEstadoCompras; i++) {
+        estados.push({
+            nombre: lista[i]
+        })
+    }
+    return estados
 }
 
 function cargarFacturasCompra(){
     const facturas = []
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < numeroCompras; i++) {
             const fecha = faker.date.recent();
             facturas.push({
                 fecha: fecha.toISOString().split('T')[0],
                 hora: fecha.toTimeString().split(' ')[0],  
-                cliente_id: faker.number.int({min: 1, max: 10}),
+                cliente_id: faker.number.int({min: 1, max: numeroClientes}),
                 pagado: faker.number.int({min: 10, max: 10000}),
                 total: faker.number.int({min: 10000, max: 50000}),
-                estado_id: faker.number.int({min: 1, max: 2}),
+                estado_id: faker.number.int({min: 1, max: numeroEstadoCompras}),
             })
         }
     return facturas
+}
+
+
+function cargarEstadosVenta() {
+    const lista = ['Recibido', 'No recibido']
+    const estados = []
+    for (let i = 0; i < numeroEstadoVentas; i++) {
+        estados.push({
+            nombre: lista[i]
+        })
+    }
+    return estados
 }
 
 function cargarFacturasVenta(){
     const facturas = []
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < numeroVentas; i++) {
             const fecha = faker.date.recent();
             facturas.push({
                 fecha: fecha.toISOString().split('T')[0], // Formato YYYY-MM-DD (DATEONLY en Sequelize)
                 hora: fecha.toTimeString().split(' ')[0], // Formato HH:MM:SS (TIME en Sequelize)   
-                cliente_id: faker.number.int({min: 1, max: 10}),
+                cliente_id: faker.number.int({min: 1, max: numeroClientes}),
                 direccion: faker.location.streetAddress(),
                 pagado: faker.number.int({min: 10, max: 10000}),
                 total: faker.number.int({min: 10000, max: 50000}),
-                estado_id: faker.number.int({min: 1, max: 2})
+                estado_id: faker.number.int({min: 1, max: numeroEstadoVentas})
             })
         }
     return facturas
 }
 
 
-function cargarDetallesCompras(){
+function cargarDetallesCompra(){
     const detalles = []
-    for (let j=0; j<10; j++){
-        const num_productos = faker.number.int({min: 2, max: 8})
+    for (let j=0; j<numeroCompras; j++){
+        const num_productos = faker.number.int({min: 1, max: numeroProductos / 5})
+        const productos_id = faker.helpers.uniqueArray(()=>faker.number.int({min: 1, max: num_productos}), numeroCompras)
+
         for (let i = 0; i < num_productos; i++) {
             detalles.push({
                 compra_id: j+1,
-                producto_id: i+1,
+                producto_id: productos_id[i],
                 cantidad: faker.number.int({min: 1, max: 100}),
                 precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
@@ -142,14 +182,15 @@ function cargarDetallesCompras(){
     return detalles 
 }
 
-function cargarDetallesVentas() {
+function cargarDetallesVenta() {
     const detalles = []
-    for (let j=0; j<10; j++){
-        const num_productos = faker.number.int({min: 2, max: 8})
+    for (let j=0; j<numeroVentas; j++){
+        const num_productos = faker.number.int({min: 1, max: numeroProductos / 5})
+        const productos_id = faker.helpers.uniqueArray(()=>faker.number.int({min: 1, max: num_productos}), numeroVentas)
         for (let i = 0; i < num_productos; i++) {
             detalles.push({
                 venta_id: j+1,
-                producto_id: i+1,
+                producto_id: productos_id[i],
                 cantidad: faker.number.int({min: 1, max: 100}),
                 precio: faker.commerce.price({min: 100, max: 10000}),
                 subtotal: faker.commerce.price({min: 10000, max: 50000})
@@ -160,16 +201,30 @@ function cargarDetallesVentas() {
     return detalles 
 }
 
-
+function cargarPagos(){
+    const facturas = []
+    for(let i = 0; i < numeroPagos; i++){
+        const fecha = faker.date.recent();
+        facturas.push({
+            fecha: fecha.toISOString().split('T')[0],
+            hora: fecha.toTimeString().split(' ')[0], 
+            cliente_id: faker.number.int({min: 1, max:numeroClientes}),
+            valor: faker.number.int({min: 10000, max: 50000}),
+            
+        }   
+        )
+    }
+    return facturas
+}
 
 function cargarAbonos(){
     const facturas = []
-    for(let i = 0; i < 100; i++){
+    for(let i = 0; i < numeroAbonos; i++){
         const fecha = faker.date.recent();
         facturas.push({
             fecha: fecha.toISOString().split('T')[0],
             hora: fecha.toTimeString().split(' ')[0], 
-            cliente_id: faker.number.int({min: 1, max: 10}),
+            cliente_id: faker.number.int({min: 1, max: numeroClientes}),
             valor: faker.number.int({min: 10000, max: 50000}),
             
         }   
@@ -180,34 +235,27 @@ function cargarAbonos(){
 }
 
 
-function cargarPagos(){
-    const facturas = []
-    for(let i = 0; i < 100; i++){
-        const fecha = faker.date.recent();
-        facturas.push({
-            fecha: fecha.toISOString().split('T')[0],
-            hora: fecha.toTimeString().split(' ')[0], 
-            cliente_id: faker.number.int({min: 1, max:10}),
-            valor: faker.number.int({min: 10000, max: 50000}),
-            
-        }   
-        )
-    }
-    return facturas
-}
 
 module.exports = {
-    cargarProductos,
-    cargarClientes,
     cargarMedidas,
     cargarCategorias,
     cargarMarcas,
-    tiposClientes,
+    cargarProductos,
+    
+    cargarTiposCliente,
+    cargarClientes,
+    
+    cargarEstadosCompra,
     cargarFacturasCompra,
+
+    cargarEstadosVenta,
     cargarFacturasVenta,
-    cargarCliente,
-    cargarAbonos,
+
+    cargarDetallesCompra,
+    cargarDetallesVenta,
+
     cargarPagos,
-    cargarDetallesCompras,
-    cargarDetallesVentas
+    cargarAbonos,
+    
+    
 }

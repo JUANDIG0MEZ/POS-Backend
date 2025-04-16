@@ -1,11 +1,15 @@
-const {cargarDetallesVentas} = require('../datosFaker');
-
+const {cargarDetallesVenta} = require('../datosFaker');
+const { DetalleVenta} = require('../models')
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('detalles_ventas', cargarDetallesVentas(),{})
+    await DetalleVenta.bulkCreate(cargarDetallesVenta(), {
+      individualHooks: true ,
+      validate: true
+    })
+    //await queryInterface.bulkInsert('detalles_ventas', cargarDetallesVentas(),{})
   },
 
   async down (queryInterface, Sequelize) {
