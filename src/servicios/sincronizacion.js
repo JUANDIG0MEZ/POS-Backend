@@ -2,6 +2,8 @@ const {
     Compra,
     Venta,
     Cliente,
+    DetalleCompra,
+    DetalleVenta,
     sequelize
 } = require('../database/models')
 
@@ -53,17 +55,64 @@ async function sincronizarDeudasVentas(cliente, transaction){
 }
 
 
-async function sincronizarDeudasClientes() {
+async function sincronizarDeudasClientes(transaction) {
+    const clientes = await Cliente.findAll({attributes: ['id', 'por_pagarle', 'debe'], transaction})
+
+    for (const cliente of clientes) {
+        await sincronizarDeudasCompras(cliente, transaction)
+        await sincronizarDeudasVentas(cliente, transaction)
+    }
+
+}
+
+
+
+async function sincronizarDetallesCompras(transaction){
+    const compras = await Compra.findAll({transaction})
+    for (const compra of compras) {
+        const detalles = await DetalleCompra.findAll({
+            where: {
+                compra_id: compra.id
+            },
+            transaction
+        })
+
+        const totalDetalle = detalles.reduce((total, detalle) => total + parseInt(detalle.subtotal), 0)
+        compra.total = totalDetalle
+        console.log(`Compra ${compra.id} total: ${totalDetalle}`)
+        await compra.save({transaction})
+}}
+
+
+
+async function sincronizarDetallerVentas(transaction){
+    const ventas = await Venta.findAll({transaction})
+    for (const venta of ventas) {
+        const detalles = await DetalleVenta.findAll({
+            where: {
+                venta_id: venta.id
+            },
+            transaction
+        })
+
+        const totalDetalle = detalles.reduce((total, detalle) => total + parseInt(detalle.subtotal), 0)
+
+        venta.total = totalDetalle
+        await venta.save({transaction})
+    }
+}
+
+
+
+async function sincronizarTodo() {
     const transaction = await sequelize.transaction()
-    try {
+    try {  
+        await sincronizarDetallesCompras(transaction)
+        console.log('Sincronizando detalles de compras')
+        await sincronizarDetallerVentas(transaction)
+        console.log('Sincronizando detalles de ventas')
+        await sincronizarDeudasClientes(transaction)
         
-        const clientes = await Cliente.findAll({attributes: ['id', 'por_pagarle', 'debe'], transaction})
-
-        for (const cliente of clientes) {
-            await sincronizarDeudasCompras(cliente, transaction)
-            await sincronizarDeudasVentas(cliente, transaction)
-        }
-
         await transaction.commit()
     }
     catch(error) {
@@ -72,9 +121,12 @@ async function sincronizarDeudasClientes() {
     }
 }
 
+
+
+
 if (require.main === module){
     // Si el archivo se ejecuta directamente, se sincronizan las deudas de todos los clientes
-    sincronizarDeudasClientes()
+    sincronizarTodo()
         .then(() => {
             console.log('Sincronización de deudas completada')
         })

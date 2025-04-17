@@ -17,16 +17,6 @@ const {
 async function crearProducto(req) {
     const transaction = await sequelize.transaction();
     try {
-
-        // Se guardan la url de las imagenes en la base de datos
-        const baseUrl = req.protocol + '://' + req.get('host')+ '/uploads/'
-        const imagenesUrl = req.files.map(imagen => {
-            return baseUrl + imagen.filename
-        })
-
-        
-
-
         const datos = JSON.parse(req.body.data)
         await crearCategoria(datos, transaction)
         await crearMarca(datos, transaction) 
@@ -38,6 +28,11 @@ async function crearProducto(req) {
         });
 
         
+        // Se guardan la url de las imagenes en la base de datos
+        const baseUrl = req.protocol + '://' + req.get('host')+ '/uploads/'
+        const imagenesUrl = req.files.map(imagen => {
+            return baseUrl + imagen.filename
+        })
         
 
         const id = producto.id  

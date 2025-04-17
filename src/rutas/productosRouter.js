@@ -1,13 +1,14 @@
 const express = require('express')
 const multer = require('multer')
-
+const {v4: uuidv4} = require('uuid')
+const path = require('path')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`)
+        cb(null, `${uuidv4()}${path.extname(file.originalname)}`)
     }
 })
 
@@ -82,18 +83,6 @@ router.get('/:id', async (req, res, next)=>{
     
 })
 
-router.post('/', upload.array("imagenes", 10) ,async (req, res, next)=> {
-    try {     
-        console.log("Si entro al try")
-        const producto = await crearProducto(req)
-        res.json(respuesta('Producto creado', producto))
-    }
-    catch (error) {
-        next(error)
-    }
-
-})
-
 router.get("/:id/imagenes", async (req, res, next) => {
     try {
         const { id } = req.params
@@ -104,6 +93,18 @@ router.get("/:id/imagenes", async (req, res, next) => {
         next(error)
     }
     
+})
+
+
+router.post('/', upload.array("files", 10) ,async (req, res, next)=> {
+    try {     
+        const producto = await crearProducto(req)
+        res.json(respuesta('Producto creado', producto))
+    }
+    catch (error) {
+        next(error)
+    }
+
 })
 
 

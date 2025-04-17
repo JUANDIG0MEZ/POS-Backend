@@ -4,7 +4,8 @@ const {
     DetalleCompra,
     DetalleVenta,
     sequelize,
-    Producto
+    Producto,
+    Cliente
 } = require('../database/models')
 
 // async function crearFacturaVenta(body){
@@ -51,11 +52,18 @@ async function crearFacturaCompra(body){
 
         const nuevaCompra = await Compra.create(compra, {transaction})
 
+        const porPagar = nuevaCompra.por_pagar 
+        const cliente = await Cliente.findByPk(compra.cliente_id,{
+            attributes: ['id', 'por_pagarle'],
+            transaction
+        })
+
+        cliente.por_pagarle = cliente.por_pagarle + porPagar
+        await cliente.save({transaction})
+
 
         // Ahora se agregan los detalles de la compra
         const dataDetalleCompra = body.datos
-
-
         const detalles = await DetalleCompra.bulkCreate( dataDetalleCompra.map( detalle => {
             return {
                 ...detalle,
