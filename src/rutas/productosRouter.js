@@ -24,7 +24,7 @@ const {
 
 const {
     crearProducto,
-    modificarProducto
+    //modificarProducto
 } = require('../servicios/otherProductos')
 const { respuesta } = require('./funciones')
 const router = express.Router()

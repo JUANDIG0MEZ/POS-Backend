@@ -1,17 +1,18 @@
 const express = require('express')
 const {
+    respuesta
+} = require('./funciones')
+
+
+const {
     cargarClientes,
     cargarCliente,
     cargarCompraCliente,
     cargarVentaCliente,
     cargarAbonosCliente,
     cargarPagosCliente
-
 } = require('../servicios/getClientes')
 
-const {
-    respuesta
-} = require('./funciones')
 
 const {
     // crearCliente,
@@ -19,9 +20,8 @@ const {
     crearPago 
 } = require('../servicios/otherClientes')
 
-
-
 const router = express.Router()
+
 
 router.get('/', async (req, res, next)=>{
     try {
@@ -32,12 +32,6 @@ router.get('/', async (req, res, next)=>{
         next(error)
     }
 })
-
-
-// router.get('/tipos', (req, res)=>{
-//     const tipos = tiposClientes()
-//     res.send(tipos)
-// })
 
 router.get('/:id', async (req, res, next)=>{
     try {
@@ -50,7 +44,6 @@ router.get('/:id', async (req, res, next)=>{
     }
 })
 
-
 router.get('/:id/abonos', async (req, res, next)=>{
     try {
         const { id } = req.params
@@ -61,6 +54,7 @@ router.get('/:id/abonos', async (req, res, next)=>{
         next(error)
     }
 })
+
 
 router.get('/:id/pagos', async (req, res, next)=>{
     try {
@@ -96,11 +90,10 @@ router.get('/:id/ventas', async (req, res, next)=>{
 })
 
 
-
 router.post('/:id/pagos', async (req, res, next)=> {
     try {
         const {id} = req.params
-        const pago = await crearPago()
+        const pago = await crearPago(id)
         res.send(respuesta('Pago realizado', pago))
     }
     catch (error) {

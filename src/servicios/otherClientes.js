@@ -14,13 +14,13 @@ const {
 
 async function crearPago(valor, idCliente, transaction){
     const fecha = new Date().toISOString().split('T')[0]
-    const hora = new Date().toISOString().split(11,19)
+    const hora = new Date().toTimeString().split(' ')[0]
 
     const data = {
         cliente_id: idCliente,
-        fecha: fecha,
-        hora: hora,
-        valor: valor
+        fecha,
+        hora,
+        valor
     }
 
     await Pago.create(data, {transaction})

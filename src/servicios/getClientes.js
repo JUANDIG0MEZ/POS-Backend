@@ -8,6 +8,8 @@ const {
 } = require('../database/models')
 
 async function cargarClientes(){
+     
+    
     const clientes = await Cliente.findAll({
         include: { model: ClienteTipo, as: 'tipoCliente', attributes: ['nombre']},
     })
