@@ -1,3 +1,4 @@
+const {Cliente} = require('./cliente')
 'use strict';
 const {
   Model
@@ -43,7 +44,31 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Abono',
     tableName: 'abonos',
-    timestamps: false
+    timestamps: false,
+    hooks: {
+      beforeCreate: (abono, options) => {
+        // 
+        const cliente = Cliente.findByPk(abono.cliente_id, {
+          attributes: ['id', 'debe'],
+          transaction: options.transaction
+        })
+
+
+        const valorAbono = abono.valor;
+        if (valorAbono > cliente.debe){
+          throw new Error('El valor del abono no puede ser mayor al valro de la deuda');
+        }
+
+        cliente.debe = cliente.debe - valorAbono;
+
+        cliente.save({
+          transaction: options.transaction
+        })
+
+
+      }
+
+    }
   });
   return Abono;
 };

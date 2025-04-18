@@ -1,3 +1,5 @@
+const { Cliente } = require('./index');
+
 'use strict';
 const {
   Model
@@ -28,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
     cliente_id: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'clientes',
         key: 'id'
@@ -45,7 +48,31 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Pago',
     tableName: 'pagos',
-    timestamps: false
+    timestamps: false,
+    hooks: {
+      beforeCreate: (pago, options) => {
+        // 
+        const cliente = Cliente.findByPk(pago.cliente_id, {
+          attributes: ['id', 'por_pagarle'],
+          transaction: options.transaction
+        })
+
+        const valorPago = pago.valor;
+
+        if (valorPago > cliente.por_pagarle){
+          throw new Error('El valor del pago no puede ser mayor al total a pagar');
+        }
+
+        cliente.por_paparle = cliente.por_pagarle - valorPago;
+
+        cliente.save({
+          transaction: options.transaction
+        })
+
+
+      }
+
+    }
   });
   return Pago;
 };

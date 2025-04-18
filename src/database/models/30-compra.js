@@ -1,3 +1,4 @@
+const {Cliente} = require('./index.js')
 'use strict';
 const {
   Model
@@ -88,7 +89,15 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'compras',
     timestamps: false,
     hooks: {
-      beforeSave(compra) {
+      beforeCreate: async (compra, options) => {
+        // Crear una instancia de cliente
+        const cliente = await Cliente.findByPk(compra.cliente_id, {
+          attributes: ['id', 'por_pagarle'],
+          transaction: options.transaction
+        })
+
+        
+        // Observar si el cliente genera deuda
         compra.por_pagar = compra.total - compra.pagado;
         if (compra.por_pagar == 0) {
           compra.estado_pago = true;
@@ -96,6 +105,55 @@ module.exports = (sequelize, DataTypes) => {
         else {
           compra.estado_pago = false;
         }
+
+        // Agregar la deuda al cliente
+        cliente.por_pagarle = cliente.por_pagarle + compra.por_pagar;
+        await cliente.save({
+          transaction: options.transaction
+        })
+
+      },
+      beforeUpdate: async (compra, options) => {
+        // Crear una instancia de cliente
+        const cliente = await Cliente.findByPk(compra.cliente_id, {
+          attributes: ['id', 'por_pagarle'],
+          transaction: options.transaction
+        })
+
+        
+        // Obtener valores para calcular la deuda
+        const cambioTotal = compra.changed('total')
+        const cambioPagado = compra.changed('pagado')
+
+        let diffTotal = 0
+        let diffPagado = 0
+
+        if (cambioTotal) {
+          diffTotal = compra.total - compra.previous.total
+        }
+        if (cambioPagado) {
+          diffPagado = compra.pagado - compra.previous.pagado
+        }
+
+        const por_pagar = compra.por_pagar + diffTotal - diffPagado
+
+        
+
+        // Observar si el cliente genera deuda
+        compra.por_pagar = por_pagar;
+        if (compra.por_pagar == 0) {
+          compra.estado_pago = true;
+        }
+        else {
+          compra.estado_pago = false;
+        }
+
+
+        // Modifica la deuda del cliente
+        cliente.por_pagarle = cliente.por_pagarle + diffTotal - diffPagado;
+        await cliente.save({
+          transaction: options.transaction
+        })
       }
     }
   });

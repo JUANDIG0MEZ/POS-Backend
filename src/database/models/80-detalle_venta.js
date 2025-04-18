@@ -1,3 +1,4 @@
+const { Producto, Venta} = require('./index.js')
 'use strict';
 const {
   Model
@@ -65,12 +66,62 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'DetalleVenta',
     tableName: 'detalles_ventas',
     hooks: {
-      beforeCreate: (detalle) => {
-        detalle.subtotal = detalle.cantidad * detalle.precio
+      beforeUpdate: async (detalle, options) => {
+        // Crear una instancia de Producto para modificar la cantidad
+        const producto = await Producto.findByPk(detalle.producto_id, {
+          attributes: ['id', 'cantidad'],
+          transaction: options.transaction
+        })
+        // Crear una instancia de Venta para modificar el total
+        const venta = await Venta.findByPk(detalle.venda_id, {
+          attributes: ['id', 'total'],
+          transaction: options.transaction
+        })
+
+        // Calcular la diferencia de cantidad
+        const cantatidadAntes = detalle.previous('cantidad')
+        const cantidadAhora = detalle.cantidad
+        const diffCantidad = cantidadAhora - cantatidadAntes
+
+        // calcular la diferencia de subtotal
+        const precioAhora = detalle.precio
+        const subTotalAntes = detalle.previous('subtotal')
+        const subTotalAhora =  cantidadAhora * precioAhora
+        const diffTotal = subTotalAhora - subTotalAntes
+
+        // Modificar la cantidad del producto
+        producto.cantidad = producto.cantidad - diffCantidad
+        await producto.save({transaction: options.transaction})
+
+        // Modificar el total de la compra
+        venta.total = venta.total - diffTotal
+        await venta.save({transaction: options.transaction})
       },
-      beforeUpdate: (detalle) => {
+
+      
+      beforeCreate: async (detalle, options) => {
+
+        // Crear una instancia de Producto y Venta
+        const producto = await Producto.findByPk(detalle.producto_id, {
+          attributes: ['id', 'cantidad'],
+          transaction: options.transaction
+        })
+
+        const venta = await Venta.findByPk(detalle.venta_id, {
+          attributes: ['id', 'total'],
+          transaction: options.transaction
+        })
+
+        producto.cantidad = producto.cantidad - detalle.cantidad
+        await producto.save({transaction: options.transaction})
+
+
         detalle.subtotal = detalle.cantidad * detalle.precio
-      }
+        venta.total = venta.total + detalle.subtotal
+        await venta.save({transaction: options.transaction})
+      },
+    
+
     }, 
   });
   return DetalleVenta;
