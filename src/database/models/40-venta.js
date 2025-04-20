@@ -1,4 +1,3 @@
-const {Cliente} = require('./models')
 'use strict';
 const {
   Model
@@ -60,6 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     total: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      defaultValue: 0,
       validate: {
         min: 0
       }
@@ -87,73 +87,47 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'ventas',
     timestamps: false,
     hooks: {
-      beforeCreate: async (venta, options) => {
-        // Crear una instancia de cliente
-        const cliente = await Cliente.findByPk(venta.cliente_id, {
-          attributes: ['id', 'debe'],
-          transaction: options.transaction
-        })
-
-        
-        // Observar si el cliente genera deuda
-        venta.por_pagar = venta.total - venta.pagado;
-        if (venta.por_pagar == 0) {
-          venta.estado_pago = true;
-        }
-        else {
-          venta.estado_pago = false;
-        }
-
-        // Agregar la deuda al cliente
-        cliente.debe = cliente.debe + venta.por_pagar;
-        await cliente.save({
-          transaction: options.transaction
-        })
-
-      },
       beforeUpdate: async (venta, options) => {
-        // Crear una instancia de cliente
-        const cliente = await Cliente.findByPk(venta.cliente_id, {
-          attributes: ['id', 'debe'],
-          transaction: options.transaction
-        })
-
-        
-        // Obtener valores para calcular la deuda
-        const cambioTotal = venta.changed('total')
-        const cambioPagado = venta.changed('pagado')
-
-        let diffTotal = 0
-        let diffPagado = 0
-
-        if (cambioTotal) {
-          diffTotal = venta.total - venta.previous.total
-        }
-        if (cambioPagado) {
-          diffPagado = venta.pagado - venta.previous.pagado
+        if (venta.changed('id') || venta.changed('fecha') || venta.changed('hora') || venta.changed('cliente_id')) {
+          throw new Error('No se puede modificar el id, fecha, hora o cliente de la venta una vez creada');
         }
 
-        const por_pagar = venta.por_pagar + diffTotal - diffPagado
+        if (venta.changed('pagado') || venta.changed('total')) {
+          
+          const total = venta.changed('total') ? venta.total : venta.previous('total');
+          let pagado = venta.changed('pagado') ? venta.pagado : venta.previous('pagado');
 
-        
+          if (pagado < 0 || total < 0) {
+            throw new Error('El valor pagado y el total no puede ser menor a 0');
+          }
+          if (pagado > total) {
+            pagado = total;
+          }
 
-        // Observar si el cliente genera deuda
-        venta.por_pagar = por_pagar;
-        if (venta.por_pagar == 0) {
-          venta.estado_pago = true;
+          venta.por_pagar = total - pagado;
+
+          const clienteId = venta.get('cliente_id');
+          const Cliente = venta.sequelize.models.Cliente;
+          const cliente = await Cliente.findByPk(clienteId, {
+            transaction: options.transaction,
+            lock: options.transaction.LOCK.UPDATE
+          });
+
+          
+          cliente.debe = cliente.debe - venta.previous('por_pagar') + venta.por_pagar;
+          await cliente.save({transaction: options.transaction});
+
+
+          if (venta.por_pagar == 0) {
+            venta.estado_pago = true;
+          } else {
+            venta.estado_pago = false;
+          }
+
         }
-        else {
-          venta.estado_pago = false;
-        }
-
-
-        // Modifica la deuda del cliente
-        cliente.debe = cliente.debe + diffTotal - diffPagado;
-        await cliente.save({
-          transaction: options.transaction
-        })
       }
-    }
+    
+    },
   });
   return Venta;
 };

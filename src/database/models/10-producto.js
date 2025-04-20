@@ -90,9 +90,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
-      validate: {
-        min: 0,
-      },
     }
   }, {
     sequelize,
@@ -100,7 +97,18 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     tableName: 'productos',
     hooks: {
-      beforeSave(producto) {
+      beforeUpdate: (producto) => {
+        if (producto.changed('cantidad')) {
+          if (producto.cantidad < 0) {
+            producto.total = 0;
+          }
+          producto.total = producto.cantidad * producto.precio_compra;
+        }
+      },
+      beforeCreate(producto) {
+        if (producto.cantidad < 0){
+          throw new Error('La cantidad no puede ser negativa');
+        }
         producto.total = producto.cantidad * producto.precio_compra;
       }
     }

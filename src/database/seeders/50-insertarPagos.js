@@ -6,11 +6,18 @@ const { Pago } = require('../models')
 module.exports = {
   async up (queryInterface, Sequelize) {
     const pagos = await cargarPagos()
-    await Pago.bulkCreate(pagos, {
-      individualHooks: true ,
-      validate: true
-    })
-    //await queryInterface.bulkInsert('pagos', pagos, {});
+
+    const transaction = await queryInterface.sequelize.transaction();
+
+    for (let i =0; i < pagos.length; i++){
+      await Pago.create(pagos[i], {
+        individualHooks: true,
+        validate: true,
+        transaction
+      })
+    }
+
+    transaction.commit()
 
   },
 

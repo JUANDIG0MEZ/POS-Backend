@@ -65,8 +65,8 @@ function cargarProductos() {
             marca_id: faker.number.int({min: 1, max: numeroMarcas}),
             categoria_id: faker.number.int({min: 1, max: numeroCategorias}),
             medida_id: faker.number.int({min: 1, max: numeroMedidas}),
-            precio_compra: parseInt(faker.commerce.price({min: 10000, max: 50000})),
-            precio_venta: parseInt(faker.commerce.price({min: 50000, max: 100000})),
+            precio_compra: faker.number.int({min: 10000, max: 50000}),
+            precio_venta: faker.number.int({min: 50000, max: 100000}),
             cantidad: faker.number.int({min: 1, max: 100}),
             total: faker.number.int({min: 100000000, max: 100000000000})
             })
@@ -99,8 +99,8 @@ function cargarClientes() {
             telefono: faker.helpers.arrayElement([3000000000, 3100000000, 3200000000, 3500000000]),
             email: faker.internet.email(),
             tipo_id: faker.number.int({min: 1, max: numeroTiposClientes}),
-            por_pagarle: faker.number.int({min: 10000, max: 50000}),
-            debe: faker.number.int({min: 10000, max: 50000})           
+            por_pagarle: 0,
+            debe: 0         
         })
     }
     return clientes
@@ -125,8 +125,8 @@ function cargarFacturasCompra(){
                 fecha: fecha.toISOString().split('T')[0],
                 hora: fecha.toTimeString().split(' ')[0],  
                 cliente_id: faker.number.int({min: 1, max: numeroClientes}),
-                pagado: faker.number.int({min: 10, max: 10000}),
-                total: faker.number.int({min: 10000, max: 50000}),
+                pagado: 0,
+                total: 0,
                 estado_id: faker.number.int({min: 1, max: numeroEstadoCompras}),
             })
         }
@@ -154,8 +154,8 @@ function cargarFacturasVenta(){
                 hora: fecha.toTimeString().split(' ')[0], // Formato HH:MM:SS (TIME en Sequelize)   
                 cliente_id: faker.number.int({min: 1, max: numeroClientes}),
                 direccion: faker.location.streetAddress(),
-                pagado: faker.number.int({min: 10, max: 10000}),
-                total: faker.number.int({min: 10000, max: 50000}),
+                pagado: 0,
+                total: 0,
                 estado_id: faker.number.int({min: 1, max: numeroEstadoVentas})
             })
         }
@@ -174,8 +174,9 @@ function cargarDetallesCompra(){
                 compra_id: j+1,
                 producto_id: productos_id[i],
                 cantidad: faker.number.int({min: 1, max: 100}),
-                precio: faker.commerce.price({min: 100, max: 10000}),
-                subtotal: faker.commerce.price({min: 10000, max: 50000})
+                //precio: faker.number.int({min: 100, max: 10000}),
+                precio: faker.number.int({min: 10, max: 10}),
+                subtotal: faker.number.int({min: 10000, max: 50000})
             })
         }
     }
@@ -192,8 +193,8 @@ function cargarDetallesVenta() {
                 venta_id: j+1,
                 producto_id: productos_id[i],
                 cantidad: faker.number.int({min: 1, max: 100}),
-                precio: faker.commerce.price({min: 100, max: 10000}),
-                subtotal: faker.commerce.price({min: 10000, max: 50000})
+                precio: faker.number.int({min: 100, max: 10000}),
+                subtotal: faker.number.int({min: 10000, max: 50000})
             })
         }
     }
@@ -209,7 +210,7 @@ function cargarPagos(){
             fecha: fecha.toISOString().split('T')[0],
             hora: fecha.toTimeString().split(' ')[0], 
             cliente_id: faker.number.int({min: 1, max:numeroClientes}),
-            valor: faker.number.int({min: 10000, max: 50000}),
+            valor: 0,
             
         }   
         )
@@ -225,7 +226,7 @@ function cargarAbonos(){
             fecha: fecha.toISOString().split('T')[0],
             hora: fecha.toTimeString().split(' ')[0], 
             cliente_id: faker.number.int({min: 1, max: numeroClientes}),
-            valor: faker.number.int({min: 10000, max: 50000}),
+            valor: 0,
             
         }   
         )

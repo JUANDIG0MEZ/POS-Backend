@@ -28,6 +28,9 @@ module.exports = {
       cantidad: {
         type: Sequelize.DECIMAL(10, 0),
         allowNull: false,
+        validate: {
+          min: 1
+        }
 
       },
       precio: {

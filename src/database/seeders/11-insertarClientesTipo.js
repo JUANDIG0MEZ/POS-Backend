@@ -7,10 +7,12 @@ const {ClienteTipo} = require('../models')
 module.exports = {
   async up (queryInterface, Sequelize) {
     const clientes = cargarTiposCliente()
+    const transaction = await queryInterface.sequelize.transaction()
     await ClienteTipo.bulkCreate(clientes, {
       individualHooks: true ,
       validate: true
     })
+    await transaction.commit()
     //await queryInterface.bulkInsert('clientes_tipos', clientes, {})
   },
 

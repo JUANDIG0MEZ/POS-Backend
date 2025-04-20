@@ -66,8 +66,6 @@ router.get('/compras/:id', async (req, res, next)=> {
 router.patch('/compras/:id', async (req, res, next)=> {
     try {
         const body = req.body
-        console.log("Body", "Modificando la compra")
-        console.log(body)
         const id = req.params.id
         const factura = await modificarCompra(body, id)
         res.json(respuesta('Factura de compra modificada', factura))

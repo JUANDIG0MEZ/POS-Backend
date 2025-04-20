@@ -6,11 +6,14 @@ const {cargarEstadosCompra} = require('../datosFaker');
 module.exports = {
   async up (queryInterface, Sequelize) {
     const estados = cargarEstadosCompra()
+
+    const transaction = await queryInterface.sequelize.transaction();
     await CompraEstado.bulkCreate(estados, {
       individualHooks: true ,
-      validate: true
+      validate: true,
+      transaction
     })
-    //await queryInterface.bulkInsert('compras_estados', estados, {});
+    transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {

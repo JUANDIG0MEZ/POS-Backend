@@ -18,36 +18,32 @@ async function crearProducto(req) {
     const transaction = await sequelize.transaction();
     try {
         const datos = JSON.parse(req.body.data)
+
+
         await crearCategoria(datos, transaction)
         await crearMarca(datos, transaction) 
         await crearMedida(datos, transaction)
 
 
-        const producto = await Producto.create(datos, {
-            transaction,
-        });
-
+        const producto = await Producto.create(datos, {transaction});
         
         // Se guardan la url de las imagenes en la base de datos
         const baseUrl = req.protocol + '://' + req.get('host')+ '/uploads/'
-        const imagenesUrl = req.files.map(imagen => {
-            return baseUrl + imagen.filename
-        })
+        let imagenesUrl = req.files.map(imagen => {return baseUrl + imagen.filename})
         
-
-        const id = producto.id  
-        await ProductoImagen.bulkCreate(imagenesUrl.map(url => {
+        imagenesUrl = imagenesUrl.map(url => {
             return {
-                producto_id: id,
-                url_imagen: url,
-                
+                producto_id: producto.id,
+                url_imagen: url,        
             }
-        }), {transaction})
+        })
+   
+        await ProductoImagen.bulkCreate(imagenesUrl, {transaction})
 
         await transaction.commit()
 
 
-        const productoFormateado = await cargarProducto(id)
+        const productoFormateado = await cargarProducto(producto.id)
         return productoFormateado;
     }
     catch (error) {
@@ -63,14 +59,13 @@ async function modificarProducto(datos) {
     try {
         await crearCategoria(datos, transaction)
 
-        await Producto.update(datos, {
-            where: {id: datos.id},
-            transaction
-        });
-
         const producto = await Producto.findByPk(datos.id, {
-            transaction
-        });
+            transaction,
+            lock: transaction.LOCK.UPDATE
+        })
+
+        await producto.update(datos, {transaction})
+
         await transaction.commit();
         return producto;
     }
@@ -83,17 +78,11 @@ async function modificarProducto(datos) {
 async function crearMarca(datos, transaction) {
     if (datos.marca) {
         const [marca, ] = await ProductoMarca.findOrCreate({
-            where: {
-                nombre: datos.marca
-            },
-            default: {
-                nombre: datos.marca
-            },
+            where: {nombre: datos.marca},
+            defaults: {nombre: datos.marca},
             transaction
         })
-        
         datos.marca_id = marca.id
-        
     }
     delete datos.marca
 }
@@ -101,12 +90,8 @@ async function crearMarca(datos, transaction) {
 async function crearMedida(datos, transaction) {
     if (datos.medida) {
         const [medida, ] = await ProductoMedida.findOrCreate({
-            where: {
-                nombre: datos.medida
-            },
-            defaults: {
-                nombre: datos.medida
-            },
+            where: {nombre: datos.medida},
+            defaults: {nombre: datos.medida},
             transaction
         })
 
@@ -119,12 +104,8 @@ async function crearMedida(datos, transaction) {
 async function crearCategoria(datos, transaction){
     if (datos.categoria) {
         const [categoria, ] = await ProductoCategoria.findOrCreate({
-            where: {
-                nombre: datos.categoria
-            },
-            defaults: {
-                nombre: datos.categoria
-            },
+            where: {nombre: datos.categoria},
+            defaults: {nombre: datos.categoria},
             transaction
         })
 

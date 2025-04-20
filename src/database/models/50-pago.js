@@ -1,9 +1,8 @@
-const { Cliente } = require('./index');
-
 'use strict';
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Pago extends Model {
     /**
@@ -50,27 +49,28 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'pagos',
     timestamps: false,
     hooks: {
-      beforeCreate: (pago, options) => {
-        // 
-        const cliente = Cliente.findByPk(pago.cliente_id, {
-          attributes: ['id', 'por_pagarle'],
-          transaction: options.transaction
-        })
+      // beforeCreate: async (pago, options) => {
+      //   // 
+      //   const Cliente = pago.sequelize.models.Cliente; 
+      //   const cliente = await Cliente.findByPk(pago.cliente_id, {
+      //     transaction: options.transaction,
+      //     lock: options.transaction.LOCK.UPDATE
+      //   })
 
-        const valorPago = pago.valor;
+      //   const valorPago = pago.valor;
 
-        if (valorPago > cliente.por_pagarle){
-          throw new Error('El valor del pago no puede ser mayor al total a pagar');
-        }
+      //   if (valorPago > cliente.por_pagarle){
+      //     throw new Error('El valor del pago no puede ser mayor al total a pagar');
+      //   }
 
-        cliente.por_paparle = cliente.por_pagarle - valorPago;
+      //   cliente.por_paparle = cliente.por_pagarle - valorPago;
 
-        cliente.save({
-          transaction: options.transaction
-        })
+      //   await cliente.save({
+      //     transaction: options.transaction
+      //   })
 
 
-      }
+      // }
 
     }
   });

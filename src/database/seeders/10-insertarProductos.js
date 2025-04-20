@@ -6,10 +6,14 @@ const {Producto} = require('../models')
 module.exports = {
   async up (queryInterface, Sequelize) {
     const productos = cargarProductos()
+    
+    const transaction = await queryInterface.sequelize.transaction();
     await Producto.bulkCreate(productos, {
       individualHooks: true ,
-      validate: true
+      validate: true,
+      transaction
     })
+    transaction.commit()
     //await queryInterface.bulkInsert('productos', productos, {})
   },
 

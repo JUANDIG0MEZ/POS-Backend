@@ -34,6 +34,7 @@ module.exports = {
       total: {
         type: Sequelize.BIGINT,
         allowNull: false,
+        defaultValue: 0,
       },
       estado_pago: {
         type: Sequelize.BOOLEAN,
@@ -55,16 +56,6 @@ module.exports = {
         }
       },
     });
-
-    // Se agrega una restriccion para que pagado siempre sea menor o igual a total
-    await queryInterface.addConstraint('compras',{
-      fields : ['pagado', 'total'],
-      type: 'check',
-      name: 'pagado_menor_o_igual_total',
-      where: {
-        pagado: { [Sequelize.Op.lte]: Sequelize.col('total') }
-      }
-    })
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('compras');

@@ -1,4 +1,4 @@
-const {Cliente} = require('./cliente')
+
 'use strict';
 const {
   Model
@@ -46,27 +46,27 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'abonos',
     timestamps: false,
     hooks: {
-      beforeCreate: (abono, options) => {
-        // 
-        const cliente = Cliente.findByPk(abono.cliente_id, {
-          attributes: ['id', 'debe'],
-          transaction: options.transaction
-        })
+      // beforeCreate: async (abono, options) => {
+      //   // 
+      //   const Cliente = abono.sequelize.models.Cliente; // Obtener el modelo Cliente
+      //   const cliente = await Cliente.findByPk(abono.cliente_id, {
+      //     transaction: options.transaction,
+      //     lock: options.transaction.LOCK.UPDATE
+      //   })
 
 
-        const valorAbono = abono.valor;
-        if (valorAbono > cliente.debe){
-          throw new Error('El valor del abono no puede ser mayor al valro de la deuda');
-        }
+      //   const valorAbono = abono.valor
 
-        cliente.debe = cliente.debe - valorAbono;
+      //   if (valorAbono > cliente.debe){
+      //     throw new Error('El valor del abono no puede ser mayor al valro de la deuda');
+      //   }
 
-        cliente.save({
-          transaction: options.transaction
-        })
+      //   cliente.debe = cliente.debe - valorAbono;
+
+      //   await cliente.save({transaction: options.transaction})
 
 
-      }
+      // }
 
     }
   });

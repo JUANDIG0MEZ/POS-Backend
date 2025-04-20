@@ -34,10 +34,12 @@ module.exports = {
       pagado: {
         type: Sequelize.BIGINT,
         allowNull: false,
+        defaultValue: 0,
       },
       total: {
         type: Sequelize.BIGINT,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0,
       },
       estado_pago: {
         type: Sequelize.BOOLEAN,

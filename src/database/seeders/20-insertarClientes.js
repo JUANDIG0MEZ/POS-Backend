@@ -6,10 +6,13 @@ const {Cliente} = require('../models');
 module.exports = {
   async up (queryInterface, Sequelize) {
     const clientes = cargarClientes()
+    const transaction = await queryInterface.sequelize.transaction();
     await Cliente.bulkCreate(clientes, {
       individualHooks: true ,
-      validate: true
+      validate: true,
+      transaction
     })
+    transaction.commit()
     //await queryInterface.bulkInsert('clientes', clientes, {})
   },
 

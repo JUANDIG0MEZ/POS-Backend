@@ -6,11 +6,17 @@ const { DetalleCompra } = require('../models')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await DetalleCompra.bulkCreate(cargarDetallesCompra(), {
-      individualHooks: true ,
-      validate: true
-    })
-    //await queryInterface.bulkInsert('detalles_compras', cargarDetallesCompras(),{})
+    const transaction = await queryInterface.sequelize.transaction();
+    const detallesCompras = cargarDetallesCompra()
+
+    for (let i = 0; i < detallesCompras.length; i++){
+      await DetalleCompra.create(detallesCompras[i], {
+        individualHooks: true,
+        validate: true,
+        transaction
+      })
+    }
+    transaction.commit()
   },
 
 

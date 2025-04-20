@@ -1,18 +1,21 @@
-const { cargarMarcas} = require('../datosFaker')
+const { cargarMarcas} = require('../datosFaker'); 
+const {ProductoMarca} = require('../models');
+
 'use strict';
-const {ProductoMarca} = require('../models')
+
+
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-
     const marcas = cargarMarcas()
-
+    const transaction = await queryInterface.sequelize.transaction()
     await ProductoMarca.bulkCreate(marcas, {
       individualHooks: true ,
-      validate: true
+      validate: true,
+      transaction
     })
-    //await queryInterface.bulkInsert('productos_marcas', marcas, {})
+    await transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {

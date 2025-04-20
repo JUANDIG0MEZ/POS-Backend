@@ -1,3 +1,4 @@
+const { tr } = require('@faker-js/faker');
 const { cargarAbonos} = require('../datosFaker')
 const {Abono} = require('../models')
 'use strict';
@@ -6,11 +7,18 @@ const {Abono} = require('../models')
 module.exports = {
   async up (queryInterface, Sequelize) {
     const abonos = await cargarAbonos()
-    await Abono.bulkCreate(abonos, {
-      individualHooks: true ,
-      validate: true
-    })
-    //await queryInterface.bulkInsert('abonos', abonos, {})
+
+    const transaction = await queryInterface.sequelize.transaction();
+
+    for (let i =0; i < abonos.length; i++){
+      await Abono.create(abonos[i], {
+        individualHooks: true,
+        validate: true,
+        transaction
+      })
+    }
+    
+    transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {
