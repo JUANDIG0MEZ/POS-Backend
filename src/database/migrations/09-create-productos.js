@@ -16,6 +16,7 @@ module.exports = {
       },
       marca_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'productos_marcas',
           key: 'id'
@@ -23,6 +24,8 @@ module.exports = {
       },
       categoria_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
         references: {
           model: 'productos_categorias',
           key: 'id'
@@ -30,6 +33,7 @@ module.exports = {
       },
       medida_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'productos_medidas',
           key: 'id'

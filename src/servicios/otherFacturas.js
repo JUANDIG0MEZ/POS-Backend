@@ -35,7 +35,7 @@ async function crearFacturaCompra(body){
         }
 
         await compra.reload({transaction})
-        compra.pagado = body.info.pagado
+        compra.pagado = body.info.pagado || 0
         await compra.save({transaction})
 
         await transaction.commit()
@@ -75,7 +75,7 @@ async function crearFacturaVenta(body){
         }
 
         await venta.reload({transaction})
-        venta.pagado = body.info.pagado
+        venta.pagado = body.info.pagado || 0
         await venta.save({transaction})
 
         await transaction.commit()
@@ -110,11 +110,20 @@ async function modificarCompra(body, idCompra){
             }
             await detalle.save({transaction})
         }
-        
+
+        const compra = await Compra.findByPk(idCompra, {transaction})
+        const resData = {
+            pagado: compra.pagado,
+            total: compra.total,
+            por_pagar: compra.por_pagar
+
+        }
+
+
         await transaction.commit()
 
 
-        return {cambiosRealizados: true}
+        return resData
     }
     catch (error){
         await transaction.rollback()

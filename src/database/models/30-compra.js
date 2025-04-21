@@ -108,7 +108,7 @@ module.exports = (sequelize, DataTypes) => {
           if (pagado > total) {
             pagado = total;
           }
-
+          compra.pagado = pagado
           compra.por_pagar = total - pagado;
 
           if (compra.por_pagar == 0) {

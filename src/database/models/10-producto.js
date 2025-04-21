@@ -102,7 +102,9 @@ module.exports = (sequelize, DataTypes) => {
           if (producto.cantidad < 0) {
             producto.total = 0;
           }
-          producto.total = producto.cantidad * producto.precio_compra;
+          else {
+            producto.total = producto.cantidad * producto.precio_compra;
+          }
         }
       },
       beforeCreate(producto) {

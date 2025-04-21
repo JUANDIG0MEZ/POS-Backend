@@ -34,7 +34,7 @@ function cargarMedidas() {
 
 
 function cargarCategorias() {
-    const lista = ['Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
+    const lista = ["",'Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
     const categorias = []
     for (let i = 0; i < numeroCategorias; i++) {
         categorias.push({

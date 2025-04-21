@@ -104,6 +104,7 @@ module.exports = (sequelize, DataTypes) => {
             pagado = total;
           }
 
+          venta.pagado = pagado;
           venta.por_pagar = total - pagado;
 
           const clienteId = venta.get('cliente_id');

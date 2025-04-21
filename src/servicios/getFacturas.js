@@ -64,13 +64,14 @@ async function cargarFacturaCompra(id){
         },
         attributes: {exclude: ['cliente_id'],}
     })
+
     const infoFormateada = {
         id: info.id,
         fecha: info.fecha,
         hora: info.hora,
-        cliente: info['clienteCompra.nombre'],
-        email: info['clienteCompra.email'],
-        telefono: parseInt(info['clienteCompra.telefono']),
+        cliente: info.clienteCompra.nombre,
+        email: info.clienteCompra.email,
+        telefono: parseInt(info.clienteCompra.telefono),
         pagado: parseInt(info.pagado),
         total: parseInt(info.total),
         estado: info.estado
@@ -92,7 +93,6 @@ async function cargarFacturaCompra(id){
         }
     })
 
-    console.log(datos)
     const datosFormateados = datos.map(dato => {
         return {
             id: dato.producto_id,
