@@ -87,7 +87,6 @@ module.exports = (sequelize, DataTypes) => {
         const compra = await Compra.findByPk(detalle.compra_id, {
           transaction: options.transaction,
           lock: options.transaction.LOCK.UPDATE
-          
         })
 
 

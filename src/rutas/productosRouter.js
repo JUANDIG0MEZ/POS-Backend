@@ -25,6 +25,7 @@ const {
 
 const {
     crearProducto,
+    modificarProducto,
     //modificarProducto
 } = require('../servicios/otherProductos')
 const { respuesta } = require('./funciones')
@@ -96,7 +97,7 @@ router.get("/:id/imagenes", async (req, res, next) => {
 })
 
 
-router.post('/', upload.array("files", 10) ,async (req, res, next)=> {
+router.post('/', upload.array("files", 20) ,async (req, res, next)=> {
     try {     
         const producto = await crearProducto(req)
         res.json(respuesta('Producto creado', producto))
@@ -106,6 +107,36 @@ router.post('/', upload.array("files", 10) ,async (req, res, next)=> {
     }
 
 })
+
+router.patch("/:id", upload.array("files", 20), async (req, res, next)=> {
+    try {
+        const { id } = req.params
+        const producto = await modificarProducto(req, id)
+        res.json(respuesta('Producto modificado', producto))
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+
+// router.patch("/:id", async (req, res, next) => {
+//     try {
+//         const { id } = req.params
+
+//         console.log(req)
+
+
+
+
+//         // const productoModificado = await modificarProducto(req.body, id)
+//         // //const producto = await modificarProducto(datos)
+//         // res.json(respuesta('Producto modificado', productoModificado))
+//     }
+//     catch (error) {
+//         next(error)
+//     }
+// })
 
 
 module.exports = router
