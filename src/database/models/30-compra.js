@@ -109,25 +109,26 @@ module.exports = (sequelize, DataTypes) => {
             pagado = total;
           }
           compra.pagado = pagado
-          compra.por_pagar = total - pagado;
+          compra.por_pagar = total - pagado
+
+
+          const clienteId = compra.get('cliente_id');
+          const Cliente = compra.sequelize.models.Cliente;
+          const cliente = await Cliente.findByPk(clienteId,{
+              transaction: options.transaction,
+              lock: options.transaction.LOCK.UPDATE
+            });
+
+
+          cliente.por_pagarle = cliente.por_pagarle - compra.previous('por_pagar') + compra.por_pagar;
+          await cliente.save({transaction: options.transaction});
+          
 
           if (compra.por_pagar == 0) {
             compra.estado_pago = true;
           } else {
             compra.estado_pago = false;
           }
-
-          const clienteId = compra.get('cliente_id');
-
-          const Cliente = compra.sequelize.models.Cliente;
-          const cliente = await Cliente.findByPk(clienteId, 
-            {
-              transaction: options.transaction,
-              lock: options.transaction.LOCK.UPDATE
-            });
-
-          cliente.por_pagarle = cliente.por_pagarle - compra.previous('por_pagar') + compra.por_pagar;
-          await cliente.save({transaction: options.transaction});
 
         }
       }

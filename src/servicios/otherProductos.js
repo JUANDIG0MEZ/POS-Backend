@@ -64,13 +64,11 @@ async function modificarProducto(req, id) {
 
         const body = JSON.parse(req.body.data)
 
-        console.log("body", body)
         // Se eliminan las imagenes que se borraron
         const ruta = path.join(__dirname, '../../uploads')
 
         if ("borradas" in body){
             for (const urlBorrada of body.borradas){
-                console.log("---urlBorrada---", urlBorrada)
                 
                 const fueBorrada = await ProductoImagen.destroy({
                     where: {
@@ -81,7 +79,6 @@ async function modificarProducto(req, id) {
                 })
 
                 if (fueBorrada){
-                    console.log("urlBorrada", urlBorrada)
                     // Borrar imagen del servidor
                     const nombreImagen = urlBorrada.split('/').pop()
                     const rutaImagen = path.join(ruta, nombreImagen)

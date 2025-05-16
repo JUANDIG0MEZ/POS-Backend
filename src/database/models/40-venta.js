@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     pagado: {
       type: DataTypes.BIGINT,
       allowNull: false,
+      defaultValue: 0,
       validate: {
         min: 0
       }

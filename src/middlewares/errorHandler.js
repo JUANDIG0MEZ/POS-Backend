@@ -2,7 +2,7 @@
 
 function handlerError(err, req, res, next) {
     console.log(err)
-    res.status(500).json({
+    res.status(400).json({
         status: false,
         message: err.message,
     })

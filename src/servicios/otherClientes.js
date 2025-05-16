@@ -2,9 +2,9 @@ const {
     sequelize,
     Cliente,
     Pago,
-    //Abono,
+    Abono,
     Compra,
-    //Venta
+    Venta
     } = require('../database/models');
 
 
@@ -23,12 +23,25 @@ async function crearPago(valor, idCliente, transaction){
     await Pago.create(data, {transaction})
 }
 
+async function crearAbono(valor, idCliente, transaction) {
+    const fecha = new Date().toISOString().split('T')[0]
+    const hora = new Date().toTimeString().split(' ')[0]
+
+    const data = {
+        cliente_id: idCliente,
+        fecha,
+        hora,
+        valor
+    }
+
+    await Abono.create(data, {transaction})
+}
 
 
-async function crearPagoFactura(body, idCliente){
+async function crearPagoFactura(body, id_factura){
     const transaction = await sequelize.transaction()
     try {
-        const compra = await Compra.findByPk(body.factura_id, {
+        const compra = await Compra.findByPk(id_factura, {
             transaction,
             lock: transaction.LOCK.UPDATE
         })
@@ -39,35 +52,72 @@ async function crearPagoFactura(body, idCliente){
         }
 
         compra.pagado = compra.pagado + body.valor
+        await compra.save({transaction})
+ 
+        await crearPago(body.valor, compra.cliente_id, transaction)
 
-        crearPago(body.valor, idCliente, transaction)
-
-        transaction.commit()
+        await transaction.commit()
+        return {
+            pagado : compra.pagado
+        }
     }
     catch(error) {
-        transaction.rollback()
+        await transaction.rollback()
         throw error
     }
 }
 
 
+
+async function crearAbonoFactura(body, id_factura){
+    const transaction = await sequelize.transaction()
+    try {
+        const venta = await Venta.findByPk(id_factura, {
+            transaction,
+            lock: transaction.LOCK.UPDATE
+        })
+        const porPagar = venta.por_pagar
+
+        if (body.valor > porPagar) {
+            throw Error("El abono es mayor a la deuda")
+        }
+        venta.pagado = venta.pagado + body.valor
+        await venta.save({transaction})
+
+        await crearAbono(body.valor, venta.cliente_id, transaction)
+
+        await transaction.commit()
+        return {
+            pagado : venta.pagado
+        }
+    }
+    catch(error) {
+        await transaction.rollback()
+        throw error
+    }
+}
+
+
+
 async function crearPagosFacturas(body, idCliente){
     const transaction = await sequelize.transaction()
     try {
-        const clienteId = body.cliente_id
         let valorPago = body.valor
 
-        const cliente = await Cliente.findByPk(clienteId, {transaction})
+        const cliente = await Cliente.findByPk(idCliente, {transaction})
+
         if (valorPago > cliente.por_pagarle){
             throw Error ("El pago es mayor a la deuda")
         }
         const compras = await Compra.findAll({
             where: {
                 estado_pago: false,
-                cliente_id: clienteId
+                cliente_id: idCliente
             },
-            attributes: ['id', 'total', 'pagado'],
+            attributes: ['id', 'total', 'pagado', 'por_pagar', 'cliente_id'],
             order: [['id', 'ASC']],
+            transaction,
+            lock: transaction.LOCK.UPDATE
         })
 
         let valorRestante = valorPago
@@ -88,12 +138,72 @@ async function crearPagosFacturas(body, idCliente){
             
         }
         
-        crearPago(valorPago, idCliente, transaction)
+        await cliente.reload({transaction})
 
-        transaction.commit()
+        await crearPago(valorPago, idCliente, transaction)
+
+        await transaction.commit()
+        return {
+            por_pagarle: cliente.por_pagarle,
+        }
     }
     catch (error) {
-        transaction.rollback()
+        await transaction.rollback()
+        throw error
+    }
+
+}
+
+async function crearAbonosFacturas(body, idCliente){
+    const transaction = await sequelize.transaction()
+    try {
+        let valorPago = body.valor
+
+        const cliente = await Cliente.findByPk(idCliente, {transaction})
+
+        if (valorPago > cliente.por_pagarle){
+            throw Error ("El abono es mayor a la deuda")
+        }
+        const ventas = await Venta.findAll({
+            where: {
+                estado_pago: false,
+                cliente_id: idCliente
+            },
+            attributes: ['id', 'total', 'pagado', 'por_pagar', 'cliente_id'],
+            order: [['id', 'ASC']],
+            transaction,
+            lock: transaction.LOCK.UPDATE
+        })
+
+        let valorRestante = valorPago
+
+        for (const venta of ventas){
+            const porPagar = venta.por_pagar
+
+            if (valorRestante <= porPagar){
+                venta.pagado = venta.pagado + valorRestante
+                await venta.save({transaction})
+                break
+            }
+            else {
+                valorRestante = valorRestante - porPagar
+                venta.pagado = venta.total
+                await venta.save({transaction})
+            }
+            
+        }
+        
+        await cliente.reload({transaction})
+
+        await crearAbono(valorPago, idCliente, transaction)
+
+        await transaction.commit()
+        return {
+            por_pagarle: cliente.por_pagarle,
+        }
+    }
+    catch (error) {
+        await transaction.rollback()
         throw error
     }
 
@@ -102,7 +212,9 @@ async function crearPagosFacturas(body, idCliente){
 
 module.exports = {
     crearPagoFactura,
-    crearPagosFacturas
+    crearPagosFacturas,
+    crearAbonoFactura,
+    crearAbonosFacturas,
 }
 
 // async function crearAbono(datos){

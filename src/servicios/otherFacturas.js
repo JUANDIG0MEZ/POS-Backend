@@ -49,7 +49,7 @@ async function crearFacturaCompra(body){
 
 
 async function crearFacturaVenta(body){
-    const transaction = await sequelize.trasaction()
+    const transaction = await sequelize.transaction();
 
     try {
         const fechaActual = new Date();
@@ -65,6 +65,7 @@ async function crearFacturaVenta(body){
 
         const venta = await Venta.create(infoVenta, {transaction})
 
+
         const dataDetalles = body.datos
         // Agregar los detalles de la compra
         for ( const detalle of dataDetalles){
@@ -73,6 +74,8 @@ async function crearFacturaVenta(body){
                 venta_id: venta.id
             }, {transaction})
         }
+
+        
 
         await venta.reload({transaction})
         venta.pagado = body.info.pagado || 0

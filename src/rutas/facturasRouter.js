@@ -3,13 +3,18 @@ const {
     cargarFacturasCompra,
     cargarFacturasVenta,
     cargarFacturaCompra,
-    cargarFacturaVenta
+    cargarFacturaVenta,
 } = require('../servicios/getFacturas') 
+
+const {
+    crearPagoFactura
+} = require('../servicios/otherClientes')
 
 const {
     modificarCompra,
     modificarVenta,
-    crearFacturaCompra   
+    crearFacturaCompra,
+    crearFacturaVenta
 } = require('../servicios/otherFacturas')
 
 const {
@@ -98,6 +103,47 @@ router.post('/compras', async (req, res, next)=> {
     catch (error) {
         next(error)
     }
+})
+
+
+router.post('/ventas', async (req, res, next)=> {
+    try {
+        const body = req.body
+        const factura = await crearFacturaVenta(body)
+        res.json(respuesta('Factura de venta creada', factura))
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+
+
+router.patch('/compras/:id/pagar', async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const body = req.body
+        const abono = await crearPagoFactura(body, id)
+        res.json(respuesta('Pago realizado', abono))
+    }
+    catch (error) {
+        next(error)
+    }
+
+})
+
+
+router.patch('/ventas/:id/abonar', async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const body = req.body
+        const abono = await crearPagoFactura(body, id)
+        res.json(respuesta('Abono realizado', abono))
+    }
+    catch (error) {
+        next(error)
+    }
+
 })
 
 // router.patch('/', async (req, res)=> {
