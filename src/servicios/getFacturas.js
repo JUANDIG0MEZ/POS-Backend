@@ -1,14 +1,17 @@
 const { Cliente,  VentaEstado, CompraEstado} = require('../database/models')
 const { Compra, Venta, DetalleCompra, DetalleVenta, Producto, ProductoMarca, ProductoMedida} = require('../database/models')
 
-async function cargarFacturasCompra(){
+async function cargarFacturasCompra(limit, offset){
     const facturas = await Compra.findAll(
         {
             include: [
                 {model: Cliente, as: "clienteCompra", attributes: ['nombre']}, 
                 {model: CompraEstado, as: 'estadoCompra', attributes: ['nombre']}],
             //se excluye el id del cliente
-            attributes: {exclude: ['cliente_id']}
+            attributes: {exclude: ['cliente_id']},
+            limit: limit,
+            offset: offset,
+            order: [['id', 'DESC']]
         }
     )
 
@@ -29,14 +32,18 @@ async function cargarFacturasCompra(){
 
 
 
-async function cargarFacturasVenta(){
+async function cargarFacturasVenta(limit, offset){
+
     const facturas = await Venta.findAll(
         {
             include: [
                 {model: VentaEstado, as: 'estadoVenta', attributes: ['nombre']},
                 {model: Cliente, as: 'clienteVenta', attributes: ['nombre']}
             ],
-            attributes: {exclude: ['cliente_id']}
+            attributes: {exclude: ['cliente_id']},
+            limit: limit,
+            offset: offset,
+            order: [['id', 'DESC']]
         }
     )
     const facturasFormateadas = facturas.map(factura => {

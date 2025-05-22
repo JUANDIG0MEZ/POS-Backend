@@ -4,7 +4,7 @@ const {faker} = require('@faker-js/faker')
 const numeroMedidas = 7
 const numeroCategorias = 5
 const numeroMarcas = 30
-const numeroProductos = 50
+const numeroProductos = 5000
 
 const numeroTiposClientes = 3
 const numeroClientes = 200

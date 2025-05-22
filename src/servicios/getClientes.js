@@ -7,11 +7,14 @@ const {
     Pago
 } = require('../database/models')
 
-async function cargarClientes(){
+async function cargarClientes(limit, offset){
      
     
     const clientes = await Cliente.findAll({
         include: { model: ClienteTipo, as: 'tipoCliente', attributes: ['nombre']},
+        limit: limit,
+        offset: offset,
+        order: [['id', 'DESC']]
     })
 
     const clientesFormateados = clientes.map(cliente =>{
@@ -23,7 +26,7 @@ async function cargarClientes(){
             email: cliente.email,
             tipo: cliente.tipoCliente.nombre,
             por_pagarle: cliente.por_pagarle,
-            debe: cliente.debe
+            debe: cliente.debe,
         }
     })
 
@@ -48,18 +51,21 @@ async function cargarCliente(id){
     return clienteFormateado
 }
 
-async function cargarVentaCliente(id){
+async function cargarVentaCliente(id, limit, offset){
     // Se traen las ventas al cliente con el id que se recibe
-    const ventas = await Venta.findAll({
+    const {count, rows} = await Venta.findAndCountAll({
         where: {
             cliente_id: id
         },
         include: {
             model: Cliente, as: 'clienteVenta', attributes: ['nombre']
-        }
+        },
+        limit: limit,
+        offset: offset,
+        order: [['id', 'DESC']]
     })
 
-    const ventasFormateadas = ventas.map(venta =>{
+    const ventasFormateadas = rows.map(venta =>{
         return {
             id: venta.id,
             fecha: venta.fecha,
@@ -67,24 +73,26 @@ async function cargarVentaCliente(id){
             cliente: venta.clienteVenta.nombre,
             por_pagar: venta.por_pagar,
             total: venta.total,
-            estado: venta.estado,
-            
+            estado: venta.estado,           
         }
     })
-    return ventasFormateadas
+    return {count, rows: ventasFormateadas}
 }
 
 
-async function cargarCompraCliente(id){
+async function cargarCompraCliente(id, limit, offset){
     // Se traen las compras al cliente con el id que se recibe
-    const compras = await Compra.findAll({
+    const {count, rows } = await Compra.findAndCountAll({
         where: {
             cliente_id: id
         },
-        include: { model: Cliente, as: 'clienteCompra', attributes: ['nombre']}
+        include: { model: Cliente, as: 'clienteCompra', attributes: ['nombre']},
+        limit: limit,
+        offset: offset,
+        order: [['id', 'DESC']]
     })
 
-    const comprasFormateadas = compras.map(compra =>{
+    const comprasFormateadas = rows.map(compra =>{
         return {
             id: compra.id,
             fecha: compra.fecha,
@@ -96,28 +104,34 @@ async function cargarCompraCliente(id){
         }})
     
 
-    return comprasFormateadas
+    return {count, rows: comprasFormateadas}
 }
 
 
-async function cargarAbonosCliente(id){
+async function cargarAbonosCliente(id, limit, offset){
     // Se traen los abonos al cliente con el id que se recibe
-    const abonos = await Abono.findAll({
+    const {count, rows} = await Abono.findAll({
         where: {
             cliente_id: id
-        }
+        },
+        limit: limit,
+        offset: offset,
+        order: [['id', 'DESC']]
     })
-    return abonos
+     return {count, rows}
 }
 
-async function cargarPagosCliente(id){
+async function cargarPagosCliente(id, limit, offset){
     // Se traen los pagos al cliente con el id que se recibe
-    const pagos = await Pago.findAll({
+    const {count, rows} = await Pago.findAll({
         where: {
             cliente_id: id
-        }
+        },
+        limit: limit,
+        offset: offset,
+        order: [['id', 'DESC']]
     })
-    return pagos
+     return {count, rows}
 }
 
 module.exports = {

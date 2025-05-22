@@ -60,8 +60,6 @@ async function crearProducto(req) {
 async function modificarProducto(req, id) { 
     const transaction = await sequelize.transaction();
     try {
-
-
         const body = JSON.parse(req.body.data)
 
         // Se eliminan las imagenes que se borraron

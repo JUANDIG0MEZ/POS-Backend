@@ -7,7 +7,8 @@ const {
 } = require('../servicios/getFacturas') 
 
 const {
-    crearPagoFactura
+    crearPagoFactura,
+    crearAbonoFactura
 } = require('../servicios/otherClientes')
 
 const {
@@ -25,7 +26,9 @@ const router = express.Router()
 
 router.get('/ventas/', async (req, res, next)=> {
     try {
-        const facturas = await cargarFacturasVenta()
+        const limit = req.query.limit || 100
+        const offset = req.query.offset || 0
+        const facturas = await cargarFacturasVenta(limit, offset)
         res.json(respuesta('Facturas de venta cargadas', facturas))
     }
     catch (error) {
@@ -46,7 +49,9 @@ router.get('/ventas/:id', async (req, res, next)=> {
 
 router.get('/compras/', async (req, res, next)=> {
     try {
-        const facturas = await cargarFacturasCompra()
+        const limit = req.query.limit || 100
+        const offset = req.query.offset || 0
+        const facturas = await cargarFacturasCompra(limit, offset)
         res.json(respuesta('Facturas de compra cargadas', facturas))
     }
     catch (error) {
@@ -137,7 +142,7 @@ router.patch('/ventas/:id/abonar', async (req, res, next) => {
     try {
         const id = req.params.id
         const body = req.body
-        const abono = await crearPagoFactura(body, id)
+        const abono = await crearAbonoFactura(body, id)
         res.json(respuesta('Abono realizado', abono))
     }
     catch (error) {

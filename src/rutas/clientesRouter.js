@@ -18,7 +18,8 @@ const {
     // crearCliente,
     // crearAbono,
     crearPago,
-    crearPagosFacturas
+    crearPagosFacturas,
+    crearAbonosFacturas
 } = require('../servicios/otherClientes')
 
 const router = express.Router()
@@ -26,6 +27,8 @@ const router = express.Router()
 
 router.get('/', async (req, res, next)=>{
     try {
+        const limit = req.query.limit || 25
+        const offset = req.query.offset || 0
         const clientes = await cargarClientes()
         res.json(respuesta('Clientes cargados', clientes))
     }
@@ -47,8 +50,10 @@ router.get('/:id', async (req, res, next)=>{
 
 router.get('/:id/abonos', async (req, res, next)=>{
     try {
+        const limit = req.query.limit || 25
+        const offset = req.query.offset || 0
         const { id } = req.params
-        const abonos = await cargarAbonosCliente(id)
+        const abonos = await cargarAbonosCliente(id, limit, offset)
         res.send(respuesta('Abonos cargados', abonos))
     }
     catch(error){
@@ -59,8 +64,10 @@ router.get('/:id/abonos', async (req, res, next)=>{
 
 router.get('/:id/pagos', async (req, res, next)=>{
     try {
+        const limit = req.query.limit || 25
+        const offset = req.query.offset || 0
         const { id } = req.params
-        const pagos = await cargarPagosCliente(id)
+        const pagos = await cargarPagosCliente(id, limit, offset)
         res.send(respuesta('Pagos cargados', pagos))
     }
     catch(error){
@@ -70,8 +77,10 @@ router.get('/:id/pagos', async (req, res, next)=>{
 
 router.get('/:id/compras', async (req, res, next)=>{
     try {
+        const limit = req.query.limit || 25
+        const offset = req.query.offset || 0
         const { id } = req.params
-        const compras = await cargarCompraCliente(id)
+        const compras = await cargarCompraCliente(id, limit, offset)
         res.send(respuesta('Compras cargadas', compras))
     }
     catch(error){
@@ -81,8 +90,10 @@ router.get('/:id/compras', async (req, res, next)=>{
 
 router.get('/:id/ventas', async (req, res, next)=>{
     try {
+        const limit = req.query.limit || 25
+        const offset = req.query.offset || 0
         const { id } = req.params
-        const ventas = await cargarVentaCliente(id)
+        const ventas = await cargarVentaCliente(id, limit, offset)
         res.send(respuesta('Ventas cargadas', ventas))
     }
     catch(error){
@@ -93,6 +104,7 @@ router.get('/:id/ventas', async (req, res, next)=>{
 
 router.post('/:id/pagos', async (req, res, next)=> {
     try {
+
         const {id} = req.params
         const pago = await crearPago(id)
         res.send(respuesta('Pago realizado', pago))
@@ -108,6 +120,18 @@ router.post('/:id/pagar', async (req, res, next) => {
         const body = req.body
         const pago = await crearPagosFacturas(body, id)
         res.send(respuesta('Pago realizado', pago))
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+router.post('/:id/abonar', async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const body = req.body
+        const abono = await crearAbonosFacturas(body, id)
+        res.send(respuesta('Abono realizado', abono))
     }
     catch (error) {
         next(error)

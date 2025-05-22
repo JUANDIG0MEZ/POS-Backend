@@ -161,7 +161,7 @@ async function crearAbonosFacturas(body, idCliente){
 
         const cliente = await Cliente.findByPk(idCliente, {transaction})
 
-        if (valorPago > cliente.por_pagarle){
+        if (valorPago > cliente.debe){
             throw Error ("El abono es mayor a la deuda")
         }
         const ventas = await Venta.findAll({
@@ -199,7 +199,7 @@ async function crearAbonosFacturas(body, idCliente){
 
         await transaction.commit()
         return {
-            por_pagarle: cliente.por_pagarle,
+            debe: cliente.debe,
         }
     }
     catch (error) {
