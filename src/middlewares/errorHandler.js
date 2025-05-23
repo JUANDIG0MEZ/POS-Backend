@@ -1,7 +1,7 @@
 
 
 function handlerError(err, req, res, next) {
-    console.log(err)
+    console.log(err.message)
     res.status(400).json({
         status: false,
         message: err.message,

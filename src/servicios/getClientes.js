@@ -110,7 +110,7 @@ async function cargarCompraCliente(id, limit, offset){
 
 async function cargarAbonosCliente(id, limit, offset){
     // Se traen los abonos al cliente con el id que se recibe
-    const {count, rows} = await Abono.findAll({
+    const {count, rows} = await Abono.findAndCountAll({
         where: {
             cliente_id: id
         },
@@ -123,7 +123,7 @@ async function cargarAbonosCliente(id, limit, offset){
 
 async function cargarPagosCliente(id, limit, offset){
     // Se traen los pagos al cliente con el id que se recibe
-    const {count, rows} = await Pago.findAll({
+    const {count, rows} = await Pago.findAndCountAll({
         where: {
             cliente_id: id
         },

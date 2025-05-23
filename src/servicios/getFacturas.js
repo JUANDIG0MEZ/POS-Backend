@@ -1,8 +1,23 @@
 const { Cliente,  VentaEstado, CompraEstado} = require('../database/models')
 const { Compra, Venta, DetalleCompra, DetalleVenta, Producto, ProductoMarca, ProductoMedida} = require('../database/models')
 
+async function cargarEstadosVenta(){
+    const estados = await VentaEstado.findAll({})
+
+    return estados
+}
+
+async function cargarEstadosCompra(){
+    const estados = await CompraEstado.findAll({})
+
+    return estados
+}
+
+
 async function cargarFacturasCompra(limit, offset){
-    const facturas = await Compra.findAll(
+    console.log('limit', limit)
+    console.log('offset', offset)
+    const {count, rows} = await Compra.findAndCountAll(
         {
             include: [
                 {model: Cliente, as: "clienteCompra", attributes: ['nombre']}, 
@@ -15,7 +30,7 @@ async function cargarFacturasCompra(limit, offset){
         }
     )
 
-    const facturasFormateadas = facturas.map(factura => {
+    const compras = rows.map(factura => {
         return {
             id: factura.id,
             fecha: factura.fecha,
@@ -27,14 +42,14 @@ async function cargarFacturasCompra(limit, offset){
             estado: factura.estadoCompra.nombre
         }
     })
-    return facturasFormateadas
+    return {count, rows: compras}
 }
 
 
 
 async function cargarFacturasVenta(limit, offset){
 
-    const facturas = await Venta.findAll(
+    const {count, rows } = await Venta.findAndCountAll(
         {
             include: [
                 {model: VentaEstado, as: 'estadoVenta', attributes: ['nombre']},
@@ -46,7 +61,7 @@ async function cargarFacturasVenta(limit, offset){
             order: [['id', 'DESC']]
         }
     )
-    const facturasFormateadas = facturas.map(factura => {
+    const ventas = rows.map(factura => {
         return {
             id: factura.id,
             fecha: factura.fecha,
@@ -58,7 +73,7 @@ async function cargarFacturasVenta(limit, offset){
             estado: factura.estadoVenta.nombre,
         }
     })
-    return facturasFormateadas
+    return {count, rows: ventas}
 }
 
 
@@ -172,5 +187,8 @@ module.exports = {
     cargarFacturasCompra,
     cargarFacturasVenta,
     cargarFacturaCompra,
-    cargarFacturaVenta
+    cargarFacturaVenta,
+
+    cargarEstadosCompra,
+    cargarEstadosVenta
 }

@@ -50,8 +50,8 @@ router.get('/:id', async (req, res, next)=>{
 
 router.get('/:id/abonos', async (req, res, next)=>{
     try {
-        const limit = req.query.limit || 25
-        const offset = req.query.offset || 0
+        const limit = parseInt(req.query.limit) || 25
+        const offset = parseInt(req.query.offset) || 0
         const { id } = req.params
         const abonos = await cargarAbonosCliente(id, limit, offset)
         res.send(respuesta('Abonos cargados', abonos))
@@ -64,8 +64,8 @@ router.get('/:id/abonos', async (req, res, next)=>{
 
 router.get('/:id/pagos', async (req, res, next)=>{
     try {
-        const limit = req.query.limit || 25
-        const offset = req.query.offset || 0
+        const limit = parseInt(req.query.limit) || 25
+        const offset = parseInt(req.query.offset) || 0
         const { id } = req.params
         const pagos = await cargarPagosCliente(id, limit, offset)
         res.send(respuesta('Pagos cargados', pagos))
@@ -77,8 +77,8 @@ router.get('/:id/pagos', async (req, res, next)=>{
 
 router.get('/:id/compras', async (req, res, next)=>{
     try {
-        const limit = req.query.limit || 25
-        const offset = req.query.offset || 0
+        const limit = parseInt(req.query.limit) || 25
+        const offset = parseInt(req.query.offset) || 0
         const { id } = req.params
         const compras = await cargarCompraCliente(id, limit, offset)
         res.send(respuesta('Compras cargadas', compras))
@@ -90,8 +90,8 @@ router.get('/:id/compras', async (req, res, next)=>{
 
 router.get('/:id/ventas', async (req, res, next)=>{
     try {
-        const limit = req.query.limit || 25
-        const offset = req.query.offset || 0
+        const limit = parseInt(req.query.limit) || 25
+        const offset = parseInt(req.query.offset) || 0
         const { id } = req.params
         const ventas = await cargarVentaCliente(id, limit, offset)
         res.send(respuesta('Ventas cargadas', ventas))

@@ -195,6 +195,8 @@ async function crearAbonosFacturas(body, idCliente){
         
         await cliente.reload({transaction})
 
+        console.log("valor pago", valorPago , "id cliente", idCliente)
+
         await crearAbono(valorPago, idCliente, transaction)
 
         await transaction.commit()

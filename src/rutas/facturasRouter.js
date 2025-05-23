@@ -26,8 +26,8 @@ const router = express.Router()
 
 router.get('/ventas/', async (req, res, next)=> {
     try {
-        const limit = req.query.limit || 100
-        const offset = req.query.offset || 0
+        const limit = parseInt(req.query.limit) || 100
+        const offset = parseInt(req.query.offset) || 0
         const facturas = await cargarFacturasVenta(limit, offset)
         res.json(respuesta('Facturas de venta cargadas', facturas))
     }
@@ -49,8 +49,10 @@ router.get('/ventas/:id', async (req, res, next)=> {
 
 router.get('/compras/', async (req, res, next)=> {
     try {
-        const limit = req.query.limit || 100
-        const offset = req.query.offset || 0
+        const limit = parseInt(req.query.limit) || 100
+        const offset = parseInt(req.query.offset) || 0
+
+        console.log('limit', typeof limit)
         const facturas = await cargarFacturasCompra(limit, offset)
         res.json(respuesta('Facturas de compra cargadas', facturas))
     }
