@@ -1,8 +1,7 @@
+const { Model } = require('sequelize');
 
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class DetalleVenta extends Model {
     /**
@@ -27,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'ventas',
+        model: 'Venta',
         key: 'id'
       }
     },
@@ -35,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'productos',
+        model: 'Producto',
         key: 'id'
       }
     },
@@ -64,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     timestamps: false,
     modelName: 'DetalleVenta',
-    tableName: 'detalles_ventas',
+    tableName: 'DetalleVenta',
     hooks: {
 
       beforeUpdate: async (detalle, options) => {
@@ -72,8 +71,8 @@ module.exports = (sequelize, DataTypes) => {
           throw new Error('No se puede modificar el id de la venta o del producto')
         }
 
-        const cantidad = detalle.changed('cantidad') ? detalle.cantidad : detalle.previous('cantidad')
-        const precio = detalle.changed('precio') ? detalle.precio : detalle.previous('precio')
+        const cantidad = parseInt(detalle.changed('cantidad') ? detalle.cantidad : detalle.previous('cantidad'))
+        const precio = parseInt(detalle.changed('precio') ? detalle.precio : detalle.previous('precio'))
 
         // Crear una instancia de Producto para modificar la cantidad
         const Producto = detalle.sequelize.models.Producto
@@ -92,21 +91,21 @@ module.exports = (sequelize, DataTypes) => {
 
         if (detalle.changed('cantidad')){
 
-          const cantatidadAntes = detalle.previous('cantidad')
+          const cantatidadAntes = parseInt(detalle.previous('cantidad'))
           const diffCantidad = cantidad - cantatidadAntes
 
           // Modificar la cantidad del producto
-          producto.cantidad = producto.cantidad - diffCantidad
+          producto.cantidad = parseInt(producto.cantidad) - diffCantidad
           await producto.save({transaction: options.transaction})
         }
 
         // Calcular la diferencia de cantidad
-        const subtotalAntes = detalle.subtotal
+        const subtotalAntes = parseInt(detalle.subtotal)
         const subtotalAhora = cantidad * precio
 
         // Modificar el total de la compra
         detalle.subtotal = subtotalAhora
-        venta.total = venta.total - subtotalAntes + subtotalAhora
+        venta.total = parseInt(venta.total) - subtotalAntes + subtotalAhora
         await venta.save({transaction: options.transaction})
       },
       
@@ -125,7 +124,7 @@ module.exports = (sequelize, DataTypes) => {
         })
 
 
-        producto.cantidad = producto.cantidad -  detalle.cantidad
+        producto.cantidad = producto.cantidad -  parseInt(detalle.cantidad)
         await producto.save({transaction: options.transaction})
 
         detalle.subtotal = detalle.cantidad * detalle.precio

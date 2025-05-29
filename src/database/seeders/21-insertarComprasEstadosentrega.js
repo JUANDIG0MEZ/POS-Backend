@@ -1,22 +1,23 @@
-const {CompraEstado} = require('../models');
-const {cargarEstadosCompra} = require('../datosFaker');
+const {CompraEstadoEntrega} = require('../models');
+const {cargarEstadosEntregaCompra} = require('../datosFaker');
+
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const estados = cargarEstadosCompra()
+    const estados = cargarEstadosEntregaCompra()
 
     const transaction = await queryInterface.sequelize.transaction();
-    await CompraEstado.bulkCreate(estados, {
+    await CompraEstadoEntrega.bulkCreate(estados, {
       individualHooks: true ,
       validate: true,
       transaction
     })
-    transaction.commit()
+    await transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('compras_estados', null, {});
+    await queryInterface.bulkDelete('CompraEstadoEntrega', null, {});
   }
 };

@@ -1,10 +1,7 @@
-
+const { Model } = require('sequelize');
 
 'use strict';
-const {
-  Model
-  
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Compra extends Model {
     /**
@@ -49,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'clientes',
+        model: 'Cliente',
         key: 'id'
       }
     },
@@ -58,7 +55,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
       validate: {
-        min: 0
+        min: 0,
+        isInt: true
       }
     },
     estado_pago: {
@@ -68,28 +66,44 @@ module.exports = (sequelize, DataTypes) => {
     por_pagar: {
       type: DataTypes.BIGINT,
       defaultValue: 0,
+      validate: {
+        min: 0,
+        isInt: true
+      }
     },
     total: {
       type: DataTypes.BIGINT,
       allowNull: false,
       defaultValue: 0,
       validate: {
-        min: 0
+        min: 0,
+        isInt: true
       }
     },
-    estado_id: {
-      type: DataTypes.INTEGER,
+    estado_entrega_id: {
+      type: DataTypes.SMALLINT,
       allowNull: false,
       defaultValue: 1,
       references: {
-        model: 'compras_estados',
+        model: 'CompraEstadoEntrega',
         key: 'id'
       }
     },
+    
+    estado_pago_id: {
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+      defaultValue: 1,
+      references: {
+        model: 'CompraEstadoPago',
+        key: 'id'
+      }
+    }
+
   }, {
     sequelize,
     modelName: 'Compra',
-    tableName: 'compras',
+    tableName: 'Compra',
     timestamps: false,
     hooks: {
       beforeUpdate: async (compra, options) => {
@@ -97,19 +111,20 @@ module.exports = (sequelize, DataTypes) => {
           throw new Error('No se puede modificar el id, fecha, hora o cliente de la compra una vez creada');
         }
 
+
         if (compra.changed('pagado') || compra.changed('total')) {
           
-          const total = compra.changed('total') ? compra.total : compra.previous('total');
-          let pagado = compra.changed('pagado') ? compra.pagado : compra.previous('pagado');
 
-          if (pagado < 0 || total < 0) {
-            throw new Error('El valor pagado y el total no puede ser menor a 0');
+          if (compra.pagado < 0 || compra.total < 0) {
+          throw new Error('El valor pagado y el total no puede ser menor a 0');
           }
-          if (pagado > total) {
-            pagado = total;
+
+
+          if (compra.pagado > compra.total) {
+            compra.pagado = compra.total;
           }
-          compra.pagado = pagado
-          compra.por_pagar = total - pagado
+
+          compra.por_pagar = compra.total - compra.pagado
 
 
           const clienteId = compra.get('cliente_id');
@@ -120,14 +135,14 @@ module.exports = (sequelize, DataTypes) => {
             });
 
 
-          cliente.por_pagarle = cliente.por_pagarle - compra.previous('por_pagar') + compra.por_pagar;
+          cliente.por_pagarle = cliente.por_pagarle - compra.previous('por_pagar') + parseInt(compra.por_pagar);
           await cliente.save({transaction: options.transaction});
           
 
           if (compra.por_pagar == 0) {
-            compra.estado_pago = true;
+            compra.estado_pago_id = 2;
           } else {
-            compra.estado_pago = false;
+            compra.estado_pago_id = 1;
           }
 
         }

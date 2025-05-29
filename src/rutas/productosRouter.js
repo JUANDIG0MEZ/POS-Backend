@@ -12,6 +12,19 @@ const storage = multer.diskStorage({
     }
 })
 
+
+const {
+    validatorHandler,
+    validatorHandlerFormData
+} = require('../middlewares/validator.handler')
+
+const { 
+    crearProductoSchema,
+    actualizarProductoSchema 
+} = require('../schemas/producto.schema')
+
+
+
 const upload = multer({ storage: storage })
 
 const { 
@@ -28,6 +41,8 @@ const {
     modificarProducto,
     //modificarProducto
 } = require('../servicios/otherProductos')
+
+
 const { respuesta } = require('./funciones')
 const router = express.Router()
 
@@ -97,7 +112,10 @@ router.get("/:id/imagenes", async (req, res, next) => {
 })
 
 
-router.post('/', upload.array("files", 20) ,async (req, res, next)=> {
+router.post('/',
+    upload.array("files", 20),
+    validatorHandlerFormData(crearProductoSchema, 'body', 'data'),
+    async (req, res, next)=> {
     try {     
         const producto = await crearProducto(req)
         res.json(respuesta('Producto creado', producto))
@@ -108,7 +126,10 @@ router.post('/', upload.array("files", 20) ,async (req, res, next)=> {
 
 })
 
-router.patch("/:id", upload.array("files", 20), async (req, res, next)=> {
+router.patch("/:id",
+    upload.array("files", 20),
+    validatorHandlerFormData(actualizarProductoSchema, 'body', 'data'),
+    async (req, res, next)=> {
     try {
         const { id } = req.params
         const producto = await modificarProducto(req, id)

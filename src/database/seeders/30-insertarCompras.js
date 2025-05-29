@@ -1,5 +1,6 @@
 const {cargarFacturasCompra} = require('../datosFaker')
 const {Compra} = require('../models')
+
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
@@ -18,10 +19,10 @@ module.exports = {
       })
     }
 
-    transaction.commit()
+    await transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('compras', null, {})
+    await queryInterface.bulkDelete('Compra', null, {})
   }
 };

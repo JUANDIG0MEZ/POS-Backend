@@ -13,10 +13,9 @@ module.exports = {
       validate: true
     })
     await transaction.commit()
-    //await queryInterface.bulkInsert('clientes_tipos', clientes, {})
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('clientes_tipos', null, {})
+    await queryInterface.bulkDelete('ClienteTipo', null, {})
   }
 };

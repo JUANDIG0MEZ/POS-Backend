@@ -1,7 +1,7 @@
+const { Model } = require('sequelize');
+
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Cliente extends Model {
     /**
@@ -75,7 +75,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
       validate: {
-        min: 0
+        min: 0,
+        isInt: true
       }
     },
     debe: {
@@ -83,14 +84,15 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
       validate: {
-        min: 0
+        min: 0,
+        isInt: true
       }
     }
   }, {
     sequelize,
     modelName: 'Cliente',
     timestamps: false,
-    tableName: 'clientes'
+    tableName: 'Cliente'
   });
   return Cliente;
 };

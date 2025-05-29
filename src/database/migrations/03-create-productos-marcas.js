@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('productos_marcas', {
+    await queryInterface.createTable('ProductoMarca', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,12 +11,13 @@ module.exports = {
       },
       nombre: {
         type: Sequelize.STRING,
+
+        allowNull: false,
         unique: true,
-        allowNull: false
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('productos_marcas');
+    await queryInterface.dropTable('ProductoMarca');
   }
 };

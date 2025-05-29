@@ -1,5 +1,6 @@
 const {cargarClientes} = require('../datosFaker');
 const {Cliente} = require('../models');
+
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
@@ -12,11 +13,10 @@ module.exports = {
       validate: true,
       transaction
     })
-    transaction.commit()
-    //await queryInterface.bulkInsert('clientes', clientes, {})
+    await transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('clientes', null, { truncate: true})
+    await queryInterface.bulkDelete('Cliente', null, { truncate: true})
   }
 };

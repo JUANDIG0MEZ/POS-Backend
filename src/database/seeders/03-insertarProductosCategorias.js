@@ -1,6 +1,7 @@
 const {cargarCategorias} = require('../datosFaker')
-'use strict';
 const {ProductoCategoria} = require('../models')
+
+'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -13,10 +14,9 @@ module.exports = {
       transaction
     })
     await transaction.commit()
-    //await queryInterface.bulkInsert('productos_categorias', categorias, {})
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('productos_categorias', null, {})
+    await queryInterface.bulkDelete('ProductoCategoria', null, {})
   }
 };

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('productos', {
+    await queryInterface.createTable('Producto', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'productos_marcas',
+          model: 'ProductoMarca',
           key: 'id'
         }
       },
@@ -27,7 +27,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 1,
         references: {
-          model: 'productos_categorias',
+          model: 'ProductoCategoria',
           key: 'id'
         }
       },
@@ -35,7 +35,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'productos_medidas',
+          model: 'ProductoMedida',
           key: 'id'
         }
       },
@@ -61,13 +61,13 @@ module.exports = {
       }
     });
 
-    await queryInterface.addConstraint('productos', {
+    await queryInterface.addConstraint('Producto', {
       fields: ['nombre', 'marca_id'],
       type: 'unique',
       name: 'unique_nombre_marca'
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('productos');
+    await queryInterface.dropTable('Producto');
   }
 };

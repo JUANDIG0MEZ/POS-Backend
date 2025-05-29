@@ -41,20 +41,24 @@ async function crearAbono(valor, idCliente, transaction) {
 async function crearPagoFactura(body, id_factura){
     const transaction = await sequelize.transaction()
     try {
+
+        const valor = parseInt(body.valor)
+
         const compra = await Compra.findByPk(id_factura, {
             transaction,
             lock: transaction.LOCK.UPDATE
         })
-        const porPagar = compra.porPagar
+        const porPagar = compra.por_pagar
 
-        if (body.valor > porPagar) {
+        if (valor > porPagar) {
             throw Error("El pago es mayor a la deuda")
         }
 
-        compra.pagado = compra.pagado + body.valor
+
+        compra.pagado = compra.pagado + valor
         await compra.save({transaction})
  
-        await crearPago(body.valor, compra.cliente_id, transaction)
+        await crearPago(valor, compra.cliente_id, transaction)
 
         await transaction.commit()
         return {
@@ -72,21 +76,25 @@ async function crearPagoFactura(body, id_factura){
 async function crearAbonoFactura(body, id_factura){
     const transaction = await sequelize.transaction()
     try {
+
+
+        const valor = parseInt(body.valor)
+
         const venta = await Venta.findByPk(id_factura, {
             transaction,
             lock: transaction.LOCK.UPDATE
         })
-        const porPagar = venta.por_pagar
 
-        if (body.valor > porPagar) {
+
+        if (valor > venta.por_pagar) {
             throw Error("El abono es mayor a la deuda")
         }
-        venta.pagado = venta.pagado + body.valor
+        venta.pagado = venta.pagado + valor
+
         await venta.save({transaction})
-
-        await crearAbono(body.valor, venta.cliente_id, transaction)
-
+        await crearAbono(valor, venta.cliente_id, transaction)
         await transaction.commit()
+
         return {
             pagado : venta.pagado
         }
@@ -102,13 +110,15 @@ async function crearAbonoFactura(body, id_factura){
 async function crearPagosFacturas(body, idCliente){
     const transaction = await sequelize.transaction()
     try {
-        let valorPago = body.valor
+        let valorPago = parseInt(body.valor)
+
+        
 
         const cliente = await Cliente.findByPk(idCliente, {transaction})
-
         if (valorPago > cliente.por_pagarle){
             throw Error ("El pago es mayor a la deuda")
         }
+        
         const compras = await Compra.findAll({
             where: {
                 estado_pago: false,
@@ -120,8 +130,8 @@ async function crearPagosFacturas(body, idCliente){
             lock: transaction.LOCK.UPDATE
         })
 
-        let valorRestante = valorPago
 
+        let valorRestante = valorPago
         for (const compra of compras){
             const porPagar = compra.por_pagar
 
@@ -157,13 +167,15 @@ async function crearPagosFacturas(body, idCliente){
 async function crearAbonosFacturas(body, idCliente){
     const transaction = await sequelize.transaction()
     try {
-        let valorPago = body.valor
+        let valorPago = parseInt(body.valor)
 
         const cliente = await Cliente.findByPk(idCliente, {transaction})
 
         if (valorPago > cliente.debe){
+            
             throw Error ("El abono es mayor a la deuda")
         }
+
         const ventas = await Venta.findAll({
             where: {
                 estado_pago: false,
@@ -194,8 +206,6 @@ async function crearAbonosFacturas(body, idCliente){
         }
         
         await cliente.reload({transaction})
-
-        console.log("valor pago", valorPago , "id cliente", idCliente)
 
         await crearAbono(valorPago, idCliente, transaction)
 

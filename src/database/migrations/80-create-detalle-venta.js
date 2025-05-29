@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('detalles_ventas', {
+    await queryInterface.createTable('DetalleVenta', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'ventas',
+          model: 'Venta',
           key: 'id'
         }
       },
@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'productos',
+          model: 'Producto',
           key: 'id'
         }
       },
@@ -44,13 +44,13 @@ module.exports = {
       
     });
 
-    await queryInterface.addConstraint('detalles_ventas', {
+    await queryInterface.addConstraint('DetalleVenta', {
       fields: ['venta_id', 'producto_id'],
       type: 'unique',
       name: 'unique_venta_producto'
     })
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('detalles_ventas');
+    await queryInterface.dropTable('DetalleVenta');
   }
 };

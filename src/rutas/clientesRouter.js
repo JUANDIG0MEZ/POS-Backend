@@ -10,7 +10,8 @@ const {
     cargarCompraCliente,
     cargarVentaCliente,
     cargarAbonosCliente,
-    cargarPagosCliente
+    cargarPagosCliente,
+    cargarTiposClientes
 } = require('../servicios/getClientes')
 
 
@@ -27,10 +28,18 @@ const router = express.Router()
 
 router.get('/', async (req, res, next)=>{
     try {
-        const limit = req.query.limit || 25
-        const offset = req.query.offset || 0
         const clientes = await cargarClientes()
         res.json(respuesta('Clientes cargados', clientes))
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+router.get('/tipos', async (req, res, next)=>{
+    try {
+        const tipos = await cargarTiposClientes()
+        res.json(respuesta('Tipos de clientes cargados', tipos))
     }
     catch (error) {
         next(error)

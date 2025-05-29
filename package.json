@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "database": "cd ./src/database && npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "database-undo": "cd ./src/database && npx sequelize-cli db:migrate:undo:all",
+    "database-migrate": "cd ./src/database && npx sequelize-cli db:migrate",
+    "database-seed": "cd ./src/database && npx sequelize-cli db:seed:all",
     "sincronizar": "cd ./src/servicios && node sincronizacion.js"
   },
   "repository": {
@@ -25,6 +27,7 @@
     "@hapi/boom": "^10.0.1",
     "cors": "^2.8.5",
     "express": "4.21.2",
+    "joi": "^17.13.3",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.12.0",
     "sequelize": "^6.37.5",

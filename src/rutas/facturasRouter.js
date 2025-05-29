@@ -4,6 +4,9 @@ const {
     cargarFacturasVenta,
     cargarFacturaCompra,
     cargarFacturaVenta,
+
+    cargarEstadosVentas,
+    cargarEstadosCompras
 } = require('../servicios/getFacturas') 
 
 const {
@@ -26,10 +29,18 @@ const router = express.Router()
 
 router.get('/ventas/', async (req, res, next)=> {
     try {
-        const limit = parseInt(req.query.limit) || 100
-        const offset = parseInt(req.query.offset) || 0
-        const facturas = await cargarFacturasVenta(limit, offset)
+        const facturas = await cargarFacturasVenta(req.query)
         res.json(respuesta('Facturas de venta cargadas', facturas))
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+router.get('/ventas/estados', async (req, res, next) => {
+    try {
+        const estados = await cargarEstadosVentas()
+        res.json(respuesta('Estados de venta cargados', estados))
     }
     catch (error) {
         next(error)
@@ -49,17 +60,25 @@ router.get('/ventas/:id', async (req, res, next)=> {
 
 router.get('/compras/', async (req, res, next)=> {
     try {
-        const limit = parseInt(req.query.limit) || 100
-        const offset = parseInt(req.query.offset) || 0
-
-        console.log('limit', typeof limit)
-        const facturas = await cargarFacturasCompra(limit, offset)
+        const facturas = await cargarFacturasCompra(req.query)
         res.json(respuesta('Facturas de compra cargadas', facturas))
     }
     catch (error) {
         next(error)
     }
 })
+
+router.get('/compras/estados', async (req, res, next) => {
+
+    try {
+        const estados = await cargarEstadosCompras()
+        res.json(respuesta('Estados de compra cargados', estados))
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
 
 router.get('/compras/:id', async (req, res, next)=> {
     try {
@@ -152,49 +171,6 @@ router.patch('/ventas/:id/abonar', async (req, res, next) => {
     }
 
 })
-
-// router.patch('/', async (req, res)=> {
-//     const body = req.body
-//     try {
-//         const producto = await modificarProducto(body)
-//         res.json({
-//             status: "success",
-//             message: 'Producto modificado',
-//             data: producto
-//         })
-//     }
-//     catch {
-//         res.json({
-//             status: "error",
-//             message: 'Error al modificar el producto',
-//             data: null
-//         })
-//     }
-// })
-
-
-
-
-// router.post('/ventas', async (req, res)=> {
-//     const body = req.body
-//     try {
-//         const factura = await crearFacturaVenta(body)
-//         res.json({
-//             message: 'Factura creada',
-//             body: factura
-//         })
-//     }
-//     catch (error) {
-//         res.json({
-//             message: 'Error al crear la factura',
-//             error
-//         })
-//     }
-// })
-
-
-
-
 
 
 

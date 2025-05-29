@@ -1,7 +1,7 @@
+const { Model } = require('sequelize');
+
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Producto extends Model {
 
@@ -47,21 +47,21 @@ module.exports = (sequelize, DataTypes) => {
     marca_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'productos_marcas',
+        model: 'ProductoMarca',
         key: 'id',
       }
     },
     categoria_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'productos_categorias',
+        model: 'ProductoCategoria',
         key: 'id',
       }
     },
     medida_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: 'productos_medidas',
+        model: 'ProductoMedida',
         key: 'id',
       }
     },
@@ -85,6 +85,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
+      validate: {
+        isInt: true
+      }
     },
     total: {
       type: DataTypes.BIGINT,
@@ -95,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Producto',
     timestamps: false,
-    tableName: 'productos',
+    tableName: 'Producto',
     hooks: {
       beforeUpdate: (producto) => {
         if (producto.changed('cantidad')) {

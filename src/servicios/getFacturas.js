@@ -1,78 +1,56 @@
 const { Cliente,  VentaEstado, CompraEstado} = require('../database/models')
 const { Compra, Venta, DetalleCompra, DetalleVenta, Producto, ProductoMarca, ProductoMedida} = require('../database/models')
 
-async function cargarEstadosVenta(){
-    const estados = await VentaEstado.findAll({})
+
+const {ClaseFacturaCompra} = require('./facturasCompra/clase')
+const { ClaseFacturaVenta } = require('./facturasVenta/clase')
+
+async function cargarEstadosVentas(){
+    const estados = await VentaEstado.findAll()
 
     return estados
 }
 
-async function cargarEstadosCompra(){
-    const estados = await CompraEstado.findAll({})
+async function cargarEstadosCompras(){
+    const estados = await CompraEstado.findAll()
 
     return estados
 }
 
 
-async function cargarFacturasCompra(limit, offset){
-    console.log('limit', limit)
-    console.log('offset', offset)
+async function cargarFacturasCompra(query){
+
     const {count, rows} = await Compra.findAndCountAll(
         {
-            include: [
-                {model: Cliente, as: "clienteCompra", attributes: ['nombre']}, 
-                {model: CompraEstado, as: 'estadoCompra', attributes: ['nombre']}],
-            //se excluye el id del cliente
+            include: ClaseFacturaCompra.incluir(),
+            where: ClaseFacturaCompra.where(query),
             attributes: {exclude: ['cliente_id']},
-            limit: limit,
-            offset: offset,
+            limit: Number(query.limit),
+            offset: Number(query.offset),
             order: [['id', 'DESC']]
         }
     )
 
-    const compras = rows.map(factura => {
-        return {
-            id: factura.id,
-            fecha: factura.fecha,
-            hora: factura.hora,
-            cliente: factura.clienteCompra.nombre,
-            pagado: factura.pagado,
-            total: factura.total,
-            estado_id: factura.estado_id,
-            estado: factura.estadoCompra.nombre
-        }
-    })
+    const compras = ClaseFacturaCompra.formatear(rows)
+
     return {count, rows: compras}
 }
 
 
 
-async function cargarFacturasVenta(limit, offset){
+async function cargarFacturasVenta(query){
 
     const {count, rows } = await Venta.findAndCountAll(
         {
-            include: [
-                {model: VentaEstado, as: 'estadoVenta', attributes: ['nombre']},
-                {model: Cliente, as: 'clienteVenta', attributes: ['nombre']}
-            ],
+            include: ClaseFacturaVenta.incluir(),
+            where: ClaseFacturaVenta.where(query),
             attributes: {exclude: ['cliente_id']},
-            limit: limit,
-            offset: offset,
+            limit: Number(query.limit),
+            offset: Number(query.offset),
             order: [['id', 'DESC']]
         }
     )
-    const ventas = rows.map(factura => {
-        return {
-            id: factura.id,
-            fecha: factura.fecha,
-            hora: factura.hora,
-            cliente: factura.clienteVenta.nombre,   
-            pagado: factura.pagado,
-            total: factura.total,
-            estado_id: factura.estado_id,
-            estado: factura.estadoVenta.nombre,
-        }
-    })
+    const ventas = ClaseFacturaVenta.formatear(rows)
     return {count, rows: ventas}
 }
 
@@ -189,6 +167,6 @@ module.exports = {
     cargarFacturaCompra,
     cargarFacturaVenta,
 
-    cargarEstadosCompra,
-    cargarEstadosVenta
+    cargarEstadosCompras,
+    cargarEstadosVentas
 }

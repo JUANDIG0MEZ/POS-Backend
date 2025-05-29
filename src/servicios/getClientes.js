@@ -7,6 +7,11 @@ const {
     Pago
 } = require('../database/models')
 
+
+
+
+
+
 async function cargarClientes(limit, offset){
      
     
@@ -32,6 +37,13 @@ async function cargarClientes(limit, offset){
 
     return clientesFormateados
 }
+
+
+async function cargarTiposClientes(){
+    const tipos = await ClienteTipo.findAll()
+    return tipos
+}
+
 
 async function cargarCliente(id){
     const cliente = await Cliente.findByPk(id, {
@@ -140,5 +152,6 @@ module.exports = {
     cargarVentaCliente,
     cargarCompraCliente,
     cargarAbonosCliente,
-    cargarPagosCliente
+    cargarPagosCliente,
+    cargarTiposClientes
 }

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('detalles_compras', {
+    await queryInterface.createTable('DetalleCompra', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'compras',
+          model: 'Compra',
           key: 'id'
         }
       },
@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'productos',
+          model: 'Producto',
           key: 'id'
         }
       },
@@ -47,7 +47,7 @@ module.exports = {
       
     });
 
-    await queryInterface.addConstraint('detalles_compras', {
+    await queryInterface.addConstraint('DetalleCompra', {
       fields: ['compra_id', 'producto_id'],
       type: 'unique',
       name: 'unique_compra_producto'
@@ -60,6 +60,6 @@ module.exports = {
 
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('detalles_compras');
+    await queryInterface.dropTable('DetalleCompra');
   }
 };

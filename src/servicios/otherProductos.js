@@ -8,10 +8,6 @@ const {
 
 } = require('../database/models');
 
-const {
-    cargarProducto
-} = require('./getProductos');
-
 
 const path = require('path')
 const fs = require('fs').promises
@@ -45,9 +41,9 @@ async function crearProducto(req) {
 
         await transaction.commit()
 
-
-        const productoFormateado = await cargarProducto(producto.id)
-        return productoFormateado;
+        return {
+            producto: producto
+        }
     }
     catch (error) {
         await transaction.rollback();

@@ -7,52 +7,52 @@ const {
     ProductoMedida
 } = require('../database/models')
 
+
+const {
+    ClaseProducto
+} = require('./productos/clase')
+
 async function cargarProductos() {
+
+    const permisos = {precio_compra: true, cantidad: true, total: true}
+
     const productos = await Producto.findAll({
             //attributes: { exclude: ['marca_id', 'categoria_id', 'medida_id'] },
-            include: [
-                { model: ProductoMedida, attributes: ['nombre'], as: 'medidaProducto' },
-                { model: ProductoCategoria, attributes: ['nombre'], as: 'categoriaProducto' },
-                { model: ProductoMarca,attributes: ['nombre'], as: 'marcaProducto' },
-            ]
+            include: ClaseProducto.incluir(),
+            exclude: ClaseProducto.excluir(permisos),
+            order: [['id', 'DESC']]
+
         })
-        const productosFormateados = productos.map(producto => {
-            return {
-                id: producto.id,
-                nombre: producto.nombre,
-                marca: producto.marcaProducto ? producto.marcaProducto.nombre : "",
-                categoria: producto.categoriaProducto ? producto.categoriaProducto.nombre : "",
-                medida: producto.medidaProducto ? producto.medidaProducto.nombre : "",
-                precio_compra: producto.precio_compra,
-                precio_venta: producto.precio_venta,
-                cantidad: producto.cantidad,
-                total: producto.total
-            }
-        })
+
+    const productosFormateados = ClaseProducto.formatear(productos, permisos)
+    
     return productosFormateados
 }
 
-async function cargarProducto(id) {
-    const producto = await Producto.findByPk(id, {
-        include: [
-            { model: ProductoMedida, as: 'medidaProducto', attributes: ['nombre'] },
-            { model: ProductoCategoria, as: 'categoriaProducto', attributes: ['nombre'] },
-            { model: ProductoMarca, as: 'marcaProducto', attributes: ['nombre'] }
-        ]
-    })
-    const productoFormateado = {
-        id: producto.id,
-        nombre: producto.nombre,
-        marca: producto.marcaProducto ? producto.marcaProducto.nombre : "",
-        categoria: producto.categoriaProducto ? producto.categoriaProducto.nombre : "",
-        medida: producto.medidaProducto ? producto.medidaProducto.nombre : "",
-        precio_compra: producto.precio_compra,
-        precio_venta: producto.precio_venta,
-        cantidad: producto.cantidad,
-        total: producto.total
-    }
-    return productoFormateado
-}
+// async function cargarProducto(id) {
+
+//     permisos = {precio_compra: true, cantidad: true, total: true}
+//     const producto = await Producto.findByPk(id, {
+//         include: [
+//             { model: ProductoMedida, as: 'medidaProducto', attributes: ['nombre'] },
+//             { model: ProductoCategoria, as: 'categoriaProducto', attributes: ['nombre'] },
+//             { model: ProductoMarca, as: 'marcaProducto', attributes: ['nombre'] }
+//         ],
+//         order: [['id', 'DESC']]
+//     })
+//     const productoFormateado = {
+//         id: producto.id,
+//         nombre: producto.nombre,
+//         marca: producto.marcaProducto ? producto.marcaProducto.nombre : "",
+//         categoria: producto.categoriaProducto ? producto.categoriaProducto.nombre : "",
+//         medida: producto.medidaProducto ? producto.medidaProducto.nombre : "",
+//         precio_compra: producto.precio_compra,
+//         precio_venta: producto.precio_venta,
+//         cantidad: producto.cantidad,
+//         total: producto.total
+//     }
+//     return productoFormateado
+// }
 
 async function cargarImagenesProducto(id) {
     const imagenes = await ProductoImagen.findAll({
@@ -83,7 +83,7 @@ async function cargarMarcas() {
 
 module.exports = {
     cargarProductos,
-    cargarProducto,
+    // cargarProducto,
     cargarCategorias,
     cargarMedidas,
     cargarMarcas,

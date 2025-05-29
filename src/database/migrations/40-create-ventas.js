@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('ventas', {
+    await queryInterface.createTable('Venta', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -22,7 +22,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 1,
         references: {
-          model: 'clientes',
+          model: 'Cliente',
           key: "id" 
         }
       },
@@ -41,28 +41,33 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
-      estado_pago: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
-      },
       por_pagar: {
         type: Sequelize.BIGINT,
         allowNull: false,
         defaultValue: 0
       },
-      estado_id: {
-        type: Sequelize.INTEGER,
+      estado_entrega_id: {
+        type: Sequelize.SMALLINT,
         allowNull: false,
         defaultValue: 1,
         references: {
-          model: 'ventas_estados',
+          model: 'VentaEstadoEntrega',
           key: "id"
         }
+      },
+      estado_pago_id: {
+        type: Sequelize.SMALLINT,
+        allowNull: false,
+        defaultValue: true,
+        references: {
+          model: 'VentaEstadoPago',
+          key: "id"
+        }
+      
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ventas');
+    await queryInterface.dropTable('Venta');
   }
 };

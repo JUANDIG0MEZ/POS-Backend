@@ -1,5 +1,6 @@
 const { cargarFacturasVenta } = require('../datosFaker')
 const { Venta} = require('../models')
+
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
@@ -16,7 +17,7 @@ module.exports = {
       })
     }
 
-    transaction.commit()
+    await transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {

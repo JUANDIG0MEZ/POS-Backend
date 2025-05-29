@@ -1,7 +1,7 @@
+const { Model } = require('sequelize');
+
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Venta extends Model {
     /**
@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'clientes',
+        model: 'Cliente',
         key: 'id'
       }
     },
@@ -54,7 +54,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
       validate: {
-        min: 0
+        min: 0,
+        isInt: true
       }
     },
     total: {
@@ -62,30 +63,38 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
       validate: {
-        min: 0
+        min: 0,
+        isInt: true
       }
     },
-    estado_pago: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-    },
+    
     por_pagar: {
       type: DataTypes.BIGINT,
       defaultValue: 0,
+      validate: {
+        min: 0,
+        isInt: true
+      }
     },
-
-    estado_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    estado_pago_id: {
+      type: DataTypes.SMALLINT,
       defaultValue: 1,
       references: {
-        model: 'ventas_estados',
+        model: 'VentaEstadoPago',
+        key: 'id'
+      }
+    },
+    estado_entrega_id: {
+      type: DataTypes.SMALLINT,
+      defaultValue: 1,
+      references: {
+        model: 'VentaEstadoEntrega',
         key: 'id'
     }},
   }, {
     sequelize,
     modelName: 'Venta',
-    tableName: 'ventas',
+    tableName: 'Venta',
     timestamps: false,
     hooks: {
       beforeUpdate: async (venta, options) => {
@@ -105,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
             pagado = total;
           }
 
-          venta.pagado = pagado;
+          venta.pagado = parseInt(pagado);
           venta.por_pagar = total - pagado;
 
           const clienteId = venta.get('cliente_id');
@@ -116,7 +125,7 @@ module.exports = (sequelize, DataTypes) => {
           });
 
           
-          cliente.debe = cliente.debe - venta.previous('por_pagar') + venta.por_pagar;
+          cliente.debe = cliente.debe - venta.previous('por_pagar') + parseInt(venta.por_pagar);
           await cliente.save({transaction: options.transaction});
 
 

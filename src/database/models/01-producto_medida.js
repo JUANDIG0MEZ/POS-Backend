@@ -1,7 +1,8 @@
+const { Model } = require('sequelize');
+
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
+
 module.exports = (sequelize, DataTypes) => {
   class ProductoMedida extends Model {
 
@@ -31,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'ProductoMedida',
     timestamps: false,
-    tableName: 'productos_medidas'
+    tableName: 'ProductoMedida'
   });
   return ProductoMedida;
 };

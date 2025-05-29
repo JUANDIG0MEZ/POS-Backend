@@ -1,6 +1,6 @@
-const { tr } = require('@faker-js/faker');
 const { cargarAbonos} = require('../datosFaker')
 const {Abono} = require('../models')
+
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
@@ -18,10 +18,10 @@ module.exports = {
       })
     }
     
-    transaction.commit()
+    await transaction.commit()
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('abonos', null, {})
+    await queryInterface.bulkDelete('Abono', null, {})
   }
 };

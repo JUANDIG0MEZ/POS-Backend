@@ -16,14 +16,16 @@ async function crearFacturaCompra(body){
         const fechaFormato = fechaActual.toISOString().split('T')[0];
         const horaFormato = fechaActual.toTimeString().split(' ')[0];
 
-        const infoCompra = {
+        const compraNueva = {
             fecha: fechaFormato,
             hora: horaFormato,
             cliente_id: body.info.cliente_id,
             estado_id: body.info.estado_id
         }
 
-        const compra = await Compra.create(infoCompra, {transaction})
+        const compra = await Compra.create(compraNueva, {transaction})
+
+
         const dataDetalles = body.datos
 
         // Agregar los detalles de la compra
@@ -35,11 +37,19 @@ async function crearFacturaCompra(body){
         }
 
         await compra.reload({transaction})
-        compra.pagado = body.info.pagado || 0
+
+        if (body.info.pagado) {
+            compra.pagado = parseInt(body.info.pagado)
+        }
+
+
+
         await compra.save({transaction})
 
         await transaction.commit()
-        return {facturaCreada: true}
+        return {
+            factura: compra,
+        }
     }
     catch (error){
         await transaction.rollback()
@@ -78,11 +88,17 @@ async function crearFacturaVenta(body){
         
 
         await venta.reload({transaction})
-        venta.pagado = body.info.pagado || 0
+        
+        if (body.info.pagado) {
+            venta.pagado = parseInt(body.info.pagado)
+        }
+
         await venta.save({transaction})
 
         await transaction.commit()
-        return {facturaCreada: true}
+        return {
+            factura: venta
+        }
     }
     catch (error) {
         await transaction.rollback()
@@ -96,6 +112,7 @@ async function modificarCompra(body, idCompra){
     // Se van a modificar todos los producto de la compra
     try {
 
+
         for (const dataDetalle of body){
             const detalle = await DetalleCompra.findOne({
                 where: {
@@ -106,27 +123,27 @@ async function modificarCompra(body, idCompra){
                 lock: transaction.LOCK.UPDATE
             })
             if (dataDetalle.cantidad !== undefined){
-                detalle.cantidad = dataDetalle.cantidad
+                detalle.cantidad = parseInt(dataDetalle.cantidad)
             }
             if (dataDetalle.precio !== undefined){
-                detalle.precio = dataDetalle.precio
+                detalle.precio = parseInt(dataDetalle.precio)
             }
             await detalle.save({transaction})
         }
 
         const compra = await Compra.findByPk(idCompra, {transaction})
-        const resData = {
+        const info = {
             pagado: compra.pagado,
             total: compra.total,
-            por_pagar: compra.por_pagar
-
+            por_pagar: compra.por_pagar,
+            estado_id: compra.estado_id,
         }
 
 
         await transaction.commit()
-
-
-        return resData
+        return {
+            info
+        }
     }
     catch (error){
         await transaction.rollback()
@@ -139,6 +156,12 @@ async function modificarVenta(body, idVenta){
     // Se van a modificar todos los producto de la compra
     try {
 
+        const permisos = {modificar : true}
+
+        if (!permisos.modificar){
+            throw new Error("No tienes permisos para modificar la venta")
+        }
+
         for (const dataDetalle of body){
             const detalle = await DetalleVenta.findOne({
                 where: {
@@ -149,17 +172,28 @@ async function modificarVenta(body, idVenta){
                 lock: transaction.LOCK.UPDATE
             })
             if (dataDetalle.cantidad !== undefined){
-                detalle.cantidad = dataDetalle.cantidad
+                detalle.cantidad = parseInt(dataDetalle.cantidad)
             }
             if (dataDetalle.precio !== undefined){
-                detalle.precio = dataDetalle.precio
+                detalle.precio = parseInt(dataDetalle.precio)
             }   
             await detalle.save({transaction})
         }
+
+        const venta = await Venta.findByPk(idVenta,{transaction})
+        const info = {
+            pagado: venta.pagado,
+            total: venta.total,
+            por_pagar: venta.por_pagar,
+            estado_id: venta.estado_id,
+        }
+
         await transaction.commit()
 
 
-        return {cambiosRealizados: true}
+        return {
+            info
+        }
     }
     catch (error){
         await transaction.rollback()
