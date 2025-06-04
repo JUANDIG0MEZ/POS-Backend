@@ -5,7 +5,7 @@ const {
     Abono,
     Compra,
     Venta
-    } = require('../database/models');
+    } = require('../../database/models');
 
 
 

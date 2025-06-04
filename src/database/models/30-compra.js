@@ -1,4 +1,4 @@
-const { Model } = require('sequelize');
+const { Model } = require('sequelize')
 
 'use strict';
 
@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       Compra.belongsTo(models.Cliente, {
-        foreignKey: "cliente_id",
+        foreignKey: 'cliente_id',
         as: 'clienteCompra'
       })
 
@@ -19,12 +19,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'compra_id',
         as: 'compraDetalle'
       })
-      Compra.belongsTo(models.CompraEstado,
+      Compra.belongsTo(models.CompraEstadoEntrega,
         {
-          foreignKey: 'estado_id',
-          as: 'estadoCompra'
+          foreignKey: 'estado_entrega_id',
+          as: 'estadoEntregaCompra'
         }
       )
+
+      Compra.belongsTo(models.CompraEstadoPago, {
+        foreignKey: 'estado_pago_id',
+        as: 'estadoPagoCompra'
+      })
     }
   }
   Compra.init({
@@ -59,10 +64,6 @@ module.exports = (sequelize, DataTypes) => {
         isInt: true
       }
     },
-    estado_pago: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true
-    },
     por_pagar: {
       type: DataTypes.BIGINT,
       defaultValue: 0,
@@ -89,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    
+
     estado_pago_id: {
       type: DataTypes.SMALLINT,
       allowNull: false,
@@ -98,6 +99,9 @@ module.exports = (sequelize, DataTypes) => {
         model: 'CompraEstadoPago',
         key: 'id'
       }
+    },
+    nombre_cliente: {
+      type: DataTypes.STRING
     }
 
   }, {
@@ -108,46 +112,66 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeUpdate: async (compra, options) => {
         if (compra.changed('id') || compra.changed('fecha') || compra.changed('hora') || compra.changed('cliente_id')) {
-          throw new Error('No se puede modificar el id, fecha, hora o cliente de la compra una vez creada');
+          throw new Error('No se puede modificar el id, fecha, hora o cliente de la compra una vez creada')
         }
-
 
         if (compra.changed('pagado') || compra.changed('total')) {
-          
+          const pagado = compra.changed('pagado') ? Number(compra.pagado) : Number(compra.previous('pagado'))
+          const total = compra.changed('total') ? Number(compra.total) : Number(compra.previous('total'))
 
-          if (compra.pagado < 0 || compra.total < 0) {
-          throw new Error('El valor pagado y el total no puede ser menor a 0');
+          if (pagado < 0 || total < 0) {
+            throw new Error('El valor pagado y el total no puede ser menor a 0')
+          }
+          if (pagado > total) {
+            compra.pagado = total
           }
 
+          const por_pagar = total - pagado
+          compra.por_pagar = por_pagar
 
-          if (compra.pagado > compra.total) {
-            compra.pagado = compra.total;
-          }
-
-          compra.por_pagar = compra.total - compra.pagado
-
-
-          const clienteId = compra.get('cliente_id');
-          const Cliente = compra.sequelize.models.Cliente;
-          const cliente = await Cliente.findByPk(clienteId,{
-              transaction: options.transaction,
-              lock: options.transaction.LOCK.UPDATE
-            });
+          const clienteId = compra.get('cliente_id')
+          const Cliente = compra.sequelize.models.Cliente
+          const cliente = await Cliente.findByPk(clienteId, {
+            transaction: options.transaction,
+            lock: options.transaction.LOCK.UPDATE
+          })
 
 
-          cliente.por_pagarle = cliente.por_pagarle - compra.previous('por_pagar') + parseInt(compra.por_pagar);
-          await cliente.save({transaction: options.transaction});
+          cliente.por_pagarle = Number(cliente.por_pagarle) - Number(compra.previous('por_pagar')) + por_pagar
+          await cliente.save({ transaction: options.transaction })
           
 
-          if (compra.por_pagar == 0) {
-            compra.estado_pago_id = 2;
+          if (compra.por_pagar > 0) {
+            compra.estado_pago_id = 1
           } else {
-            compra.estado_pago_id = 1;
+            compra.estado_pago_id = 2
           }
+        }
+      },
 
+      beforeCreate: async (compra, options) => {
+        const cliente_id = Number(compra.cliente_id)
+
+        // Valor por defecto
+        if (!cliente_id) {
+          compra.cliente_id = 1
+        }
+
+        if (cliente_id < 2 && !compra.nombre_cliente) {
+          throw new Error('Nombre de cliente invalido')
+        }
+
+        if (cliente_id > 1) {
+          const Cliente = compra.sequelize.models.Cliente
+          const cliente = await Cliente.findOne({
+            where: { id: cliente_id },
+            nombre: ['nombre']
+          })
+
+          compra.nombre_cliente = cliente.nombre
         }
       }
-    },
-  });
-  return Compra;
+    }
+  })
+  return Compra
 };

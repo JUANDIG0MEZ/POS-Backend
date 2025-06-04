@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Venta', {
       id: {
         allowNull: false,
@@ -11,11 +11,11 @@ module.exports = {
       },
       fecha: {
         type: Sequelize.DATEONLY,
-        allowNull: false,
+        allowNull: false
       },
       hora: {
         type: Sequelize.TIME,
-        allowNull: false,
+        allowNull: false
       },
       cliente_id: {
         type: Sequelize.INTEGER,
@@ -23,23 +23,23 @@ module.exports = {
         defaultValue: 1,
         references: {
           model: 'Cliente',
-          key: "id" 
+          key: 'id'
         }
       },
       direccion: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'Recogido en tienda',
+        defaultValue: 'Recogido en tienda'
       },
       pagado: {
         type: Sequelize.BIGINT,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 0
       },
       total: {
         type: Sequelize.BIGINT,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 0
       },
       por_pagar: {
         type: Sequelize.BIGINT,
@@ -52,7 +52,7 @@ module.exports = {
         defaultValue: 1,
         references: {
           model: 'VentaEstadoEntrega',
-          key: "id"
+          key: 'id'
         }
       },
       estado_pago_id: {
@@ -61,13 +61,19 @@ module.exports = {
         defaultValue: true,
         references: {
           model: 'VentaEstadoPago',
-          key: "id"
+          key: 'id'
         }
-      
+
       },
-    });
+
+      nombre_cliente: {
+        type: Sequelize.STRING,
+        allowNull: false
+      }
+
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Venta');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Venta')
   }
-};
+}

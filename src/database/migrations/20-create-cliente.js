@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Cliente', {
       id: {
         allowNull: false,
@@ -12,7 +12,7 @@ module.exports = {
       nombre: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        unique: true
       },
       direccion: {
         type: Sequelize.STRING,
@@ -39,7 +39,7 @@ module.exports = {
       por_pagarle: {
         type: Sequelize.BIGINT,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 0
 
       },
       debe: {
@@ -50,9 +50,9 @@ module.exports = {
           min: 0
         }
       }
-    });
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Cliente');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Cliente')
   }
-};
+}

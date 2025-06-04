@@ -1,5 +1,5 @@
-const { CompraEstadoPago } = require('../../models/index.js');
-const { cargarEstadosPagoCompra } = require('../datosFaker/index.js');
+const { CompraEstadoPago } = require('../models');
+const { cargarEstadosPagoCompra } = require('../datosFaker');
 
 'use strict';
 
@@ -9,6 +9,7 @@ module.exports = {
     const estados = cargarEstadosPagoCompra();
 
     const transaction = await queryInterface.sequelize.transaction();
+    console.log("Estados de pago de compra", estados.slice(0, 5));
     await CompraEstadoPago.bulkCreate(estados, {
       individualHooks: true,
       validate: true,
@@ -17,7 +18,5 @@ module.exports = {
     await transaction.commit();
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('CompraEstadoPago', null, {});
-  }
+
 };

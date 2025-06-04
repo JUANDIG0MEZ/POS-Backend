@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 
 const {
-    validatorHandler,
+    //validatorHandler,
     validatorHandlerFormData
 } = require('../middlewares/validator.handler')
 
@@ -27,77 +27,17 @@ const {
 
 const upload = multer({ storage: storage })
 
-const { 
-    cargarProductos,
-    cargarProducto,
-    cargarCategorias,
-    cargarMarcas,
-    cargarMedidas,
-    cargarImagenesProducto
-} = require('../servicios/getProductos')
-
-const {
-    crearProducto,
-    modificarProducto,
-    //modificarProducto
-} = require('../servicios/otherProductos')
+const { cargarImagenesProducto } = require('../servicios/productos/getProducto')
+const { crearProducto } = require('../servicios/productos/postProducto')
+const { modificarProducto} = require('../servicios/productos/patchProducto')
 
 
 const { respuesta } = require('./funciones')
 const router = express.Router()
 
 
-router.get('/', async (req, res, next)=>{
-    try {
-        const productos = await cargarProductos()
-        res.json(respuesta  ('Productos cargados', productos))
-    }
-    catch(error) {
-        next(error)
-    }
-})
 
-router.get('/categorias', async (req, res, next)=>{
-    try {
-        const categorias = await cargarCategorias()
-        res.json(respuesta('Categorias cargadas', categorias))
-    }
-    catch(error) {
-        next(error)
-    }
-})
 
-router.get('/medidas', async (req, res, next)=>{
-    try {
-        const medidas = await cargarMedidas()
-        res.json(respuesta('Medidas cargadas', medidas))
-    }
-    catch (error) {
-        next(error)
-    }
-})
-
-router.get('/marcas', async (req, res, next)=>{
-    try {
-        const marcas = await cargarMarcas()
-        res.json(respuesta('Marcas cargadas', marcas))
-    }
-    catch (error) {
-        next(error)
-    }
-})
-
-router.get('/:id', async (req, res, next)=>{
-    try {
-        const { id } = req.params
-        const producto = await cargarProducto(id)
-        res.send(producto)
-    }
-    catch (error) {
-        next(error)
-    }
-    
-})
 
 router.get("/:id/imagenes", async (req, res, next) => {
     try {
@@ -140,24 +80,6 @@ router.patch("/:id",
     }
 })
 
-
-// router.patch("/:id", async (req, res, next) => {
-//     try {
-//         const { id } = req.params
-
-//         console.log(req)
-
-
-
-
-//         // const productoModificado = await modificarProducto(req.body, id)
-//         // //const producto = await modificarProducto(datos)
-//         // res.json(respuesta('Producto modificado', productoModificado))
-//     }
-//     catch (error) {
-//         next(error)
-//     }
-// })
 
 
 module.exports = router

@@ -10,6 +10,8 @@ module.exports = {
 
     const transaction = await queryInterface.sequelize.transaction();
 
+    console.log("Abonos", abonos.slice(0, 5))
+
     for (let i =0; i < abonos.length; i++){
       await Abono.create(abonos[i], {
         individualHooks: true,
@@ -21,7 +23,4 @@ module.exports = {
     await transaction.commit()
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Abono', null, {})
-  }
 };

@@ -58,6 +58,11 @@ module.exports = {
           model: 'CompraEstadoPago',
           key: "id"
         }
+      },
+
+      nombre_cliente: {
+        type: Sequelize.STRING,
+        allowNull: false
       }
     });
   },

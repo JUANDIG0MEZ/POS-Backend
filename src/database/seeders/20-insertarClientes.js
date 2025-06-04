@@ -8,6 +8,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const clientes = cargarClientes()
     const transaction = await queryInterface.sequelize.transaction();
+    console.log("Clientes", clientes.slice(0, 5))
     await Cliente.bulkCreate(clientes, {
       individualHooks: true ,
       validate: true,
@@ -16,7 +17,5 @@ module.exports = {
     await transaction.commit()
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Cliente', null, { truncate: true})
-  }
+
 };

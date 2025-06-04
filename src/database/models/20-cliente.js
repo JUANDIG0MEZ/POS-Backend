@@ -87,7 +87,8 @@ module.exports = (sequelize, DataTypes) => {
         min: 0,
         isInt: true
       }
-    }
+    },
+
   }, {
     sequelize,
     modelName: 'Cliente',

@@ -9,6 +9,7 @@ module.exports = {
     const estados = cargarEstadosEntregaCompra()
 
     const transaction = await queryInterface.sequelize.transaction();
+    console.log("Estados de entrega de compra", estados.slice(0, 5))
     await CompraEstadoEntrega.bulkCreate(estados, {
       individualHooks: true ,
       validate: true,
@@ -17,7 +18,5 @@ module.exports = {
     await transaction.commit()
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('CompraEstadoEntrega', null, {});
-  }
+
 };

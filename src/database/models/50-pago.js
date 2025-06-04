@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'cliente_id',
         as: 'clientePago'
       })
+
+      Pago.belongsTo(models.MetodoPago, {
+        foreignKey: 'metodo_pago_id',
+        as: 'pagoMetodoPago'
+      })
     }
   }
   Pago.init({
@@ -41,6 +46,20 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         min: 0
       }
+    },
+
+    metodo_pago_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'MetodoPago',
+        key: 'id'
+      }
+    },
+
+    descripcion: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
 
   }, {
@@ -49,6 +68,29 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'Pago',
     timestamps: false,
 
+    hooks: {
+      beforeCreate: async (pago, options) => {
+      if (pago.valor === 0) {
+        throw new Error("El valor del pago no puede ser 0");
+      }
+      if (!(pago.metodo_pago_id == 0 || pago.metodo_pago_id == 1) && !pago.descripcion){
+        throw new Error("Se debe agregar informacion del pago")
+      }
+      else {
+        pago.descripcion = ""
+      }
+      if (!pago.fecha || !pago.hora) {
+        throw new Error("La fecha y hora son requeridas");
+      }
+      if (!pago.cliente_id) {
+        throw new Error("El cliente es requerido");
+      }
+      if (!pago.metodo_pago_id) {
+        throw new Error("El método de pago es requerido");
+      }
+    }
+    }
   });
+
   return Pago;
 };

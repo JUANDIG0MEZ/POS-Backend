@@ -6,6 +6,7 @@ const {
 
 const {
     cargarClientes,
+    cargarClientesNombres,
     cargarCliente,
     cargarCompraCliente,
     cargarVentaCliente,
@@ -16,8 +17,6 @@ const {
 
 
 const {
-    // crearCliente,
-    // crearAbono,
     crearPago,
     crearPagosFacturas,
     crearAbonosFacturas
@@ -28,7 +27,7 @@ const router = express.Router()
 
 router.get('/', async (req, res, next)=>{
     try {
-        const clientes = await cargarClientes()
+        const clientes = await cargarClientes(req.query)
         res.json(respuesta('Clientes cargados', clientes))
     }
     catch (error) {
@@ -36,15 +35,25 @@ router.get('/', async (req, res, next)=>{
     }
 })
 
-router.get('/tipos', async (req, res, next)=>{
-    try {
-        const tipos = await cargarTiposClientes()
-        res.json(respuesta('Tipos de clientes cargados', tipos))
-    }
-    catch (error) {
-        next(error)
-    }
-})
+// router.get('/nombres', async (req, res, next)=>{
+//     try {
+//         const clientes = await cargarClientesNombres(req.query)
+//         res.json(respuesta('Clientes cargados', clientes))
+//     }
+//     catch (error) {
+//         next(error)
+//     }
+// })
+
+// router.get('/tipos', async (req, res, next)=>{
+//     try {
+//         const tipos = await cargarTiposClientes()
+//         res.json(respuesta('Tipos de clientes cargados', tipos))
+//     }
+//     catch (error) {
+//         next(error)
+//     }
+// })
 
 router.get('/:id', async (req, res, next)=>{
     try {

@@ -8,6 +8,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const categorias = cargarCategorias()
     const transaction = await queryInterface.sequelize.transaction()
+    console.log("Categorias", categorias.slice(0, 1))
     await ProductoCategoria.bulkCreate(categorias, {
       individualHooks: true ,
       validate: true,
@@ -16,7 +17,5 @@ module.exports = {
     await transaction.commit()
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('ProductoCategoria', null, {})
-  }
+
 };

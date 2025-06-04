@@ -1,7 +1,7 @@
-const {cargarMedidas} = require('../datosFaker');
-const {ProductoMedida} = require('../models')
+'use strict'
 
-'use strict';
+const { cargarMedidas } = require('../datosFaker')
+const { ProductoMedida } = require('../models')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -9,14 +9,11 @@ module.exports = {
     const medidas = cargarMedidas()
     const transaction = await queryInterface.sequelize.transaction()
     await ProductoMedida.bulkCreate(medidas, {
-      individualHooks: true ,
+      individualHooks: true,
       validate: true,
       transaction
     })
     await transaction.commit()
-  },
-
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('ProductoMedida', null, { truncate: true})
   }
-};
+
+}

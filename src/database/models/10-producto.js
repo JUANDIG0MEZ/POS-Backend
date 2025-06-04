@@ -101,20 +101,32 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'Producto',
     hooks: {
       beforeUpdate: (producto) => {
-        if (producto.changed('cantidad')) {
-          if (producto.cantidad < 0) {
+        if (producto.changed('cantidad') || producto.changed('precio_compra')) {
+          
+          const cantidad = Number(producto.cantidad)
+          const precio_compra = Number(producto.precio_compra)
+
+
+
+          if (cantidad < 0) {
             producto.total = 0;
           }
           else {
-            producto.total = producto.cantidad * producto.precio_compra;
+            producto.total = cantidad* precio_compra;
           }
         }
       },
       beforeCreate(producto) {
-        if (producto.cantidad < 0){
+
+        const cantidad = Number(producto.cantidad)
+        const precio_compra = Number(producto.precio_compra)
+
+
+        if (cantidad < 0){
           throw new Error('La cantidad no puede ser negativa');
         }
-        producto.total = producto.cantidad * producto.precio_compra;
+
+        producto.total = cantidad * precio_compra
       }
     }
   });

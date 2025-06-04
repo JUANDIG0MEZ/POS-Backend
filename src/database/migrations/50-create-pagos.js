@@ -28,6 +28,18 @@ module.exports = {
       valor: {
         type: Sequelize.BIGINT,
         allowNull: false,
+      },
+      metodo_pago_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'MetodoPago',
+          key: 'id'
+        }
+      },
+      descripcion: {
+        type: Sequelize.STRING,
+        allowNull: false,
       }
     });
   },

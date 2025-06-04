@@ -10,7 +10,10 @@ module.exports = {
 
     const transaction = await queryInterface.sequelize.transaction();
 
+    console.log("Pagos", pagos.slice(0, 2))
+
     for (let i =0; i < pagos.length; i++){
+      console.log("Pago: ", i)
       await Pago.create(pagos[i], {
         individualHooks: true,
         validate: true,
@@ -22,7 +25,4 @@ module.exports = {
 
   },
 
-  async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('Pago', null, {});
-  }
 };
