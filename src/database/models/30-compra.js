@@ -1,6 +1,6 @@
-const { Model } = require('sequelize')
+'use strict'
 
-'use strict';
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class Compra extends Model {
@@ -136,10 +136,8 @@ module.exports = (sequelize, DataTypes) => {
             lock: options.transaction.LOCK.UPDATE
           })
 
-
           cliente.por_pagarle = Number(cliente.por_pagarle) - Number(compra.previous('por_pagar')) + por_pagar
           await cliente.save({ transaction: options.transaction })
-          
 
           if (compra.por_pagar > 0) {
             compra.estado_pago_id = 1
@@ -150,21 +148,27 @@ module.exports = (sequelize, DataTypes) => {
       },
 
       beforeCreate: async (compra, options) => {
-        const cliente_id = Number(compra.cliente_id)
+        const clienteId = Number(compra.cliente_id)
+        const estadoEntregaId = Number(compra.estado_entrega_id)
+        console.log(compra.estado_pago_id)
+
+        if (estadoEntregaId === 0) {
+          throw new Error('No se ha establecido el estado de la entrega')
+        }
 
         // Valor por defecto
-        if (!cliente_id) {
+        if (!clienteId) {
           compra.cliente_id = 1
         }
 
-        if (cliente_id < 2 && !compra.nombre_cliente) {
+        if (clienteId < 2 && !compra.nombre_cliente) {
           throw new Error('Nombre de cliente invalido')
         }
 
-        if (cliente_id > 1) {
+        if (clienteId > 1) {
           const Cliente = compra.sequelize.models.Cliente
           const cliente = await Cliente.findOne({
-            where: { id: cliente_id },
+            where: { id: clienteId },
             nombre: ['nombre']
           })
 
@@ -174,4 +178,4 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
   return Compra
-};
+}

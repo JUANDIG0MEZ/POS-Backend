@@ -1,7 +1,7 @@
-const { number } = require('joi');
-const { Model } = require('sequelize');
+const { number } = require('joi')
+const { Model } = require('sequelize')
 
-'use strict';
+'use strict'
 
 module.exports = (sequelize, DataTypes) => {
   class DetalleCompra extends Model {
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       DetalleCompra.belongsTo(models.Compra, {
         foreignKey: 'compra_id',
         as: 'compraDetalle'
@@ -21,8 +21,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'producto_id',
         as: 'productoDetalleCompra'
       })
-
-      
     }
   }
   DetalleCompra.init({
@@ -71,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeUpdate: async (detalle, options) => {
         // Validar que no se modifiquen columnas que no se deben modificar
-        if (detalle.changed('compra_id') || detalle.changed('producto_id')){
+        if (detalle.changed('compra_id') || detalle.changed('producto_id')) {
           throw new Error('No se puede modificar el id de la compra o del producto')
         }
 
@@ -91,32 +89,27 @@ module.exports = (sequelize, DataTypes) => {
           lock: options.transaction.LOCK.UPDATE
         })
 
-
-        
         // Modificar el total de la compra
         compra.total = Number(compra.total) - subtotalAntes + subtotalAhora
-        
-        await compra.save({transaction: options.transaction})
 
+        await compra.save({ transaction: options.transaction })
 
         // Modificar el stock del producto si la cantidad ha cambiado
 
         const Producto = detalle.sequelize.models.Producto
-        const producto = await Producto.findByPk(detalle.producto_id, 
+        const producto = await Producto.findByPk(detalle.producto_id,
           {
             transaction: options.transaction,
             lock: options.transaction.LOCK.UPDATE
           })
 
-        if (detalle.changed('cantidad')){
+        if (detalle.changed('cantidad')) {
           producto.cantidad = producto.cantidad - cantidadAntes + cantidadAhora
-          await producto.save({transaction: options.transaction})
+          await producto.save({ transaction: options.transaction })
         }
-
       },
 
       beforeCreate: async (detalle, options) => {
-
         // Crear una instancia de Producto y Compra
         const Producto = detalle.sequelize.models.Producto
 
@@ -131,25 +124,22 @@ module.exports = (sequelize, DataTypes) => {
           lock: options.transaction.LOCK.UPDATE
         })
 
-
         const cantidadDetalle = Number(detalle.cantidad)
         const cantidadProducto = Number(producto.cantidad)
         const precioDetalle = Number(detalle.precio)
 
-        producto.cantidad = cantidadProducto +  cantidadDetalle
+        producto.cantidad = cantidadProducto + cantidadDetalle
 
-
-        await producto.save({transaction: options.transaction})
-
+        await producto.save({ transaction: options.transaction })
 
         detalle.subtotal = cantidadDetalle * precioDetalle
         compra.total = Number(compra.total) + detalle.subtotal
 
-        await compra.save({transaction: options.transaction})
-      },
-    
+        await compra.save({ transaction: options.transaction })
+      }
 
-    }, 
-  });
-  return DetalleCompra;
-};
+
+    }
+  })
+  return DetalleCompra
+}

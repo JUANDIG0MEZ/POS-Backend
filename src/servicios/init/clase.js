@@ -1,114 +1,109 @@
-
 const {
-    // Producto,
-    // Cliente,
-    // ClienteTipo,
-    ProductoMarca,
-    ProductoMedida,
-    ProductoCategoria,
-    
-    // CompraEstadoEntrega,
-    // CompraEstadoPago,
-    // VentaEstadoEntrega,
-    // VentaEstadoPago,
-    // Clientetipo,
-    // MetodoPago,
-    // sequelize
+  // Producto,
+  // Cliente,
+  // ClienteTipo,
+  ProductoMarca,
+  ProductoMedida,
+  ProductoCategoria
+
+  // CompraEstadoEntrega,
+  // CompraEstadoPago,
+  // VentaEstadoEntrega,
+  // VentaEstadoPago,
+  // Clientetipo,
+  // MetodoPago,
+  // sequelize
 } = require('../../database/models')
 
-const {col} = require('sequelize')
-
+const { col } = require('sequelize')
 
 class InitOptions {
-    static Producto (){
-        const attributes = {
-            exclude: ['categoria_id','medida_id', 'marca_id'],
-            include: [
-                [col('marcaProducto.nombre'), 'marca'],
-                [col('medidaProducto.nombre'), 'medida'],
-                [col('categoriaProducto.nombre'), 'categoria']
-            ]
-        }
-
-        const include = [
-            { model: ProductoMarca, attributes: [], as: 'marcaProducto' },
-            { model: ProductoMedida, attributes: [], as: 'medidaProducto'},
-            { model: ProductoCategoria, attributes: [], as: 'categoriaProducto'}
-        ]
-
-        return {
-            attributes,
-            include,
-            
-        }
+  static Producto () {
+    const attributes = {
+      exclude: ['categoria_id', 'medida_id', 'marca_id'],
+      include: [
+        [col('marcaProducto.nombre'), 'marca'],
+        [col('medidaProducto.nombre'), 'medida'],
+        [col('categoriaProducto.nombre'), 'categoria']
+      ]
     }
 
+    const include = [
+      { model: ProductoMarca, attributes: [], as: 'marcaProducto' },
+      { model: ProductoMedida, attributes: [], as: 'medidaProducto' },
+      { model: ProductoCategoria, attributes: [], as: 'categoriaProducto' }
+    ]
 
-    static Cliente() {
-        const attributes  = ['id', 'nombre' ]
-        return {
-            attributes,
-            
-        }
-    }
+    return {
+      attributes,
+      include
 
-    static ProductoMarca(){
-        return {
-            
-        }
     }
+  }
 
-    static ProductoCategoria(){
-        return {
-            
-        }
-    }
+  static Cliente () {
+    const attributes = ['id', 'nombre']
+    return {
+      attributes
 
-    static ProductoMedida(){
-        return {
-            
-        }
     }
+  }
 
-    static CompraEstadoEntrega() {
-        return {
-            
-        }
-    }
+  static ProductoMarca () {
+    return {
 
-    static CompraEstadoPago(){
-        return {
-            
-        }
     }
+  }
 
-    static VentaEstadoEntrega(){
-        return {
-            
-        }
-    }
+  static ProductoCategoria () {
+    return {
 
-    static VentaEstadoPago(){
-        return {
-            
-        }
     }
+  }
 
-    static ClienteTipo () {
-        return {
-            
-        }
-    }
+  static ProductoMedida () {
+    return {
 
-    static MetodoPago(){
-        return {
-            
-        }
     }
+  }
+
+  static CompraEstadoEntrega () {
+    return {
+
+    }
+  }
+
+  static CompraEstadoPago () {
+    return {
+
+    }
+  }
+
+  static VentaEstadoEntrega () {
+    return {
+
+    }
+  }
+
+  static VentaEstadoPago () {
+    return {
+
+    }
+  }
+
+  static ClienteTipo () {
+    return {
+
+    }
+  }
+
+  static MetodoPago () {
+    return {
+
+    }
+  }
 }
 
-
-
 module.exports = {
-    InitOptions
+  InitOptions
 }

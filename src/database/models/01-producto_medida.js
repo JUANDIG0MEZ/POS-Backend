@@ -1,12 +1,10 @@
-const { Model } = require('sequelize');
+const { Model } = require('sequelize')
 
-'use strict';
-
+'use strict'
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoMedida extends Model {
-
-    static associate(models) {
+    static associate (models) {
       ProductoMedida.hasMany(models.Producto, {
         foreignKey: 'medida_id',
         as: 'medidaProducto'
@@ -19,20 +17,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      set(value) {
-        this.setDataValue('nombre', value.toLowerCase().trim());
+      set (value) {
+        this.setDataValue('nombre', value.toLowerCase().trim())
       },
-      get() {
-        const nombre = this.getDataValue('nombre');
-        return nombre? nombre.charAt(0).toUpperCase() + nombre.slice(1): '';
+      get () {
+        const nombre = this.getDataValue('nombre')
+        return nombre ? nombre.charAt(0).toUpperCase() + nombre.slice(1) : ''
       }
-    },
+    }
 
   }, {
     sequelize,
     modelName: 'ProductoMedida',
     timestamps: false,
     tableName: 'ProductoMedida'
-  });
-  return ProductoMedida;
-};
+  })
+  return ProductoMedida
+}

@@ -39,12 +39,13 @@
     "standard": "^17.1.2"
   },
   "standard": {
-    "env": [
-      "node",
-      "jest"
-    ],
+    "env": ["node", "jest"],
     "ignore": [
       "node_modules/**"
-    ]
+    ],
+    "globals": ["describe", "it", "expect"],
+    "rules": {
+      "camelcase": "off"
+    }
   }
 }

@@ -1,6 +1,6 @@
-const { Model } = require('sequelize');
+const { Model } = require('sequelize')
 
-'use strict';
+'use strict'
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoMarca extends Model {
@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       ProductoMarca.hasMany(models.Producto, {
         foreignKey: 'marca_id',
         as: 'marcaProducto'
@@ -22,13 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       unique: true,
       allowNull: false,
-      set(value) {
-        
-        this.setDataValue('nombre', value.toLowerCase().trim());
+      set (value) {
+        this.setDataValue('nombre', value.toLowerCase().trim())
       },
-      get() {
-        const nombre = this.getDataValue('nombre');
-        return nombre? nombre.charAt(0).toUpperCase() + nombre.slice(1): '';
+      get () {
+        const nombre = this.getDataValue('nombre')
+        return nombre ? nombre.charAt(0).toUpperCase() + nombre.slice(1) : ''
       }
     }
   }, {
@@ -36,6 +35,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'ProductoMarca',
     timestamps: false,
     tableName: 'ProductoMarca'
-  });
-  return ProductoMarca;
-};
+  })
+  return ProductoMarca
+}

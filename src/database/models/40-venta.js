@@ -1,6 +1,6 @@
 const { Model } = require('sequelize')
 
-'use strict';
+'use strict'
 
 module.exports = (sequelize, DataTypes) => {
   class Venta extends Model {
@@ -95,7 +95,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'VentaEstadoEntrega',
         key: 'id'
       }
- },
+    },
 
     nombre_cliente: {
       type: DataTypes.STRING
@@ -124,7 +124,6 @@ module.exports = (sequelize, DataTypes) => {
           }
           if (pagado > total) {
             pagado = total
-            
           }
           const por_pagar = total - pagado
 
@@ -138,10 +137,8 @@ module.exports = (sequelize, DataTypes) => {
             lock: options.transaction.LOCK.UPDATE
           })
 
-          
           cliente.debe = Number(cliente.debe) - Number(venta.previous('por_pagar')) + por_pagar
           await cliente.save({ transaction: options.transaction })
-
 
           if (venta.por_pagar > 0) {
             venta.estado_pago = 1
@@ -177,4 +174,4 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
   return Venta
-};
+}
