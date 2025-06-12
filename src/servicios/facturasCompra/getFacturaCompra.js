@@ -17,7 +17,7 @@ async function cargarFacturasCompra (query) {
       where: OpcionesGetCompras.donde(query),
       attributes: OpcionesGetCompras.atributos(query),
       limit: Math.min(Number(query.limit), 100),
-      offset: Math.min(Number(query.offset), 100),
+      offset: Number(query.offset),
       order: OpcionesGetCompras.orden(query)
     }
   )

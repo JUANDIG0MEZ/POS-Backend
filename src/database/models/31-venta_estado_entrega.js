@@ -1,14 +1,13 @@
-const { Model } = require('sequelize');
+'use strict'
 
-'use strict';
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class VentaEstadoEntrega extends Model {
-
-    static associate(models) {
+    static associate (models) {
       VentaEstadoEntrega.hasMany(models.Venta, {
         foreignKey: 'estado_entrega_id',
-        as: 'estadoEntregaVenta',
+        as: 'estadoEntregaVenta'
       })
     }
   }
@@ -18,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'VentaEstadoEntrega',
     timestamps: false,
-    tableName: 'VentaEstadoEntrega',
+    tableName: 'VentaEstadoEntrega'
 
-  });
-  return VentaEstadoEntrega;
-};
+  })
+  return VentaEstadoEntrega
+}

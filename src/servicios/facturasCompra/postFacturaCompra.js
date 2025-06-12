@@ -18,8 +18,14 @@ async function crearFacturaCompra (body) {
     const estadoEntregaId = Number(body.info.estado_entrega_id)
     const nombreCliente = body.info.nombre_cliente ? body.info.nombre_cliente : null
     const pagado = Number(body.info.pagado)
+    const total = Number(body.info.total)
 
     const detalles = body.datos
+
+    // Validaciones
+    if (clienteId < 2 && pagado !== total) {
+      throw new Error('Para este cliente el valor pagado de la factura debe ser igual al total')
+    }
 
     // Crear la compra
     const compraNueva = {

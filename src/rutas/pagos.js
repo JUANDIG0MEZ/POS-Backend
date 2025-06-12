@@ -1,28 +1,21 @@
 const express = require('express')
 const {
-    respuesta
+  respuesta
 } = require('./funciones')
 
-
 const {
-    MetodoPago
+  MetodoPago
 } = require('../database/models')
-
 
 const router = express.Router()
 
-
-
-router.get('/metodos', async (req, res, next )=> {
-    try {
-        const metodosPago = await MetodoPago.findAll()
-        res.json(respuesta('Metodos de pago cargados', metodosPago))
-    }
-    catch (error) {
-        next(error)
-    }
+router.get('/metodos', async (req, res, next) => {
+  try {
+    const metodosPago = await MetodoPago.findAll()
+    res.json(respuesta('Metodos de pago cargados', metodosPago))
+  } catch (error) {
+    next(error)
+  }
 })
-
-
 
 module.exports = router

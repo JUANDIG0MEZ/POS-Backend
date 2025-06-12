@@ -1,113 +1,123 @@
 const {
-    ClienteTipo,
-    Cliente,
-    ClaseCliente,
-    Abono,
-    Pago
+  Cliente,
+  Abono,
+  Pago,
+  Venta,
+  Compra,
+  VentaEstadoPago,
+  CompraEstadoPago
 } = require('../../database/models')
 
+const { col } = require('sequelize')
 
-async function cargarTiposClientes(){
-    const tipos = await ClienteTipo.findAll()
-    return tipos
+const {
+  ClaseClientes,
+  ClaseCliente
+} = require('./clase')
+
+async function cargarClientes (query) {
+  const { count, rows } = await Cliente.findAndCountAll({
+    attributes: ClaseClientes.atributos(),
+    include: ClaseClientes.incluir(),
+    where: ClaseClientes.donde(query),
+    limit: Math.min(Number(query.limit), 100),
+    offset: Number(query.offset),
+    order: ClaseClientes.orden(query)
+  })
+  return { count, rows }
 }
 
+async function cargarCliente (id) {
+  const cliente = await Cliente.findByPk(id, {
+    attributes: ClaseCliente.atributos(),
+    include: ClaseCliente.incluir()
+  })
 
-async function cargarClientesNombres(){
-    const clientes = await Cliente.findAll({
-        attributes: ['id', 'nombre'],
-        order: [['nombre', 'ASC']]
-    })
-
-    return clientes.map(cliente => {
-        return {
-            id: cliente.id,
-            nombre: cliente.nombre
-        }
-    })
-
+  return cliente
 }
 
-
-
-async function cargarClientes(query){
-     
-    console.log('Cargando clientes con query:', query)
-    const {count, rows } = await Cliente.findAndCountAll({
-        include: ClaseCliente.incluir(),
-        where: ClaseCliente.where(query),
-        limit: Number(query.limit) || 25,
-        offset: Number(query.offset) || 0,
-        order: ClaseCliente.order(query)    
-    })
-
-    const clientesFormateados = ClaseCliente.formatear(rows)
-
-    return {count, rows: clientesFormateados}
+async function cargarAbonosCliente (id, query) {
+  // Se traen los abonos al cliente con el id que se recibe
+  const { count, rows } = await Abono.findAndCountAll({
+    where: {
+      cliente_id: id
+    },
+    attributes: {
+      exclude: ['cliente_id']
+    },
+    limit: Math.min(Number(query.limit), 50),
+    offset: Number(query.offset),
+    order: [['id', 'DESC']]
+  })
+  return { count, rows }
 }
 
-
-
-async function cargarAbonosCliente(id, limit, offset){
-    // Se traen los abonos al cliente con el id que se recibe
-    const {count, rows} = await Abono.findAndCountAll({
-        where: {
-            cliente_id: id
-        },
-        attributes: {
-            exclude: ['cliente_id']
-        },
-        limit: limit,
-        offset: offset,
-        order: [['id', 'DESC']]
-    })
-     return {count, rows}
+async function cargarPagosCliente (id, query) {
+  // Se traen los pagos al cliente con el id que se recibe
+  const { count, rows } = await Pago.findAndCountAll({
+    where: {
+      cliente_id: id
+    },
+    attributes: {
+      exclude: ['cliente_id']
+    },
+    limit: Math.min(Number(query.limit), 50),
+    offset: Number(query.offset),
+    order: [['id', 'DESC']]
+  })
+  return { count, rows }
 }
 
-async function cargarPagosCliente(id, limit, offset){
-    // Se traen los pagos al cliente con el id que se recibe
-    const {count, rows} = await Pago.findAndCountAll({
-        where: {
-            cliente_id: id
-        },
-        attributes: {
-            exclude: ['cliente_id']
-        },
-        limit: limit,
-        offset: offset,
-        order: [['id', 'DESC']]
-    })
-     return {count, rows}
+async function cargarVentasCliente (id, query) {
+  const { count, rows } = await Venta.findAndCountAll({
+
+    where: {
+      cliente_id: id
+    },
+    attributes: {
+      exclude: ['cliente_id', 'nombre_cliente', 'pagado'],
+      include: [
+        [col('estadoPagoVenta.nombre'), 'Estado pago']
+      ]
+    },
+    include: [
+      { model: VentaEstadoPago, attributes: [], as: 'estadoPagoVenta' }
+    ],
+    order: [['id', 'DESC']],
+    limit: Math.min(Number(query.limit), 50),
+    offset: Number(query.offset)
+  })
+
+  return { count, rows }
 }
 
+async function cargarComprasCliente (id, query) {
+  const { count, rows } = await Compra.findAndCountAll({
 
+    where: {
+      cliente_id: id
+    },
+    attributes: {
+      exclude: ['cliente_id', 'nombre_cliente', 'pagado'],
+      include: [
+        [col('estadoPagoCompra.nombre'), 'Estado pago']
+      ]
+    },
+    include: [
+      { model: CompraEstadoPago, attributes: [], as: 'estadoPagoCompra' }
+    ],
+    order: [['id', 'DESC']],
+    limit: Math.min(Number(query.limit), 50),
+    offset: Number(query.offset)
+  })
 
-async function cargarCliente(id){
-    const cliente = await Cliente.findByPk(id, {
-        include: { model: ClienteTipo, as: 'tipoCliente', attributes: ['nombre']}
-    })
-    const clienteFormateado = {
-        id: cliente.id,
-        nombre: cliente.nombre,
-        direccion: cliente.direccion,
-        telefono: cliente.telefono,
-        email: cliente.email,
-        tipo: cliente.tipoCliente.nombre,
-        por_pagarle: cliente.por_pagarle,
-        debe: cliente.debe
-    }
-
-    return clienteFormateado
+  return { count, rows }
 }
-
-
-
-
 module.exports = {
-    cargarTiposClientes,
-    cargarClientesNombres,
-    cargarClientes,
-    cargarAbonosCliente,
-    cargarPagosCliente,
-    cargarCliente
+  cargarClientes,
+  cargarAbonosCliente,
+  cargarPagosCliente,
+  cargarCliente,
+  cargarVentasCliente,
+  cargarComprasCliente
 }

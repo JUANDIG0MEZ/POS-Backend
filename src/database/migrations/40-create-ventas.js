@@ -27,9 +27,7 @@ module.exports = {
         }
       },
       direccion: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'Recogido en tienda'
+        type: Sequelize.STRING
       },
       pagado: {
         type: Sequelize.BIGINT,

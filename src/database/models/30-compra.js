@@ -126,8 +126,8 @@ module.exports = (sequelize, DataTypes) => {
             compra.pagado = total
           }
 
-          const por_pagar = total - pagado
-          compra.por_pagar = por_pagar
+          const porPagar = total - pagado
+          compra.por_pagar = porPagar
 
           const clienteId = compra.get('cliente_id')
           const Cliente = compra.sequelize.models.Cliente
@@ -136,7 +136,7 @@ module.exports = (sequelize, DataTypes) => {
             lock: options.transaction.LOCK.UPDATE
           })
 
-          cliente.por_pagarle = Number(cliente.por_pagarle) - Number(compra.previous('por_pagar')) + por_pagar
+          cliente.por_pagarle = Number(cliente.por_pagarle) - Number(compra.previous('por_pagar')) + porPagar
           await cliente.save({ transaction: options.transaction })
 
           if (compra.por_pagar > 0) {

@@ -4,8 +4,7 @@ const {
   Cliente,
   Producto,
   ProductoMarca,
-  ProductoMedida,
-  Compra
+  ProductoMedida
 } = require('../../database/models')
 
 const { Op, col } = require('sequelize')
@@ -14,15 +13,17 @@ const { Op, col } = require('sequelize')
 class OpcionesGetCompras {
   static atributos () {
     const attributes = {
-      exclude: ['cliente_id', 'estado_entrega_id', 'estado_pago_id'],
-      include: [[col('estadoEntregaCompra.nombre'), 'metodo_entrega'],
+      exclude: ['cliente_id', 'estado_entrega_id', 'estado_pago_id', 'pagado'],
+      include: [
+        [col('estadoEntregaCompra.nombre'), 'metodo_entrega'],
         [col('estadoPagoCompra.nombre'), 'estado_pago']]
     }
     return attributes
   }
 
   static incluir () {
-    const include = [{ model: CompraEstadoEntrega, attributes: [], as: 'estadoEntregaCompra' },
+    const include = [
+      { model: CompraEstadoEntrega, attributes: [], as: 'estadoEntregaCompra' },
       { model: CompraEstadoPago, attributes: [], as: 'estadoPagoCompra' }]
 
     return include

@@ -1,74 +1,68 @@
 const {
-    Producto,
-    Cliente,
-    ClienteTipo,
-    ProductoMarca,
-    ProductoMedida,
-    ProductoCategoria,
-    
-    CompraEstadoEntrega,
-    CompraEstadoPago,
-    VentaEstadoEntrega,
-    VentaEstadoPago,
+  Producto,
+  Cliente,
+  ClienteTipo,
+  ProductoMarca,
+  ProductoMedida,
+  ProductoCategoria,
 
+  CompraEstadoEntrega,
+  CompraEstadoPago,
+  VentaEstadoEntrega,
+  VentaEstadoPago,
 
-    MetodoPago
+  MetodoPago
 } = require('../../database/models')
 
 const {
-    InitOptions
+  InitOptions
 } = require('./clase')
 
+async function cargarDatosIniciales () {
+  const [
+    producto,
+    clientes,
+    productoMarca,
+    productoCategoria,
+    productoMedida,
+    compraEstadoEntrega,
+    compraEstadoPago,
+    ventaEstadoEntrega,
+    ventaEstadoPago,
+    clienteTipo,
+    metodoPago
+  ] = await Promise.all([
+    Producto.findAll(InitOptions.Producto()),
+    Cliente.findAll(InitOptions.Cliente()),
+    ProductoMarca.findAll(InitOptions.ProductoMarca()),
+    ProductoCategoria.findAll(InitOptions.ProductoCategoria()),
+    ProductoMedida.findAll(InitOptions.ProductoMedida()),
 
-async function cargarDatosIniciales(){
+    CompraEstadoEntrega.findAll(InitOptions.CompraEstadoEntrega()),
+    CompraEstadoPago.findAll(InitOptions.CompraEstadoPago()),
+    VentaEstadoEntrega.findAll(InitOptions.VentaEstadoEntrega()),
+    VentaEstadoPago.findAll(InitOptions.VentaEstadoPago()),
 
+    ClienteTipo.findAll(InitOptions.ClienteTipo()),
 
-    const [
-        producto,
-        clientes,
-        productoMarca,
-        productoCategoria,
-        productoMedida,
-        compraEstadoEntrega,
-        compraEstadoPago,
-        ventaEstadoEntrega,
-        ventaEstadoPago,
-        clienteTipo,
-        metodoPago
-    ] = await Promise.all([
-        Producto.findAll(InitOptions.Producto()),
-        Cliente.findAll(InitOptions.Cliente()),
-        ProductoMarca.findAll(InitOptions.ProductoMarca()),
-        ProductoCategoria.findAll(InitOptions.ProductoCategoria()),
-        ProductoMedida.findAll(InitOptions.ProductoMedida()),
+    MetodoPago.findAll(InitOptions.MetodoPago())
+  ])
 
-        CompraEstadoEntrega.findAll(InitOptions.CompraEstadoEntrega()),
-        CompraEstadoPago.findAll(InitOptions.CompraEstadoPago()),
-        VentaEstadoEntrega.findAll(InitOptions.VentaEstadoEntrega()),
-        VentaEstadoPago.findAll(InitOptions.VentaEstadoPago()),
-
-        ClienteTipo.findAll(InitOptions.ClienteTipo()),
-
-        MetodoPago.findAll(InitOptions.MetodoPago())
-    ])
-
-    return {
-        producto,
-        clientes,
-        productoMarca,
-        productoCategoria,
-        productoMedida,
-        compraEstadoEntrega,
-        compraEstadoPago,
-        ventaEstadoEntrega,
-        ventaEstadoPago,
-        clienteTipo,
-        metodoPago
-    }
-
+  return {
+    producto,
+    clientes,
+    productoMarca,
+    productoCategoria,
+    productoMedida,
+    compraEstadoEntrega,
+    compraEstadoPago,
+    ventaEstadoEntrega,
+    ventaEstadoPago,
+    clienteTipo,
+    metodoPago
+  }
 }
 
-
 module.exports = {
-    cargarDatosIniciales
+  cargarDatosIniciales
 }

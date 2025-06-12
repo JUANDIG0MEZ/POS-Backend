@@ -1,15 +1,10 @@
-const { Model } = require('sequelize');
+'use strict'
 
-'use strict';
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class Cliente extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
+    static associate (models) {
       Cliente.belongsTo(models.ClienteTipo, {
         foreignKey: 'tipo_id',
         as: 'tipoCliente'
@@ -41,12 +36,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      set(value) {
-        this.setDataValue('nombre', value.toLowerCase().trim());
+      set (value) {
+        this.setDataValue('nombre', value.toLowerCase().trim())
       },
-      get() {
-        const nombre = this.getDataValue('nombre');
-        return nombre ? nombre.replace(/\b\w/g, (char) => char.toUpperCase()) : '';
+      get () {
+        const nombre = this.getDataValue('nombre')
+        return nombre ? nombre.replace(/\b\w/g, (char) => char.toUpperCase()) : ''
       }
     },
     direccion: {
@@ -59,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
     },
     tipo_id: {
       type: DataTypes.INTEGER,
@@ -87,13 +82,13 @@ module.exports = (sequelize, DataTypes) => {
         min: 0,
         isInt: true
       }
-    },
+    }
 
   }, {
     sequelize,
     modelName: 'Cliente',
     timestamps: false,
     tableName: 'Cliente'
-  });
-  return Cliente;
-};
+  })
+  return Cliente
+}

@@ -1,14 +1,9 @@
-const { Model } = require('sequelize')
-
 'use strict'
+
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class Venta extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate (models) {
       Venta.belongsTo(models.Cliente, {
         foreignKey: 'cliente_id',
@@ -49,9 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     direccion: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: 'Recogido en tienda'
+      type: DataTypes.STRING
     },
     pagado: {
       type: DataTypes.BIGINT,
@@ -125,10 +118,10 @@ module.exports = (sequelize, DataTypes) => {
           if (pagado > total) {
             pagado = total
           }
-          const por_pagar = total - pagado
+          const porPagar = total - pagado
 
           venta.pagado = pagado
-          venta.por_pagar = por_pagar
+          venta.por_pagar = porPagar
 
           const clienteId = venta.get('cliente_id')
           const Cliente = venta.sequelize.models.Cliente
@@ -137,7 +130,7 @@ module.exports = (sequelize, DataTypes) => {
             lock: options.transaction.LOCK.UPDATE
           })
 
-          cliente.debe = Number(cliente.debe) - Number(venta.previous('por_pagar')) + por_pagar
+          cliente.debe = Number(cliente.debe) - Number(venta.previous('por_pagar')) + porPagar
           await cliente.save({ transaction: options.transaction })
 
           if (venta.por_pagar > 0) {
@@ -149,21 +142,21 @@ module.exports = (sequelize, DataTypes) => {
       },
 
       beforeCreate: async (venta, options) => {
-        const cliente_id = Number(venta.cliente_id)
+        const clienteId = Number(venta.cliente_id)
 
         // Valor por defecto
-        if (!cliente_id) {
+        if (!clienteId) {
           venta.cliente_id = 1
         }
 
-        if (cliente_id < 2 && !venta.nombre_cliente) {
+        if (clienteId < 2 && !venta.nombre_cliente) {
           throw new Error('Nombre de cliente invalido')
         }
 
-        if (cliente_id > 1) {
+        if (clienteId > 1) {
           const Cliente = venta.sequelize.models.Cliente
           const cliente = await Cliente.findOne({
-            where: { id: cliente_id },
+            where: { id: clienteId },
             nombre: ['nombre']
           })
 
