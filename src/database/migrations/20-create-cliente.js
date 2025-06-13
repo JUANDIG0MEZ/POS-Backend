@@ -7,27 +7,27 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.SMALLINT.UNSIGNED
       },
       nombre: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(200),
         allowNull: false,
         unique: true
       },
       direccion: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(150),
         allowNull: true
       },
       telefono: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.INTEGER,
         allowNull: true
       },
       email: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(100),
         allowNull: true
       },
       tipo_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         defaultValue: 0,
         references: {
@@ -37,13 +37,13 @@ module.exports = {
 
       },
       por_pagarle: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
         defaultValue: 0
 
       },
       debe: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
         defaultValue: 0,
         validate: {

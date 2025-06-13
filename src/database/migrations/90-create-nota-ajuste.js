@@ -7,27 +7,20 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       tipo: {
         type: Sequelize.ENUM('credito', 'debito'),
         allowNull: false
       },
-      categoria_id: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'CategoriaNotaCredito',
-          key: 'id'
-        }
-      },
       motivo: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(200)
       },
       total: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT.UNSIGNED
       },
       usuario_creador: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(200)
       },
       fecha: {
         type: Sequelize.DATEONLY,
@@ -36,10 +29,6 @@ module.exports = {
       hora: {
         type: Sequelize.TIME,
         allowNull: false
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
       }
     })
   },

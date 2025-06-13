@@ -67,45 +67,6 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'DetalleVenta',
     hooks: {
 
-      beforeUpdate: async (detalle, options) => {
-        if (detalle.changed('venta_id') || detalle.changed('producto_id')) {
-          throw new Error('No se puede modificar el id de la venta o del producto')
-        }
-
-        const cantidadAntes = detalle.changed('cantidad') ? Number(detalle.previous('cantidad')) : Number(detalle.cantidad)
-        const cantidadAhora = Number(detalle.cantidad)
-        const precioAhora = Number(detalle.precio)
-        const subtotalAntes = detalle.changed('subtotal') ? Number(detalle.previous('subtotal')) : Number(detalle.subtotal)
-        const subtotalAhora = precioAhora * cantidadAhora
-
-        // Se actualiza el subtotal
-        detalle.subtotal = subtotalAhora
-
-        // Crear una instancia de Compra para modificar el total
-        const Venta = detalle.sequelize.models.Venta
-        const venta = await Venta.findByPk(detalle.venta_id,
-          {
-            transaction: options.transaction,
-            lock: options.transaction.LOCK.UPDATE
-          })
-
-        venta.total = Number(venta.total) - subtotalAntes + subtotalAhora
-
-        await venta.save({ transaction: options.transaction })
-
-        // Crear una instancia de Producto para modificar la cantidad
-        const Producto = detalle.sequelize.models.Producto
-        const producto = await Producto.findByPk(detalle.producto_id, {
-          transaction: options.transaction,
-          lock: options.transaction.LOCK.UPDATE
-        })
-
-        if (detalle.cantidad('cantidad')) {
-          producto.cantidad = Number(producto.cantidad) + cantidadAntes - cantidadAhora
-          await producto.save({ transaction: options.transaction })
-        }
-      },
-
       beforeCreate: async (detalle, options) => {
         // Crear una instancia de Producto y Compra
         const Producto = detalle.sequelize.models.Producto

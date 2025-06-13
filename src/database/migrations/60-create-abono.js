@@ -7,14 +7,14 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       fecha: {
         type: Sequelize.DATEONLY,
         allowNull: false
       },
       cliente_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Cliente',
@@ -26,11 +26,11 @@ module.exports = {
         allowNull: false
       },
       valor: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       },
       metodo_pago_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'MetodoPago',
@@ -38,7 +38,7 @@ module.exports = {
         }
       },
       descripcion: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(200),
         allowNull: false
       }
     })

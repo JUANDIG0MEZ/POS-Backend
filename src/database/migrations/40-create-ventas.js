@@ -7,7 +7,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       fecha: {
         type: Sequelize.DATEONLY,
@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       },
       cliente_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         defaultValue: 1,
         references: {
@@ -26,26 +26,23 @@ module.exports = {
           key: 'id'
         }
       },
-      direccion: {
-        type: Sequelize.STRING
-      },
       pagado: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
         defaultValue: 0
       },
       total: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
         defaultValue: 0
       },
       por_pagar: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
         defaultValue: 0
       },
       estado_entrega_id: {
-        type: Sequelize.SMALLINT,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         defaultValue: 1,
         references: {
@@ -54,7 +51,7 @@ module.exports = {
         }
       },
       estado_pago_id: {
-        type: Sequelize.SMALLINT,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         defaultValue: true,
         references: {
@@ -65,8 +62,11 @@ module.exports = {
       },
 
       nombre_cliente: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(200),
         allowNull: false
+      },
+      direccion: {
+        type: Sequelize.STRING(200)
       }
 
     })

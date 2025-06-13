@@ -1,17 +1,16 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('DetalleVenta', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
-
       venta_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Venta',
@@ -19,7 +18,7 @@ module.exports = {
         }
       },
       producto_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Producto',
@@ -27,22 +26,22 @@ module.exports = {
         }
       },
       cantidad: {
-        type: Sequelize.DECIMAL(10, 0),
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         validate: {
           min: 1
         }
       },
       precio: {
-        type: Sequelize.DECIMAL(10, 0),
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
       subtotal: {
-        type: Sequelize.DECIMAL(12, 0),
+        type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       }
-      
-    });
+
+    })
 
     await queryInterface.addConstraint('DetalleVenta', {
       fields: ['venta_id', 'producto_id'],
@@ -50,7 +49,7 @@ module.exports = {
       name: 'unique_venta_producto'
     })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('DetalleVenta');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('DetalleVenta')
   }
-};
+}

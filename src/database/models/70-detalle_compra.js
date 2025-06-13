@@ -67,47 +67,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'DetalleCompra',
     tableName: 'DetalleCompra',
     hooks: {
-      beforeUpdate: async (detalle, options) => {
-        // Validar que no se modifiquen columnas que no se deben modificar
-        if (detalle.changed('compra_id') || detalle.changed('producto_id')) {
-          throw new Error('No se puede modificar el id de la compra o del producto')
-        }
-
-        const cantidadAntes = detalle.changed('cantidad') ? Number(detalle.previous('cantidad')) : Number(detalle.cantidad)
-        const cantidadAhora = Number(detalle.cantidad)
-        const precioAhora = Number(detalle.precio)
-        const subtotalAntes = detalle.changed('subtotal') ? Number(detalle.previous('subtotal')) : Number(detalle.subtotal)
-        const subtotalAhora = cantidadAhora * precioAhora
-
-        // Se actualiza el subtotal
-        detalle.subtotal = subtotalAhora
-
-        // Crear una instancia de Compra para modificar el total
-        const Compra = detalle.sequelize.models.Compra
-        const compra = await Compra.findByPk(detalle.compra_id, {
-          transaction: options.transaction,
-          lock: options.transaction.LOCK.UPDATE
-        })
-
-        // Modificar el total de la compra
-        compra.total = Number(compra.total) - subtotalAntes + subtotalAhora
-
-        await compra.save({ transaction: options.transaction })
-
-        // Modificar el stock del producto si la cantidad ha cambiado
-
-        const Producto = detalle.sequelize.models.Producto
-        const producto = await Producto.findByPk(detalle.producto_id,
-          {
-            transaction: options.transaction,
-            lock: options.transaction.LOCK.UPDATE
-          })
-
-        if (detalle.changed('cantidad')) {
-          producto.cantidad = producto.cantidad - cantidadAntes + cantidadAhora
-          await producto.save({ transaction: options.transaction })
-        }
-      },
 
       beforeCreate: async (detalle, options) => {
         // Crear una instancia de Producto y Compra
@@ -137,7 +96,6 @@ module.exports = (sequelize, DataTypes) => {
 
         await compra.save({ transaction: options.transaction })
       }
-
 
     }
   })

@@ -1,16 +1,16 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('DetalleCompra', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       compra_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Compra',
@@ -18,7 +18,7 @@ module.exports = {
         }
       },
       producto_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Producto',
@@ -26,7 +26,7 @@ module.exports = {
         }
       },
       cantidad: {
-        type: Sequelize.DECIMAL(10, 0),
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         validate: {
           min: 1
@@ -34,32 +34,26 @@ module.exports = {
 
       },
       precio: {
-        type: Sequelize.DECIMAL(10, 0),
-        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
 
       },
       subtotal: {
-        type: Sequelize.DECIMAL(12, 0),
-        allowNull: false,
+        type: Sequelize.BIGINT.UNSIGNED,
+        allowNull: false
 
       }
 
-      
-    });
+    })
 
     await queryInterface.addConstraint('DetalleCompra', {
       fields: ['compra_id', 'producto_id'],
       type: 'unique',
       name: 'unique_compra_producto'
     })
-
-
-    
   },
 
-
-
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('DetalleCompra');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('DetalleCompra')
   }
-};
+}

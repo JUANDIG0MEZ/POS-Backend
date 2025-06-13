@@ -1,21 +1,21 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Producto', {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
+        primaryKey: true
       },
       nombre: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(200),
         allowNull: false,
-        unique: true,
+        unique: true
       },
       marca_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'ProductoMarca',
@@ -23,7 +23,7 @@ module.exports = {
         }
       },
       categoria_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         defaultValue: 1,
         references: {
@@ -32,7 +32,7 @@ module.exports = {
         }
       },
       medida_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'ProductoMedida',
@@ -40,26 +40,25 @@ module.exports = {
         }
       },
       precio_compra: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 0
       },
       precio_venta: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
-        defaultValue: 0,
-
+        defaultValue: 0
       },
       cantidad: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
-        defaultValue: 0,
+        defaultValue: 0
       },
       total: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
+        type: Sequelize.BIGINT.UNSIGNED,
+        allowNull: false
       }
-    });
+    })
 
     await queryInterface.addConstraint('Producto', {
       fields: ['nombre', 'marca_id'],
@@ -67,7 +66,7 @@ module.exports = {
       name: 'unique_nombre_marca'
     })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Producto');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Producto')
   }
-};
+}

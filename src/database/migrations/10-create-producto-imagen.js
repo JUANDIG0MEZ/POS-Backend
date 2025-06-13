@@ -1,17 +1,16 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('ProductoImagen', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
-
       producto_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Producto',
@@ -20,13 +19,13 @@ module.exports = {
       },
       url_imagen: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       }
 
-      }
-    );
+    }
+    )
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ProductoImagen');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('ProductoImagen')
   }
-};
+}

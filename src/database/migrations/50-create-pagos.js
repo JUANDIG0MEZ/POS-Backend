@@ -1,16 +1,16 @@
-'use strict';
+'use strict'
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Pago', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       cliente_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.SMALLINT,
         allowNull: false,
         references: {
           model: 'Cliente',
@@ -19,18 +19,18 @@ module.exports = {
       },
       fecha: {
         type: Sequelize.DATEONLY,
-        allowNull: false,
+        allowNull: false
       },
       hora: {
         type: Sequelize.TIME,
-        allowNull: false,
+        allowNull: false
       },
       valor: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
+        type: Sequelize.BIGINT.UNSIGNED,
+        allowNull: false
       },
       metodo_pago_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'MetodoPago',
@@ -38,12 +38,12 @@ module.exports = {
         }
       },
       descripcion: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        type: Sequelize.STRING(200),
+        allowNull: false
       }
-    });
+    })
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Pago');
+  async down (queryInterface, Sequelize) {
+    await queryInterface.dropTable('Pago')
   }
-};
+}
