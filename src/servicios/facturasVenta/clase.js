@@ -97,7 +97,7 @@ class OpcionesGetVenta {
 class OpcionesGetDetalle {
   static atributos () {
     const attributes = {
-      exclude: ['venta_id', 'producto_id'],
+      exclude: ['venta_id', 'id'],
       include: [
         [col('productoDetalleVenta.nombre'), 'nombre'],
         [col('productoDetalleVenta.marcaProducto.nombre'), 'marca'],

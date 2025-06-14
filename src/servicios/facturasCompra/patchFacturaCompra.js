@@ -8,7 +8,6 @@ const {
 
 async function modificarCompra (body, idCompra) {
   const transaction = await sequelize.transaction()
-
   try {
     for (const dataDetalle of body) {
       const detalle = await DetalleCompra.findOne({
@@ -19,12 +18,8 @@ async function modificarCompra (body, idCompra) {
         transaction,
         lock: transaction.LOCK.UPDATE
       })
-      if (dataDetalle.cantidad !== undefined) {
-        detalle.cantidad = parseInt(dataDetalle.cantidad)
-      }
-      if (dataDetalle.precio !== undefined) {
-        detalle.precio = parseInt(dataDetalle.precio)
-      }
+      detalle.cantidad = dataDetalle.cantidad
+      detalle.precio = dataDetalle.precio
       await detalle.save({ transaction })
     }
 

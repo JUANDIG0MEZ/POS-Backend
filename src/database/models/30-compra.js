@@ -116,17 +116,18 @@ module.exports = (sequelize, DataTypes) => {
         }
 
         if (compra.changed('pagado') || compra.changed('total')) {
-          const pagado = compra.changed('pagado') ? Number(compra.pagado) : Number(compra.previous('pagado'))
+          let pagado = compra.changed('pagado') ? Number(compra.pagado) : Number(compra.previous('pagado'))
           const total = compra.changed('total') ? Number(compra.total) : Number(compra.previous('total'))
 
           if (pagado < 0 || total < 0) {
             throw new Error('El valor pagado y el total no puede ser menor a 0')
           }
           if (pagado > total) {
-            compra.pagado = total
+            pagado = total
           }
 
           const porPagar = total - pagado
+          compra.pagado = pagado
           compra.por_pagar = porPagar
 
           const clienteId = compra.get('cliente_id')
@@ -135,7 +136,6 @@ module.exports = (sequelize, DataTypes) => {
             transaction: options.transaction,
             lock: options.transaction.LOCK.UPDATE
           })
-
           cliente.por_pagarle = Number(cliente.por_pagarle) - Number(compra.previous('por_pagar')) + porPagar
           await cliente.save({ transaction: options.transaction })
 

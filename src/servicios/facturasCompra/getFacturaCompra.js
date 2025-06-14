@@ -18,7 +18,8 @@ async function cargarFacturasCompra (query) {
       attributes: OpcionesGetCompras.atributos(query),
       limit: Math.min(Number(query.limit), 100),
       offset: Number(query.offset),
-      order: OpcionesGetCompras.orden(query)
+      order: OpcionesGetCompras.orden(query),
+      raw: true
     }
   )
   return { count, rows }
@@ -36,10 +37,13 @@ async function cargarFacturaCompra (id) {
       compra_id: id
     },
     attributes: OpcionesGetDetalle.atributos(),
-    include: OpcionesGetDetalle.incluir()
+    include: OpcionesGetDetalle.incluir(),
+    raw: true
   })
 
-  return { datos, info }
+  const datosFormateados = OpcionesGetDetalle.formatear(datos)
+
+  return { datos: datosFormateados, info }
 }
 
 module.exports = {

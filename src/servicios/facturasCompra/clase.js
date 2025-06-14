@@ -7,7 +7,7 @@ const {
   ProductoMedida
 } = require('../../database/models')
 
-const { Op, col } = require('sequelize')
+const { Op, col, fn, literal } = require('sequelize')
 
 // Opciones para encontrar todas las facturas. (se pueden filtrar)
 class OpcionesGetCompras {
@@ -106,9 +106,10 @@ class OpcionesGetCompra {
 class OpcionesGetDetalle {
   static atributos () {
     const attributes = {
-      exclude: ['compra_id', 'producto_id'],
+      exclude: ['compra_id', 'id'],
 
       include: [
+
         [col('productoDetalleCompra.nombre'), 'nombre'],
         [col('productoDetalleCompra.marcaProducto.nombre'), 'marca'],
         [col('productoDetalleCompra.medidaProducto.nombre'), 'medida']]
@@ -131,6 +132,22 @@ class OpcionesGetDetalle {
 
     ]
     return include
+  }
+
+  static formatear (detalles) {
+    console.log(detalles)
+    return detalles.map((detalle) => (
+      {
+        id: detalle.producto_id,
+        descripcion: detalle.nombre + ' - ' + detalle.marca,
+        medida: detalle.medida,
+        cantidad: detalle.cantidad,
+        precio: detalle.precio,
+        subtotal: detalle.subtotal
+      }
+    )
+
+    )
   }
 }
 
