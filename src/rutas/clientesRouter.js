@@ -81,15 +81,15 @@ router.get('/:id/ventas', async (req, res, next) => {
   }
 })
 
-router.post('/:id/pagos', async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const pago = await crearPago(id)
-    res.send(respuesta('Pago realizado', pago))
-  } catch (error) {
-    next(error)
-  }
-})
+// router.post('/:id/pagos', async (req, res, next) => {
+//   try {
+//     const { id } = req.params
+//     const pago = await crearPago(id)
+//     res.send(respuesta('Pago realizado', pago))
+//   } catch (error) {
+//     next(error)
+//   }
+// })
 
 router.post('/:id/pagar', async (req, res, next) => {
   try {

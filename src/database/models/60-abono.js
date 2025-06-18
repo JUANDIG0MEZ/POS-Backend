@@ -63,21 +63,28 @@ module.exports = (sequelize, DataTypes) => {
 
     hooks: {
       beforeCreate: async (abono, options) => {
-        if (abono.valor === 0) {
+        const metodoPago = Number(abono.metodo_pago_id)
+        const valor = Number(abono.valor)
+        const clienteId = Number(abono.cliente_id)
+
+        console.log('valor:', valor)
+        console.log('clienteId:', clienteId)
+        console.log('descripcion: ', abono.descripcion)
+        console.log('metodoPago:', abono.metodo_pago_id)
+
+        if (valor <= 0) {
           throw new Error('El valor del abono no puede ser 0')
         }
-        if (!(abono.metodo_pago_id == 0 || abono.metodo_pago_id == 1) && !abono.descripcion) {
+        if (metodoPago > 1 && !abono.descripcion) {
           throw new Error('Se debe agregar informacion del abono')
-        } else {
-          abono.descripcion = ''
         }
         if (!abono.fecha || !abono.hora) {
           throw new Error('La fecha y hora son requeridas')
         }
-        if (!abono.cliente_id) {
+        if (!clienteId) {
           throw new Error('El cliente es requerido')
         }
-        if (!abono.metodo_pago_id) {
+        if (!metodoPago) {
           throw new Error('El método de pago es requerido')
         }
       }

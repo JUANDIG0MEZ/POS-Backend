@@ -13,6 +13,10 @@ const {
   modificarVenta
 } = require('../servicios/facturasVenta/patchFacturaVenta')
 
+const {
+  crearAbonoFactura
+} = require('../servicios/clientes/postCliente')
+
 const { respuesta } = require('./funciones')
 
 const router = express.Router()
@@ -57,15 +61,15 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-// router.patch('/:id/abonar', async (req, res, next) => {
-//   try {
-//     const id = req.params.id
-//     const body = req.body
-//     const abono = await crearAbonoFactura(body, id)
-//     res.json(respuesta('Abono realizado', abono))
-//   } catch (error) {
-//     next(error)
-//   }
-// })
+router.patch('/:id/abonar', async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const body = req.body
+    const abono = await crearAbonoFactura(body, id)
+    res.json(respuesta('Abono realizado', abono))
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = router

@@ -137,7 +137,7 @@ function cargarFacturasCompra () {
       pagado: 0,
       total: 0,
       estado_entrega_id: faker.number.int({ min: 1, max: numeroEstadoEntregaCompras }),
-      estado_pago_id: faker.number.int({ min: 1, max: numeroEstadoPagoCompras })
+      estado_pago_id: 1
     }
 
     if (factura.cliente_id == 1) {
@@ -183,7 +183,7 @@ function cargarFacturasVenta () {
       pagado: 0,
       total: 0,
       estado_entrega_id: faker.number.int({ min: 1, max: numeroEstadoEntregaVentas }),
-      estado_pago_id: faker.number.int({ min: 1, max: numeroEstadoPagoVentas })
+      estado_pago_id: 1
     }
 
     if (factura.cliente_id == 1) {

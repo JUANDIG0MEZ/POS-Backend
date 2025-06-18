@@ -1,6 +1,6 @@
-const { Model } = require('sequelize')
-
 'use strict'
+
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class Pago extends Model {
@@ -73,14 +73,13 @@ module.exports = (sequelize, DataTypes) => {
         const valor = Number(pago.valor)
         const clienteId = Number(pago.cliente_id)
 
-        console.log(pago)
-        if (valor === 0) {
+        console.log(metodoPago)
+
+        if (valor <= 0) {
           throw new Error('El valor del pago no puede ser 0')
         }
         if (!(metodoPago < 2) && !pago.descripcion) {
           throw new Error('Se debe agregar informacion del pago')
-        } else {
-          pago.descripcion = ''
         }
         if (!pago.fecha || !pago.hora) {
           throw new Error('La fecha y hora son requeridas')

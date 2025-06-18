@@ -1,6 +1,6 @@
-const { Model } = require('sequelize')
+'use strict'
 
-'use strict';
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoImagen extends Model {
@@ -28,4 +28,4 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false
   })
   return ProductoImagen
-};
+}
