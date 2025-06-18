@@ -1,20 +1,14 @@
-const { number } = require('joi')
-const { Model } = require('sequelize')
-
 'use strict'
+
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class DetalleVenta extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate (models) {
       DetalleVenta.belongsTo(models.Venta, {
         foreignKey: 'venta_id',
         as: 'ventaDetalle'
-      }),
+      })
 
       DetalleVenta.belongsTo(models.Producto, {
         foreignKey: 'producto_id',
@@ -24,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   DetalleVenta.init({
     venta_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Venta',
@@ -32,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     producto_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Producto',
@@ -40,21 +34,21 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     cantidad: {
-      type: DataTypes.DECIMAL(10, 0),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
         min: 0
       }
     },
     precio: {
-      type: DataTypes.DECIMAL(10, 0),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
         min: 0
       }
     },
     subtotal: {
-      type: DataTypes.DECIMAL(12, 0),
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       validate: {
         min: 0
@@ -98,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
           lock: options.transaction.LOCK.UPDATE
         })
 
-        if (detalle.cantidad('cantidad')) {
+        if (detalle.changed('cantidad')) {
           producto.cantidad = Number(producto.cantidad) + cantidadAntes - cantidadAhora
           await producto.save({ transaction: options.transaction })
         }

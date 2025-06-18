@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false
       },
       cliente_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         defaultValue: 1,
         references: {

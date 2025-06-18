@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   ProductoCategoria.init({
     nombre: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(200),
       unique: true,
       allowNull: false,
       set (value) {

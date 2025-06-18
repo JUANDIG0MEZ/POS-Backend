@@ -36,18 +36,15 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     cliente_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Cliente',
         key: 'id'
       }
     },
-    direccion: {
-      type: DataTypes.STRING
-    },
     pagado: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -56,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     total: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -66,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     por_pagar: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       defaultValue: 0,
       validate: {
         min: 0,
@@ -74,7 +71,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     estado_pago_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.TINYINT.UNSIGNED,
       defaultValue: 1,
       references: {
         model: 'VentaEstadoPago',
@@ -82,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     estado_entrega_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.TINYINT.UNSIGNED,
       defaultValue: 1,
       references: {
         model: 'VentaEstadoEntrega',
@@ -91,7 +88,7 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     nombre_cliente: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(200)
     }
 
   }, {

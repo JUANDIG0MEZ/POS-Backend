@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   DetalleCompra.init({
     compra_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Compra',
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     producto_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Producto',
@@ -40,21 +40,21 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     cantidad: {
-      type: DataTypes.DECIMAL(10, 0),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
         min: 0
       }
     },
     precio: {
-      type: DataTypes.DECIMAL(10, 0),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       validate: {
         min: 0
       }
     },
     subtotal: {
-      type: DataTypes.DECIMAL(12, 0),
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: true,
       validate: {
         min: 0
@@ -103,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
           })
 
         if (detalle.changed('cantidad')) {
-          producto.cantidad = producto.cantidad - cantidadAntes + cantidadAhora
+          producto.cantidad = Number(producto.cantidad) - cantidadAntes + cantidadAhora
           await producto.save({ transaction: options.transaction })
         }
       },

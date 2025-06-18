@@ -50,7 +50,7 @@ module.exports = {
         defaultValue: 0
       },
       cantidad: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0
       },

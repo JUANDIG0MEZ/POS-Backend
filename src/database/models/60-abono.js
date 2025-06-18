@@ -2,7 +2,6 @@
 
 const { Model } = require('sequelize')
 
-
 module.exports = (sequelize, DataTypes) => {
   class Abono extends Model {
     /**
@@ -32,28 +31,28 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     cliente_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.SMALLINT.UNSIGNED,
       references: {
         model: 'Cliente',
         key: 'id'
       }
     },
     valor: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       validate: {
         min: 0
       }
     },
     metodo_pago_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TINYINT.UNSIGNED,
       references: {
         model: 'MetodoPago',
         key: 'id'
       }
     },
     descripcion: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(200),
       allowNull: true
     }
   }, {
@@ -85,4 +84,4 @@ module.exports = (sequelize, DataTypes) => {
     }
   })
   return Abono
-};
+}

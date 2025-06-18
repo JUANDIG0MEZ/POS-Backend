@@ -1,17 +1,17 @@
-const {cargarDetallesVenta} = require('../datosFaker');
-const { DetalleVenta} = require('../models')
+const { cargarDetallesVenta } = require('../datosFaker')
+const { DetalleVenta } = require('../models')
 
-'use strict';
+'use strict'
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const transaction = await queryInterface.sequelize.transaction();
+    const transaction = await queryInterface.sequelize.transaction()
     const detallesVentas = cargarDetallesVenta()
 
-    console.log("Detalles de Ventas", detallesVentas.slice(0, 5))
+    console.log('Detalles de Ventas', detallesVentas.slice(0, 1))
 
-    for (let i =0; i < detallesVentas.length; i++){
+    for (let i = 0; i < detallesVentas.length; i++) {
       await DetalleVenta.create(detallesVentas[i], {
         individualHooks: true,
         validate: true,
@@ -20,7 +20,6 @@ module.exports = {
     }
 
     await transaction.commit()
-  },
+  }
 
-
-};
+}

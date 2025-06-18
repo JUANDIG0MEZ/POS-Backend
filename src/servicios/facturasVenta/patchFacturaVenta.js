@@ -1,13 +1,12 @@
+const {
+  DetalleVenta,
+  Venta,
+  sequelize
+} = require('../../database/models')
+
 async function modificarVenta (body, idVenta) {
   const transaction = await sequelize.transaction()
-  // Se van a modificar todos los producto de la compra
   try {
-    const permisos = { modificar: true }
-
-    if (!permisos.modificar) {
-      throw new Error('No tienes permisos para modificar la venta')
-    }
-
     for (const dataDetalle of body) {
       const detalle = await DetalleVenta.findOne({
         where: {
@@ -17,15 +16,10 @@ async function modificarVenta (body, idVenta) {
         transaction,
         lock: transaction.LOCK.UPDATE
       })
-      if (dataDetalle.cantidad !== undefined) {
-        detalle.cantidad = parseInt(dataDetalle.cantidad)
-      }
-      if (dataDetalle.precio !== undefined) {
-        detalle.precio = parseInt(dataDetalle.precio)
-      }
+      detalle.cantidad = dataDetalle.cantidad
+      detalle.precio = dataDetalle.precio
       await detalle.save({ transaction })
     }
-
     const venta = await Venta.findByPk(idVenta, { transaction })
     const info = {
       pagado: venta.pagado,
@@ -35,7 +29,7 @@ async function modificarVenta (body, idVenta) {
     }
 
     await transaction.commit()
-
+    console.log(info)
     return {
       info
     }
@@ -43,4 +37,8 @@ async function modificarVenta (body, idVenta) {
     await transaction.rollback()
     throw new Error(error)
   }
+}
+
+module.exports = {
+  modificarVenta
 }

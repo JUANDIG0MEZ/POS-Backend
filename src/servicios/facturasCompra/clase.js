@@ -7,7 +7,7 @@ const {
   ProductoMedida
 } = require('../../database/models')
 
-const { Op, col, fn, literal } = require('sequelize')
+const { Op, col } = require('sequelize')
 
 // Opciones para encontrar todas las facturas. (se pueden filtrar)
 class OpcionesGetCompras {
@@ -135,7 +135,6 @@ class OpcionesGetDetalle {
   }
 
   static formatear (detalles) {
-    console.log(detalles)
     return detalles.map((detalle) => (
       {
         id: detalle.producto_id,

@@ -29,7 +29,7 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         validate: {
-          min: 1
+          min: 0
         }
       },
       precio: {

@@ -24,7 +24,6 @@ const router = express.Router()
 
 router.get('/', async (req, res, next) => {
   try {
-    console.log(req.query)
     const facturas = await cargarFacturasCompra(req.query)
     res.json(respuesta('Facturas de compra cargadas', facturas))
   } catch (error) {
@@ -74,7 +73,6 @@ router.patch('/:id', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const body = req.body
-    console.log(body)
     const factura = await crearFacturaCompra(body)
     res.json(respuesta('Factura de compra creada', factura))
   } catch (error) {

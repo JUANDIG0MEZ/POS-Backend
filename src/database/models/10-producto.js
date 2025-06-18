@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Producto.init({
     nombre: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(200),
       allowNull: false,
       unique: true,
       set (value) {
@@ -44,28 +44,28 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     marca_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TINYINT.UNSIGNED,
       references: {
         model: 'ProductoMarca',
         key: 'id'
       }
     },
     categoria_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TINYINT.UNSIGNED,
       references: {
         model: 'ProductoCategoria',
         key: 'id'
       }
     },
     medida_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TINYINT.UNSIGNED,
       references: {
         model: 'ProductoMedida',
         key: 'id'
       }
     },
     precio_compra: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     precio_venta: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -81,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     cantidad: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -89,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     total: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: 0
     }
@@ -102,24 +102,24 @@ module.exports = (sequelize, DataTypes) => {
       beforeUpdate: (producto) => {
         if (producto.changed('cantidad') || producto.changed('precio_compra')) {
           const cantidad = Number(producto.cantidad)
-          const precio_compra = Number(producto.precio_compra)
+          const precioCompra = Number(producto.precio_compra)
 
           if (cantidad < 0) {
             producto.total = 0
           } else {
-            producto.total = cantidad * precio_compra
+            producto.total = cantidad * precioCompra
           }
         }
       },
       beforeCreate (producto) {
         const cantidad = Number(producto.cantidad)
-        const precio_compra = Number(producto.precio_compra)
+        const precioCompra = Number(producto.precioCompra)
 
         if (cantidad < 0) {
           throw new Error('La cantidad no puede ser negativa')
         }
 
-        producto.total = cantidad * precio_compra
+        producto.total = cantidad * precioCompra
       }
     }
   })

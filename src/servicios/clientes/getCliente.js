@@ -3,16 +3,16 @@ const {
   Abono,
   Pago,
   Venta,
-  Compra,
-  VentaEstadoPago,
-  CompraEstadoPago
+  Compra
 } = require('../../database/models')
-
-const { col } = require('sequelize')
 
 const {
   ClaseClientes,
-  ClaseCliente
+  ClaseCliente,
+  OpcionesAbonos,
+  OpcionesPagos,
+  OpcionesVentas,
+  OpcionesCompras
 } = require('./clase')
 
 async function cargarClientes (query) {
@@ -42,9 +42,8 @@ async function cargarAbonosCliente (id, query) {
     where: {
       cliente_id: id
     },
-    attributes: {
-      exclude: ['cliente_id']
-    },
+    attributes: OpcionesAbonos.atributos(),
+    include: OpcionesAbonos.incluir(),
     limit: Math.min(Number(query.limit), 50),
     offset: Number(query.offset),
     order: [['id', 'DESC']]
@@ -52,38 +51,26 @@ async function cargarAbonosCliente (id, query) {
   return { count, rows }
 }
 
-async function cargarPagosCliente (id, query) {
+async function cargarPagosCliente (clienteId, query) {
   // Se traen los pagos al cliente con el id que se recibe
   const { count, rows } = await Pago.findAndCountAll({
-    where: {
-      cliente_id: id
-    },
-    attributes: {
-      exclude: ['cliente_id']
-    },
+    where: OpcionesPagos.donde(clienteId),
+    attributes: OpcionesPagos.atributos(),
+    include: OpcionesPagos.incluir(),
     limit: Math.min(Number(query.limit), 50),
     offset: Number(query.offset),
     order: [['id', 'DESC']]
   })
+
   return { count, rows }
 }
 
-async function cargarVentasCliente (id, query) {
+async function cargarVentasCliente (clienteId, query) {
   const { count, rows } = await Venta.findAndCountAll({
-
-    where: {
-      cliente_id: id
-    },
-    attributes: {
-      exclude: ['cliente_id', 'nombre_cliente', 'pagado'],
-      include: [
-        [col('estadoPagoVenta.nombre'), 'Estado pago']
-      ]
-    },
-    include: [
-      { model: VentaEstadoPago, attributes: [], as: 'estadoPagoVenta' }
-    ],
-    order: [['id', 'DESC']],
+    where: OpcionesVentas.donde(clienteId),
+    include: OpcionesVentas.incluir(),
+    attributes: OpcionesVentas.atributos(),
+    order: OpcionesVentas.orden(),
     limit: Math.min(Number(query.limit), 50),
     offset: Number(query.offset)
   })
@@ -91,22 +78,12 @@ async function cargarVentasCliente (id, query) {
   return { count, rows }
 }
 
-async function cargarComprasCliente (id, query) {
+async function cargarComprasCliente (clienteId, query) {
   const { count, rows } = await Compra.findAndCountAll({
-
-    where: {
-      cliente_id: id
-    },
-    attributes: {
-      exclude: ['cliente_id', 'nombre_cliente', 'pagado'],
-      include: [
-        [col('estadoPagoCompra.nombre'), 'Estado pago']
-      ]
-    },
-    include: [
-      { model: CompraEstadoPago, attributes: [], as: 'estadoPagoCompra' }
-    ],
-    order: [['id', 'DESC']],
+    where: OpcionesCompras.donde(clienteId),
+    attributes: OpcionesCompras.atributos(),
+    include: OpcionesCompras.incluir(),
+    order: OpcionesCompras.orden(),
     limit: Math.min(Number(query.limit), 50),
     offset: Number(query.offset)
   })

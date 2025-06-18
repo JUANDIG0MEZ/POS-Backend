@@ -1,6 +1,6 @@
-const { Model } = require('sequelize')
-
 'use strict'
+
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoMedida extends Model {
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   ProductoMedida.init({
 
     nombre: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(200),
       allowNull: false,
       unique: true,
       set (value) {

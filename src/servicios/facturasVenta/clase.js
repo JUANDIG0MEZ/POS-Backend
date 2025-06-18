@@ -121,6 +121,21 @@ class OpcionesGetDetalle {
 
     return include
   }
+
+  static formatear (detalles) {
+    return detalles.map((detalle) => (
+      {
+        id: detalle.producto_id,
+        descripcion: detalle.nombre + ' - ' + detalle.marca,
+        medida: detalle.medida,
+        cantidad: detalle.cantidad,
+        precio: detalle.precio,
+        subtotal: detalle.subtotal
+      }
+    )
+
+    )
+  }
 }
 
 module.exports = {

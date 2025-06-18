@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Cliente.init({
     nombre: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(200),
       allowNull: false,
       unique: true,
       set (value) {
@@ -45,19 +45,19 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     direccion: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(150),
       allowNull: true
     },
     telefono: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
       allowNull: true
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(100),
       allowNull: true
     },
     tipo_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       defaultValue: 3,
       references: {
@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     por_pagarle: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     debe: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {

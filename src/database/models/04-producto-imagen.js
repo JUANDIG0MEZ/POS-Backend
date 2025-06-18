@@ -1,12 +1,11 @@
-const { Model } = require('sequelize');
+const { Model } = require('sequelize')
 
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoImagen extends Model {
+    static associate (models) {
 
-    static associate(models) {
-      
     }
   }
   ProductoImagen.init({
@@ -20,13 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     url_imagen: {
       type: DataTypes.STRING,
-      allowNull: false,
-    } 
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'ProductoImagen',
     tableName: 'ProductoImagen',
-    timestamps: false,
-  });
-  return ProductoImagen;
+    timestamps: false
+  })
+  return ProductoImagen
 };

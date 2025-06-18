@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER.UNSIGNED
     },
     fecha: {
       type: DataTypes.DATEONLY,
@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     cliente_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Cliente',
@@ -56,7 +56,16 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     pagado: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0,
+        isInt: true
+      }
+    },
+    total: {
+      type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
       defaultValue: 0,
       validate: {
@@ -65,16 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     por_pagar: {
-      type: DataTypes.BIGINT,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
-    },
-    total: {
-      type: DataTypes.BIGINT,
-      allowNull: false,
+      type: DataTypes.BIGINT.UNSIGNED,
       defaultValue: 0,
       validate: {
         min: 0,
@@ -82,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     estado_entrega_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       defaultValue: 1,
       references: {
@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     estado_pago_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       defaultValue: 1,
       references: {
@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     nombre_cliente: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(200)
     }
 
   }, {
@@ -150,7 +150,6 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate: async (compra, options) => {
         const clienteId = Number(compra.cliente_id)
         const estadoEntregaId = Number(compra.estado_entrega_id)
-        console.log(compra.estado_pago_id)
 
         if (estadoEntregaId === 0) {
           throw new Error('No se ha establecido el estado de la entrega')

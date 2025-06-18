@@ -94,7 +94,7 @@ function cargarClientes () {
     clientes.push({
       nombre: nombre[i],
       direccion: faker.location.streetAddress(),
-      telefono: faker.helpers.arrayElement([3000000000, 3100000000, 3200000000, 3500000000]),
+      telefono: faker.helpers.arrayElement([32279638, 31000000, 3200000, 3500000]),
       email: faker.internet.email(),
       tipo_id: faker.number.int({ min: 1, max: numeroTiposClientes }),
       por_pagarle: 0,

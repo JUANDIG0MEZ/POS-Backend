@@ -16,7 +16,6 @@ const {
 } = require('../servicios/clientes/getCliente')
 
 const {
-  crearPago,
   crearPagosFacturas,
   crearAbonosFacturas
 } = require('../servicios/clientes/postCliente')

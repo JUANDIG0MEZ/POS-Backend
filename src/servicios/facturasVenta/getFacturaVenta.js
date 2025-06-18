@@ -34,10 +34,13 @@ async function cargarFacturaVenta (id) {
       venta_id: id
     },
     attributes: OpcionesGetDetalle.atributos(),
-    include: OpcionesGetDetalle.incluir()
+    include: OpcionesGetDetalle.incluir(),
+    raw: true
   })
 
-  return { datos, info }
+  const datosFormateados = OpcionesGetDetalle.formatear(datos)
+
+  return { datos: datosFormateados, info }
 }
 
 module.exports = {

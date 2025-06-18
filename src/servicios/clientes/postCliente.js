@@ -7,7 +7,7 @@ const {
   Venta
 } = require('../../database/models')
 
-async function crearPago (valor, idCliente, transaction) {
+async function crearPago (valor, idCliente, metodoPagoId, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
   const hora = new Date().toTimeString().split(' ')[0]
 
@@ -15,7 +15,8 @@ async function crearPago (valor, idCliente, transaction) {
     cliente_id: idCliente,
     fecha,
     hora,
-    valor
+    valor,
+    metodo_pago_id: metodoPagoId
   }
 
   await Pago.create(data, { transaction })
@@ -35,12 +36,14 @@ async function crearAbono (valor, idCliente, transaction) {
   await Abono.create(data, { transaction })
 }
 
-async function crearPagoFactura (body, id_factura) {
+async function crearPagoFactura (body, idFactura) {
   const transaction = await sequelize.transaction()
+  console.log(body)
   try {
-    const valor = parseInt(body.valor)
+    const valor = Number(body.valor)
+    const metodoPagoId = Number(body.metodoPagoId)
 
-    const compra = await Compra.findByPk(id_factura, {
+    const compra = await Compra.findByPk(idFactura, {
       transaction,
       lock: transaction.LOCK.UPDATE
     })
@@ -53,7 +56,7 @@ async function crearPagoFactura (body, id_factura) {
     compra.pagado = compra.pagado + valor
     await compra.save({ transaction })
 
-    await crearPago(valor, compra.cliente_id, transaction)
+    await crearPago(valor, compra.cliente_id, metodoPagoId, transaction)
 
     await transaction.commit()
     return {
