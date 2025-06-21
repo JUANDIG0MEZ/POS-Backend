@@ -36,10 +36,19 @@ function cargarMedidas () {
 
 function cargarCategorias () {
   const lista = ['', 'Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
+  const descripcion = [
+    'Productos sin categoria',
+    'Aqui se encuentran los alimentos, como frutas, verduras, carne, pescado, etc.',
+    'Aqui se encuentran las bebidas, como agua, coca cola, sprite, etc.',
+    'Aqui se encuentran los productos de limpieza, como jabones, detergente, etc.',
+    'Aqui se encuentran los productos de hogar, como ropa, electrodomesticos, etc.',
+    'Aqui se encuentran los electrodomesticos, como neveras, lavadoras, etc.'
+  ]
   const categorias = []
   for (let i = 0; i < numeroCategorias; i++) {
     categorias.push({
-      nombre: lista[i]
+      nombre: lista[i],
+      descripcion: descripcion[i]
     })
   }
   return categorias
@@ -280,8 +289,9 @@ function cargarPagos () {
 
     if (factura.metodo_pago_id > 1) {
       factura.descripcion = faker.commerce.productDescription()
+    } else {
+      factura.descripcion = ''
     }
-
     facturas.push(factura)
   }
   return facturas
@@ -301,6 +311,8 @@ function cargarAbonos () {
 
     if (factura.metodo_pago_id > 1) {
       factura.descripcion = faker.commerce.productDescription()
+    } else {
+      factura.descripcion = ''
     }
 
     facturas.push(factura)

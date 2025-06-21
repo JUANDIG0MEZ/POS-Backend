@@ -1,6 +1,5 @@
 const Joi = require('joi')
 
-
 const string = Joi.string().min(3).max(255)
 const entero = Joi.number().integer().positive()
 const precio = Joi.number().positive()
@@ -21,7 +20,7 @@ const crearProductoSchema = Joi.object({
   marca: string,
   marca_id: entero,
 
-  cantidad: entero    
+  cantidad: entero
 })
 
 const actualizarProductoSchema = Joi.object({

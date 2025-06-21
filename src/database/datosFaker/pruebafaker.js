@@ -5,10 +5,10 @@ const funcionesFaker = require('./index.js')
 //     cargarCategorias,
 //     cargarMarcas,
 //     cargarProductos,
-    
+
 //     cargarTiposCliente,
 //     cargarClientes,
-    
+
 //     cargarEstadosCompra,
 //     cargarFacturasCompra,
 
@@ -18,18 +18,15 @@ const funcionesFaker = require('./index.js')
 //     cargarDetallesCompra,
 //     cargarDetallesVenta,
 
-
 //     cargarAbonos,
 //     cargarPagos,
-    
-// }
 
+// }
 
 console.log(funcionesFaker.cargarMedidas())
 console.log(funcionesFaker.cargarCategorias())
 console.log(funcionesFaker.cargarMarcas())
 console.log(funcionesFaker.cargarProductos())
-
 
 console.log(funcionesFaker.cargarTiposCliente())
 console.log(funcionesFaker.cargarClientes())

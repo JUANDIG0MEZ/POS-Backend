@@ -9,6 +9,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.TINYINT.UNSIGNED
       },
+      descripcion: {
+        type: Sequelize.STRING(200),
+        allowNull: false,
+        unique: true
+      },
       nombre: {
         type: Sequelize.STRING(200),
         allowNull: false,

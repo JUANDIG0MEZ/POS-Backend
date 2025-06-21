@@ -73,8 +73,6 @@ module.exports = (sequelize, DataTypes) => {
         const valor = Number(pago.valor)
         const clienteId = Number(pago.cliente_id)
 
-        console.log(metodoPago)
-
         if (valor <= 0) {
           throw new Error('El valor del pago no puede ser 0')
         }

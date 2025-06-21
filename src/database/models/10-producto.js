@@ -107,13 +107,15 @@ module.exports = (sequelize, DataTypes) => {
           if (cantidad < 0) {
             producto.total = 0
           } else {
-            producto.total = cantidad * precioCompra
+            const total = cantidad * precioCompra
+
+            producto.total = total
           }
         }
       },
       beforeCreate (producto) {
         const cantidad = Number(producto.cantidad)
-        const precioCompra = Number(producto.precioCompra)
+        const precioCompra = Number(producto.precio_compra)
 
         if (cantidad < 0) {
           throw new Error('La cantidad no puede ser negativa')

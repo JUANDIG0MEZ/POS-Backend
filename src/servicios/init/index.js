@@ -37,14 +37,11 @@ async function cargarDatosIniciales () {
     ProductoMarca.findAll(InitOptions.ProductoMarca()),
     ProductoCategoria.findAll(InitOptions.ProductoCategoria()),
     ProductoMedida.findAll(InitOptions.ProductoMedida()),
-
     CompraEstadoEntrega.findAll(InitOptions.CompraEstadoEntrega()),
     CompraEstadoPago.findAll(InitOptions.CompraEstadoPago()),
     VentaEstadoEntrega.findAll(InitOptions.VentaEstadoEntrega()),
     VentaEstadoPago.findAll(InitOptions.VentaEstadoPago()),
-
     ClienteTipo.findAll(InitOptions.ClienteTipo()),
-
     MetodoPago.findAll(InitOptions.MetodoPago())
   ])
 

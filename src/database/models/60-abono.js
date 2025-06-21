@@ -67,11 +67,6 @@ module.exports = (sequelize, DataTypes) => {
         const valor = Number(abono.valor)
         const clienteId = Number(abono.cliente_id)
 
-        console.log('valor:', valor)
-        console.log('clienteId:', clienteId)
-        console.log('descripcion: ', abono.descripcion)
-        console.log('metodoPago:', abono.metodo_pago_id)
-
         if (valor <= 0) {
           throw new Error('El valor del abono no puede ser 0')
         }

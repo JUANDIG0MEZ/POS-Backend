@@ -1,34 +1,21 @@
-const express = require('express')
-const multer = require('multer')
-const { v4: uuidv4 } = require('uuid')
-const path = require('path')
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${uuidv4()}${path.extname(file.originalname)}`)
-  }
-})
-
-const {
-  // validatorHandler,
-  validatorHandlerFormData
-} = require('../middlewares/validator.handler')
-
-const {
-  crearProductoSchema,
-  actualizarProductoSchema
-} = require('../schemas/producto.schema')
-
-const upload = multer({ storage })
-
 const { cargarImagenesProducto } = require('../servicios/productos/getProducto')
-const { crearProducto } = require('../servicios/productos/postProducto')
+const { crearProducto, crearCategoria } = require('../servicios/productos/postProducto')
 const { modificarProducto } = require('../servicios/productos/patchProducto')
 
 const { respuesta } = require('./funciones')
+
+const express = require('express')
+
+// const {
+//   // validatorHandler,
+//   validatorHandlerFormData
+// } = require('../middlewares/validator.handler')
+
+// const {
+//   crearProductoSchema,
+//   actualizarProductoSchema
+// } = require('../schemas/producto.schema')
+
 const router = express.Router()
 
 router.get('/:id/imagenes', async (req, res, next) => {
@@ -42,11 +29,10 @@ router.get('/:id/imagenes', async (req, res, next) => {
 })
 
 router.post('/',
-  upload.array('files', 20),
-  validatorHandlerFormData(crearProductoSchema, 'body', 'data'),
   async (req, res, next) => {
     try {
-      const producto = await crearProducto(req)
+      console.log('body', req.body)
+      const producto = await crearProducto(req.body)
       res.json(respuesta('Producto creado', producto))
     } catch (error) {
       next(error)
@@ -54,16 +40,24 @@ router.post('/',
   })
 
 router.patch('/:id',
-  upload.array('files', 20),
-  validatorHandlerFormData(actualizarProductoSchema, 'body', 'data'),
   async (req, res, next) => {
     try {
       const { id } = req.params
-      const producto = await modificarProducto(req, id)
+      console.log(req.body)
+      const producto = await modificarProducto(req.body, id)
       res.json(respuesta('Producto modificado', producto))
     } catch (error) {
       next(error)
     }
   })
+
+router.post('/categoria', async (req, res, next) => {
+  try {
+    const categoria = await crearCategoria(req.body)
+    res.json(respuesta('Categoria creada', categoria))
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = router

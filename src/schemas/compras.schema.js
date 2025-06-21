@@ -1,6 +1,5 @@
 const Joi = require('joi')
 
-
 const string = Joi.string().min(3).max(255)
 
 const entero = Joi.number().integer().positive()
@@ -30,7 +29,7 @@ const crearCompraSchema = Joi.object({
     cantidad: entero.required(),
     precio: precio.required(),
     subTotal: precio.required()
-    }))
+  }))
 
 })
 
@@ -40,7 +39,7 @@ const actualizarProductosCompraSchema = Joi.object({
     cantidad: entero.required(),
     precio: precio.required(),
     subTotal: precio.required()
-    }))
+  }))
 
 })
 
@@ -59,5 +58,5 @@ module.exports = {
   cambiarEstadoCompraSchema,
   pagarCompraSchema
 
-    // eliminarCompraSchema
+  // eliminarCompraSchema
 }

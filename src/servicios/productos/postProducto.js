@@ -8,29 +8,30 @@ const {
 
 } = require('../../database/models')
 
+// async function AgregarImagenes () {
+//   // Se guardan la url de las imagenes en la base de datos
+//   const baseUrl = req.protocol + '://' + req.get('host') + '/uploads/'
+//   let imagenesUrl = req.files.map(imagen => { return baseUrl + imagen.filename })
+
+//   imagenesUrl = imagenesUrl.map(url => {
+//     return {
+//       producto_id: producto.id,
+//       url_imagen: url
+//     }
+//   })
+
+//   await ProductoImagen.bulkCreate(imagenesUrl, { transaction })
+// }
+
 async function crearProducto (req) {
   const transaction = await sequelize.transaction()
   try {
     const datos = JSON.parse(req.body.data)
 
-    await crearCategoria(datos, transaction)
     await crearMarca(datos, transaction)
     await crearMedida(datos, transaction)
 
     const producto = await Producto.create(datos, { transaction })
-
-    // Se guardan la url de las imagenes en la base de datos
-    const baseUrl = req.protocol + '://' + req.get('host') + '/uploads/'
-    let imagenesUrl = req.files.map(imagen => { return baseUrl + imagen.filename })
-
-    imagenesUrl = imagenesUrl.map(url => {
-      return {
-        producto_id: producto.id,
-        url_imagen: url
-      }
-    })
-
-    await ProductoImagen.bulkCreate(imagenesUrl, { transaction })
 
     await transaction.commit()
 
@@ -68,17 +69,17 @@ async function crearMedida (datos, transaction) {
   delete datos.medida
 }
 
-async function crearCategoria (datos, transaction) {
-  if (datos.categoria) {
-    const [categoria] = await ProductoCategoria.findOrCreate({
-      where: { nombre: datos.categoria },
-      defaults: { nombre: datos.categoria },
-      transaction
-    })
+async function crearCategoria (body) {
+  const [categoria, creado] = await ProductoCategoria.findOrCreate({
+    where: { nombre: body.nombre },
+    defaults: { nombre: body.nombre, descripcion: body.descripcion }
+  })
 
-    datos.categoria_id = categoria.id
+  if (!creado) {
+    throw new Error('La categoria ya existe')
   }
-  delete datos.categoria
+
+  return { categoria }
 }
 
 module.exports = {

@@ -1,7 +1,7 @@
+'use strict'
+
 const { cargarPagos } = require('../datosFaker')
 const { Pago } = require('../models')
-
-'use strict'
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {

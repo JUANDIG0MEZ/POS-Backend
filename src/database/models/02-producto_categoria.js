@@ -1,6 +1,6 @@
-const { Model } = require('sequelize')
-
 'use strict'
+
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoCategoria extends Model {
@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductoCategoria.init({
+    descripcion: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+      unique: true
+    },
     nombre: {
       type: DataTypes.STRING(200),
       unique: true,
@@ -33,7 +38,15 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'ProductoCategoria',
     timestamps: false,
-    tableName: 'ProductoCategoria'
+    tableName: 'ProductoCategoria',
+
+    hooks: {
+      beforeCreate (categoria) {
+        if (categoria.nombre === '') {
+          throw new Error('El nombre de la categoria no puede estar vacio')
+        }
+      }
+    }
   })
   return ProductoCategoria
 }
