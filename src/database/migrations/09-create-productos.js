@@ -14,14 +14,6 @@ module.exports = {
         allowNull: false,
         unique: true
       },
-      marca_id: {
-        type: Sequelize.TINYINT.UNSIGNED,
-        allowNull: false,
-        references: {
-          model: 'ProductoMarca',
-          key: 'id'
-        }
-      },
       categoria_id: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
@@ -58,12 +50,6 @@ module.exports = {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       }
-    })
-
-    await queryInterface.addConstraint('Producto', {
-      fields: ['nombre', 'marca_id'],
-      type: 'unique',
-      name: 'unique_nombre_marca'
     })
   },
   async down (queryInterface, Sequelize) {

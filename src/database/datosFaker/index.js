@@ -2,7 +2,6 @@ const { faker } = require('@faker-js/faker')
 
 const numeroMedidas = 7
 const numeroCategorias = 5
-const numeroMarcas = 50
 const numeroProductos = 5000
 
 const numeroTiposClientes = 3
@@ -24,7 +23,7 @@ const numeroAbonos = 2000
 const numeroPagos = 2000
 
 function cargarMedidas () {
-  const lista = ['kG', 'UniDad', 'Litro', 'Metro', 'Gramo', 'Mililitro', 'Centimetro']
+  const lista = ['kg', 'unidad', 'litro', 'metro', 'gramo', 'mililitro', 'centimetro']
   const medidas = []
   for (let i = 0; i < numeroMedidas; i++) {
     medidas.push({
@@ -35,7 +34,7 @@ function cargarMedidas () {
 }
 
 function cargarCategorias () {
-  const lista = ['', 'Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
+  const lista = ['No aplica', 'Alimentos', 'Bebidas', 'Limpieza', 'Hogar', 'Electrodomesticos']
   const descripcion = [
     'Productos sin categoria',
     'Aqui se encuentran los alimentos, como frutas, verduras, carne, pescado, etc.',
@@ -54,24 +53,12 @@ function cargarCategorias () {
   return categorias
 }
 
-function cargarMarcas () {
-  const lista = faker.helpers.uniqueArray(faker.company.name, numeroMarcas)
-  const marcas = []
-  for (let i = 0; i < numeroMarcas; i++) {
-    marcas.push({
-      nombre: lista[i]
-    })
-  }
-  return marcas
-}
-
 function cargarProductos () {
   const nombre = faker.helpers.uniqueArray(faker.commerce.productName, numeroProductos)
   const productos = []
   for (let i = 0; i < numeroProductos; i++) {
     productos.push({
       nombre: nombre[i],
-      marca_id: faker.number.int({ min: 1, max: numeroMarcas }),
       categoria_id: faker.number.int({ min: 1, max: numeroCategorias }),
       medida_id: faker.number.int({ min: 1, max: numeroMedidas }),
       precio_compra: faker.number.int({ min: 10000, max: 50000 }),
@@ -337,7 +324,6 @@ function cargarMotivoNota () {
 module.exports = {
   cargarMedidas,
   cargarCategorias,
-  cargarMarcas,
   cargarProductos,
 
   cargarTiposCliente,

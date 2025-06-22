@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         as: 'categoriaProducto'
       })
 
-      Producto.belongsTo(models.ProductoMarca, {
-        foreignKey: 'marca_id',
-        as: 'marcaProducto'
-      })
       Producto.belongsTo(models.ProductoMedida, {
         foreignKey: 'medida_id',
         as: 'medidaProducto'
@@ -41,13 +37,6 @@ module.exports = (sequelize, DataTypes) => {
       get () {
         const nombre = this.getDataValue('nombre')
         return nombre ? nombre.replace(/\b\w/g, (char) => char.toUpperCase()) : ''
-      }
-    },
-    marca_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
-      references: {
-        model: 'ProductoMarca',
-        key: 'id'
       }
     },
     categoria_id: {

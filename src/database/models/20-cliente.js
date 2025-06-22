@@ -1,6 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
+const { ErrorUsuario } = require('../../errors/ErrorUsuario')
 
 module.exports = (sequelize, DataTypes) => {
   class Cliente extends Model {
@@ -88,7 +89,25 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Cliente',
     timestamps: false,
-    tableName: 'Cliente'
+    tableName: 'Cliente',
+    hooks: {
+      beforeCreate (cliente) {
+        const tipoId = Number(cliente.tipo_id)
+        const telefono = Number(cliente.tipo_id)
+
+        if (!tipoId) {
+          throw new ErrorUsuario('Tipo de usuario invalido')
+        }
+        if (!cliente.nombre) {
+          throw new ErrorUsuario('Nombre invalido')
+        }
+        if (telefono === 0) {
+          cliente.telefono = null
+        } else if (!telefono) {
+          throw new ErrorUsuario('Telefono invalido')
+        }
+      }
+    }
   })
   return Cliente
 }

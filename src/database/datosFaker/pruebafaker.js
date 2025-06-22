@@ -3,7 +3,6 @@ const funcionesFaker = require('./index.js')
 // module.exports = {
 //     cargarMedidas,
 //     cargarCategorias,
-//     cargarMarcas,
 //     cargarProductos,
 
 //     cargarTiposCliente,
@@ -25,7 +24,6 @@ const funcionesFaker = require('./index.js')
 
 console.log(funcionesFaker.cargarMedidas())
 console.log(funcionesFaker.cargarCategorias())
-console.log(funcionesFaker.cargarMarcas())
 console.log(funcionesFaker.cargarProductos())
 
 console.log(funcionesFaker.cargarTiposCliente())
