@@ -9,6 +9,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.SMALLINT.UNSIGNED
       },
+      usuario_id: {
+        type: Sequelize.TINYINT.UNSIGNED,
+        references: {
+          model: 'Usuario',
+          key: 'id'
+        }
+      },
       nombre: {
         type: Sequelize.STRING(200),
         allowNull: false,

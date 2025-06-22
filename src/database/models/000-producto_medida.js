@@ -19,11 +19,12 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       set (value) {
         this.setDataValue('nombre', value.toLowerCase().trim())
-      },
-      get () {
-        const nombre = this.getDataValue('nombre')
-        return nombre ? nombre.charAt(0).toUpperCase() + nombre.slice(1) : ''
       }
+    },
+
+    categoria: {
+      type: DataTypes.STRING(200),
+      allowNull: false
     }
 
   }, {

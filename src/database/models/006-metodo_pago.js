@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   MetodoPago.init({
-    nombre: DataTypes.STRING(200)
+    nombre: DataTypes.STRING(100)
   }, {
     sequelize,
     modelName: 'MetodoPago',

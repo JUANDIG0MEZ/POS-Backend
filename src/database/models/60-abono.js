@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
+      Abono.belongsTo(models.Usuario, {
+        foreignKey: 'usuario_id',
+        as: 'usuarioAbono'
+      })
       Abono.belongsTo(models.Cliente, {
         foreignKey: 'cliente_id',
         as: 'clienteAbono'
@@ -22,6 +26,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Abono.init({
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
     fecha: {
       type: DataTypes.DATEONLY,
       allowNull: false

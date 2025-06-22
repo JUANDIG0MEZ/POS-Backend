@@ -1,6 +1,6 @@
-const { Model } = require('sequelize')
-
 'use strict'
+
+const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
   class DetalleCompra extends Model {
@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
+      DetalleCompra.belongsTo(models.Usuario, {
+        foreignKey: 'usuario_id',
+        as: 'usuarioDetalleCompra'
+      })
       DetalleCompra.belongsTo(models.Compra, {
         foreignKey: 'compra_id',
         as: 'compraDetalle'
@@ -23,6 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DetalleCompra.init({
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
     compra_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,

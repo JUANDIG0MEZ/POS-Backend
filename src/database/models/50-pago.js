@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate (models) {
+      Pago.belongsTo(models.Usuario, {
+        foreignKey: 'usuario_id',
+        as: 'usuarioPago'
+      })
       Pago.belongsTo(models.Cliente, {
         foreignKey: 'cliente_id',
         as: 'clientePago'
@@ -22,6 +26,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Pago.init({
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
     fecha: {
       type: DataTypes.DATEONLY,
       allowNull: false
@@ -29,15 +40,6 @@ module.exports = (sequelize, DataTypes) => {
     hora: {
       type: DataTypes.TIME,
       allowNull: false
-    },
-
-    cliente_id: {
-      type: DataTypes.SMALLINT,
-      allowNull: false,
-      references: {
-        model: 'Cliente',
-        key: 'id'
-      }
     },
     valor: {
       type: DataTypes.BIGINT.UNSIGNED,

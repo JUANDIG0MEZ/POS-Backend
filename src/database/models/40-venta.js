@@ -5,6 +5,10 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class Venta extends Model {
     static associate (models) {
+      Venta.belongsTo(models.Usuario, {
+        foreignKey: 'usuario_id',
+        as: 'usuarioVenta'
+      })
       Venta.belongsTo(models.Cliente, {
         foreignKey: 'cliente_id',
         as: 'clienteVenta'
@@ -27,6 +31,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Venta.init({
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
     fecha: {
       type: DataTypes.DATEONLY,
       allowNull: false

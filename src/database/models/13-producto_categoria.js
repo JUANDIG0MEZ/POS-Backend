@@ -1,6 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
+const { ErrorUsuario } = require('../../errors/ErrorUsuario')
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoCategoria extends Model {
@@ -13,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       ProductoCategoria.hasMany(models.Producto, {
         foreignKey: 'categoria_id',
         as: 'categoriaProducto'
+      })
+
+      ProductoCategoria.belongsTo(models.Usuario, {
+        foreignKey: 'usuario_id',
+        as: 'usuarioProductoCategoria'
       })
     }
   }
@@ -28,10 +34,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       set (value) {
         this.setDataValue('nombre', value.toLowerCase().trim())
-      },
-      get () {
-        const nombre = this.getDataValue('nombre')
-        return nombre ? nombre.charAt(0).toUpperCase() + nombre.slice(1) : ''
+      }
+    },
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
       }
     }
   }, {
@@ -43,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeCreate (categoria) {
         if (categoria.nombre === '') {
-          throw new Error('El nombre de la categoria no puede estar vacio')
+          throw new ErrorUsuario('El nombre de la categoria no puede estar vacio')
         }
       }
     }

@@ -30,9 +30,21 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'cliente_id',
         as: 'clienteAbono'
       })
+
+      Cliente.belongsTo(models.Usuario, {
+        foreignKey: 'usuario_id',
+        as: 'usuarioCliente'
+      })
     }
   }
   Cliente.init({
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
     nombre: {
       type: DataTypes.STRING(200),
       allowNull: false,

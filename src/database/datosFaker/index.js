@@ -23,14 +23,37 @@ const numeroAbonos = 2000
 const numeroPagos = 2000
 
 function cargarMedidas () {
-  const lista = ['kg', 'unidad', 'litro', 'metro', 'gramo', 'mililitro', 'centimetro']
-  const medidas = []
-  for (let i = 0; i < numeroMedidas; i++) {
-    medidas.push({
-      nombre: lista[i]
-    })
-  }
+  const medidas = [
+    { nombre: 'unidad', categoria: 'unidad' },
+    { nombre: 'servicio', categoria: 'unidad' },
+    { nombre: 'caja', categoria: 'unidad' },
+    { nombre: 'centimetro', categoria: 'longitud' },
+    { nombre: 'metro', categoria: 'longitud' },
+    { nombre: 'pulgada', categoria: 'longitud' },
+    { nombre: 'pie', categoria: 'longitud' },
+    { nombre: 'decimetro', categoria: 'longitud' },
+    { nombre: 'kilometro', categoria: 'longitud' },
+    { nombre: 'mililitro', categoria: 'volumen' },
+    { nombre: 'Litro', categoria: 'volumen' },
+    { nombre: 'Galon', categoria: 'volumen' },
+    { nombre: 'metro cubico', categoria: 'volumen' },
+    { nombre: 'gramo', categoria: 'Peso' },
+    { nombre: 'Kilogramo', categoria: 'Peso' },
+    { nombre: 'Tonelada', categoria: 'Peso' },
+    { nombre: 'Libra', categoria: 'Peso' },
+    { nombre: 'Miligramo', categoria: 'Peso' }
+  ]
   return medidas
+}
+
+function cargarTiposCliente () {
+  const tipos = [
+    { nombre: 'proveedor' },
+    { nombre: 'cliente' },
+    { nombre: 'ambos' }
+
+  ]
+  return tipos
 }
 
 function cargarCategorias () {
@@ -68,17 +91,6 @@ function cargarProductos () {
     })
   }
   return productos
-}
-
-function cargarTiposCliente () {
-  const lista = ['Proveedor', 'Cliente', 'Ambos']
-  const tipos = []
-  for (let i = 0; i < numeroTiposClientes; i++) {
-    tipos.push({
-      nombre: lista[i]
-    })
-  }
-  return tipos
 }
 
 function cargarClientes () {

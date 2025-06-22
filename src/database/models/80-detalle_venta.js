@@ -5,6 +5,10 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class DetalleVenta extends Model {
     static associate (models) {
+      DetalleVenta.belongsTo(models.Usuario, {
+        foreignKey: 'usuario_id',
+        as: 'usuarioDetalleVenta'
+      })
       DetalleVenta.belongsTo(models.Venta, {
         foreignKey: 'venta_id',
         as: 'ventaDetalle'
@@ -17,6 +21,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DetalleVenta.init({
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
     venta_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,

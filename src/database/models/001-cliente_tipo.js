@@ -16,14 +16,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(200),
       allowNull: false,
       unique: true,
-
       set (value) {
         this.setDataValue('nombre', value.toLowerCase().trim())
-      },
-
-      get () {
-        const nombre = this.getDataValue('nombre')
-        return nombre ? nombre.charAt(0).toUpperCase() + nombre.slice(1) : ''
       }
     }
   }, {

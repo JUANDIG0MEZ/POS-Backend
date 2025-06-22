@@ -9,11 +9,19 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
+      usuario_id: {
+        type: Sequelize.TINYINT.UNSIGNED,
+        references: {
+          model: 'Usuario',
+          key: 'id'
+        }
+      },
       nombre: {
         type: Sequelize.STRING(200),
         allowNull: false,
         unique: true
       },
+
       categoria_id: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
