@@ -6,7 +6,7 @@ const { Usuario } = require('../models')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const usuarios = cargarUsuarios()
+    const usuarios = await cargarUsuarios()
     const transaction = await queryInterface.sequelize.transaction()
 
     for (let i = 0; i < usuarios.length; i++) {
@@ -16,6 +16,8 @@ module.exports = {
         transaction
       })
     }
+
+    console.log(usuarios)
 
     await transaction.commit()
   }

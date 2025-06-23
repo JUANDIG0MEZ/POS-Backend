@@ -10,11 +10,14 @@ module.exports = {
 
     const transaction = await queryInterface.sequelize.transaction()
     console.log('Productos', productos.slice(0, 1))
-    await Producto.bulkCreate(productos, {
-      individualHooks: true,
-      validate: true,
-      transaction
-    })
+    for (let i = 0; i < productos.length; i++) {
+      console.log(productos[i])
+      await Producto.create(productos[i], {
+        individualHooks: true,
+        validate: true,
+        transaction
+      })
+    }
     await transaction.commit()
   }
 

@@ -24,9 +24,15 @@ module.exports = {
 
       nombre: {
         type: Sequelize.STRING(50),
-        allowNull: false,
-        unique: true
+        allowNull: false
       }
+    })
+
+    await queryInterface.addConstraint('ProductoCategoria', {
+      fields: ['usuario_id', 'nombre'],
+      type: 'unique',
+      name: 'unique_usuario_categoria_nombre'
+
     })
   },
   async down (queryInterface, Sequelize) {

@@ -99,7 +99,7 @@ async function cargarUsuarios () {
   const contrasenia2 = '4848'
   const cost = 12
   const hashedContrasenia1 = await bcrypt.hash(contrasenia1, cost)
-  const hashedContrasenia2 = await bcrypt.hast(contrasenia2, cost)
+  const hashedContrasenia2 = await bcrypt.hash(contrasenia2, cost)
 
   const hoy = new Date()
   const fecha = hoy.toISOString().split('T')[0]
@@ -133,10 +133,10 @@ function cargarCategorias () {
   ]
   const categorias = [
     { usuario_id: 1, nombre: nombres[0], descripcion: descripcion[0] },
-    { usuario_id: 2, nombre: nombres[0], descripcion: descripcion[0] },
     { usuario_id: 1, nombre: nombres[1], descripcion: descripcion[1] },
     { usuario_id: 1, nombre: nombres[2], descripcion: descripcion[2] },
     { usuario_id: 1, nombre: nombres[3], descripcion: descripcion[3] },
+    { usuario_id: 2, nombre: nombres[0], descripcion: descripcion[0] },
     { usuario_id: 2, nombre: nombres[4], descripcion: descripcion[4] },
     { usuario_id: 2, nombre: nombres[5], descripcion: descripcion[5] }
   ]
@@ -161,9 +161,9 @@ function cargarProductos () {
     })
 
     productos2.push({
-      usuario_id: 1,
+      usuario_id: 2,
       nombre: nombre2[i],
-      categoria_id: faker.number.int({ min: 1, max: 4 }),
+      categoria_id: faker.number.int({ min: 5, max: 7 }),
       medida_id: faker.number.int({ min: 1, max: numeroMedidas }),
       precio_compra: faker.number.int({ min: 10000, max: 50000 }),
       precio_venta: faker.number.int({ min: 50000, max: 100000 }),
@@ -228,7 +228,7 @@ function cargarFacturasCompra () {
       usuario_id: 2,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
-      cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
+      cliente_id: faker.number.int({ min: numeroClientes + 1, max: numeroClientes * 2 }),
       pagado: 0,
       total: 0,
       estado_entrega_id: faker.number.int({ min: 1, max: 2 }),
@@ -271,7 +271,7 @@ function cargarFacturasVenta () {
       usuario_id: 2,
       fecha: fecha.toISOString().split('T')[0], // Formato YYYY-MM-DD (DATEONLY en Sequelize)
       hora: fecha.toTimeString().split(' ')[0], // Formato HH:MM:SS (TIME en Sequelize)
-      cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
+      cliente_id: faker.number.int({ min: numeroClientes + 1, max: numeroClientes * 2 }),
       pagado: 0,
       total: 0,
       estado_entrega_id: faker.number.int({ min: 1, max: 2 }),
@@ -296,12 +296,13 @@ function cargarFacturasVenta () {
 }
 
 function cargarPagos () {
-  const facturas = []
+  const pagos1 = []
+  const pagos2 = []
   for (let i = 0; i < numeroPagos; i++) {
     const fecha = faker.date.recent()
 
-    const factura = {
-      usuario_id: faker.number.int({ min: 1, max: 2 }),
+    const pago1 = {
+      usuario_id: 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
@@ -309,22 +310,42 @@ function cargarPagos () {
       valor: faker.number.int({ min: 10000, max: 500000 })
     }
 
-    if (factura.metodo_pago_id > 1) {
-      factura.descripcion = faker.commerce.productDescription()
-    } else {
-      factura.descripcion = ''
+    const pago2 = {
+      usuario_id: 2,
+      fecha: fecha.toISOString().split('T')[0],
+      hora: fecha.toTimeString().split(' ')[0],
+      cliente_id: faker.number.int({ min: numeroClientes, max: numeroClientes * 2 }),
+      metodo_pago_id: faker.number.int({ min: 1, max: numeroMetodosPagos }),
+      valor: faker.number.int({ min: 10000, max: 500000 })
     }
-    facturas.push(factura)
+
+    if (pago1.metodo_pago_id > 1) {
+      pago1.descripcion = faker.commerce.productDescription()
+    } else {
+      pago1.descripcion = ''
+    }
+
+    if (pago2.metodo_pago_id > 1) {
+      pago2.descripcion = faker.commerce.productDescription()
+    } else {
+      pago2.descripcion = ''
+    }
+
+    pagos1.push(pago1)
+    pagos2.push(pago2)
   }
-  return facturas
+
+  const pagos = [...pagos1, ...pagos2]
+  return pagos
 }
 
 function cargarAbonos () {
-  const facturas = []
+  const abonos1 = []
+  const abonos2 = []
   for (let i = 0; i < numeroAbonos; i++) {
     const fecha = faker.date.recent()
-    const factura = {
-      usuario_id: faker.number.int({ min: 1, max: 2 }),
+    const abono1 = {
+      usuario_id: 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
@@ -332,15 +353,32 @@ function cargarAbonos () {
       valor: faker.number.int({ min: 10000, max: 500000 })
     }
 
-    if (factura.metodo_pago_id > 1) {
-      factura.descripcion = faker.commerce.productDescription()
-    } else {
-      factura.descripcion = ''
+    const abono2 = {
+      usuario_id: 2,
+      fecha: fecha.toISOString().split('T')[0],
+      hora: fecha.toTimeString().split(' ')[0],
+      cliente_id: faker.number.int({ min: numeroClientes + 1, max: numeroClientes * 2 }),
+      metodo_pago_id: faker.number.int({ min: 1, max: numeroMetodosPagos }),
+      valor: faker.number.int({ min: 10000, max: 500000 })
     }
 
-    facturas.push(factura)
+    if (abono1.metodo_pago_id > 1) {
+      abono1.descripcion = faker.commerce.productDescription()
+    } else {
+      abono1.descripcion = ''
+    }
+
+    if (abono2.metodo_pago_id > 1) {
+      abono2.descripcion = faker.commerce.productDescription()
+    } else {
+      abono2.descripcion = ''
+    }
+
+    abonos1.push(abono1)
+    abonos2.push(abono2)
   }
-  return facturas
+  const abonos = [...abonos1, ...abonos2]
+  return abonos
 }
 
 function cargarDetallesCompra () {
@@ -348,21 +386,20 @@ function cargarDetallesCompra () {
   const detalles2 = []
   for (let j = 0; j < numeroCompras; j++) {
     const numProductos = faker.number.int({ min: 1, max: numeroProductosDetalles })
-    const productosId = faker.helpers.uniqueArray(() => faker.number.int({ min: 1, max: numeroProductos }), numProductos)
+    const productosId1 = faker.helpers.uniqueArray(() => faker.number.int({ min: 1, max: numeroProductos }), numProductos)
+    const productosId2 = faker.helpers.uniqueArray(() => faker.number.int({ min: numeroProductos + 1, max: numeroProductos * 2 }), numProductos)
     for (let i = 0; i < numProductos; i++) {
       detalles1.push({
-        usuario_id: 1,
         compra_id: j + 1,
-        producto_id: productosId[i],
+        producto_id: productosId1[i],
         cantidad: faker.number.int({ min: 1, max: 100 }),
         precio: faker.number.int({ min: 100, max: 10000 }),
         subtotal: faker.number.int({ min: 10000, max: 50000 })
       })
 
       detalles2.push({
-        usuario_id: 2,
-        compra_id: j + 1,
-        producto_id: productosId[i],
+        compra_id: j + 1 + numeroCompras,
+        producto_id: productosId2[i],
         cantidad: faker.number.int({ min: 1, max: 100 }),
         precio: faker.number.int({ min: 100, max: 10000 }),
         subtotal: faker.number.int({ min: 10000, max: 50000 })
@@ -378,21 +415,22 @@ function cargarDetallesVenta () {
   const detalles2 = []
   for (let j = 0; j < numeroVentas; j++) {
     const numProductos = faker.number.int({ min: 1, max: numeroProductosDetalles })
-    const productosId = faker.helpers.uniqueArray(() => faker.number.int({ min: 1, max: numeroProductos }), numProductos)
+
+    const productosId1 = faker.helpers.uniqueArray(() => faker.number.int({ min: 1, max: numeroProductos }), numProductos)
+    const productosId2 = faker.helpers.uniqueArray(() => faker.number.int({ min: numeroProductos + 1, max: numeroProductos * 2 }), numProductos)
+
     for (let i = 0; i < numProductos; i++) {
       detalles1.push({
-        usuario_id: 1,
         venta_id: j + 1,
-        producto_id: productosId[i],
+        producto_id: productosId1[i],
         cantidad: faker.number.int({ min: 1, max: 100 }),
         precio: faker.number.int({ min: 100, max: 10000 }),
         subtotal: faker.number.int({ min: 10000, max: 50000 })
       })
 
       detalles2.push({
-        usuario_id: 2,
-        venta_id: j + 1,
-        producto_id: productosId[i],
+        venta_id: j + 1 + numeroVentas,
+        producto_id: productosId2[i],
         cantidad: faker.number.int({ min: 1, max: 100 }),
         precio: faker.number.int({ min: 100, max: 10000 }),
         subtotal: faker.number.int({ min: 10000, max: 50000 })

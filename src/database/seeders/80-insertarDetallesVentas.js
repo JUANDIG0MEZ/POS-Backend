@@ -1,7 +1,7 @@
+'use strict'
+
 const { cargarDetallesVenta } = require('../datosFaker')
 const { DetalleVenta } = require('../models')
-
-'use strict'
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -12,6 +12,7 @@ module.exports = {
     console.log('Detalles de Ventas', detallesVentas.slice(0, 1))
 
     for (let i = 0; i < detallesVentas.length; i++) {
+      console.log(detallesVentas[i])
       await DetalleVenta.create(detallesVentas[i], {
         individualHooks: true,
         validate: true,

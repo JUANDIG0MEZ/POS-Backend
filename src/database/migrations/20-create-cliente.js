@@ -19,8 +19,7 @@ module.exports = {
       },
       nombre: {
         type: Sequelize.STRING(100),
-        allowNull: false,
-        unique: true
+        allowNull: false
       },
       direccion: {
         type: Sequelize.STRING(100),
@@ -57,6 +56,13 @@ module.exports = {
           min: 0
         }
       }
+    })
+
+    await queryInterface.addConstraint('Cliente', {
+      fields: ['usuario_id', 'nombre'],
+      type: 'unique',
+      name: 'unique_usuario_cliente'
+
     })
   },
   async down (queryInterface, Sequelize) {

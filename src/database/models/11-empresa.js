@@ -30,14 +30,6 @@ module.exports = (sequelize, DataTypes) => {
     nombre: {
       type: DataTypes.STRING(200)
     },
-    cliente_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
-      unique: true,
-      references: {
-        model: 'Usuario',
-        key: 'id'
-      }
-    },
     nit: {
       type: DataTypes.STRING
     },

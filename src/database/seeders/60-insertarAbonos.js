@@ -10,9 +10,8 @@ module.exports = {
 
     const transaction = await queryInterface.sequelize.transaction()
 
-    console.log('Abonos', abonos.slice(0, 1))
-
     for (let i = 0; i < abonos.length; i++) {
+      console.log(abonos[i])
       await Abono.create(abonos[i], {
         individualHooks: true,
         validate: true,

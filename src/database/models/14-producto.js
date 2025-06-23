@@ -42,8 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     nombre: {
       type: DataTypes.STRING(300),
-      allowNull: false,
-      unique: true
+      allowNull: false
     },
     categoria_id: {
       type: DataTypes.TINYINT.UNSIGNED,

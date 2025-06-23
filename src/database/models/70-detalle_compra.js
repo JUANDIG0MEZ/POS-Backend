@@ -27,14 +27,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DetalleCompra.init({
-    usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
-      allowNull: false,
-      references: {
-        model: 'Usuario',
-        key: 'id'
-      }
-    },
     compra_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
