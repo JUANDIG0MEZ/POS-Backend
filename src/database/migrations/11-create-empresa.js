@@ -12,6 +12,7 @@ module.exports = {
       },
       usuario_id: {
         type: Sequelize.TINYINT.UNSIGNED,
+        allowNull: false,
         unique: true,
         references: {
           model: 'Usuario',

@@ -11,6 +11,7 @@ module.exports = {
       },
       usuario_id: {
         type: Sequelize.TINYINT.UNSIGNED,
+        allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'
@@ -27,7 +28,6 @@ module.exports = {
       cliente_id: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
-        defaultValue: 1,
         references: {
           model: 'Cliente',
           key: 'id'
@@ -68,7 +68,7 @@ module.exports = {
       },
 
       nombre_cliente: {
-        type: Sequelize.STRING(200),
+        type: Sequelize.STRING(100),
         allowNull: false
       }
     })

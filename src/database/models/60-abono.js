@@ -26,10 +26,19 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Abono.init({
-    cliente_id: {
+    usuario_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'Usuario',
+        key: 'id'
+      }
+    },
+    cliente_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'Cliente',
         key: 'id'
       }
     },
@@ -41,13 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TIME,
       allowNull: false
     },
-    cliente_id: {
-      type: DataTypes.SMALLINT.UNSIGNED,
-      references: {
-        model: 'Cliente',
-        key: 'id'
-      }
-    },
+
     valor: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,

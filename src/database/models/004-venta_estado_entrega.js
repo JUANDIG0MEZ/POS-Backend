@@ -12,7 +12,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   VentaEstadoEntrega.init({
-    nombre: DataTypes.STRING(200)
+    nombre: DataTypes.STRING(50),
+    allowNull: false,
+    unique: true
   }, {
     sequelize,
     modelName: 'VentaEstadoEntrega',

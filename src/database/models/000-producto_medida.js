@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   ProductoMedida.init({
 
     nombre: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: true,
       set (value) {
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     categoria: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(50),
       allowNull: false
     }
 

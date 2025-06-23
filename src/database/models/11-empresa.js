@@ -17,11 +17,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Empresa.init({
+    usuario_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
+      unique: true,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
 
     nombre: {
-      type: DataTypes.STRING(200),
-      allowNull: false,
-      unique: true
+      type: DataTypes.STRING(200)
     },
     cliente_id: {
       type: DataTypes.TINYINT.UNSIGNED,
@@ -35,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     direccion: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(120)
     },
     telefono: {
       type: DataTypes.STRING(20)

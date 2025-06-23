@@ -32,27 +32,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Producto.init({
-    cliente_id: {
+    usuario_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
       }
     },
     nombre: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(300),
       allowNull: false,
-      unique: true,
-      set (value) {
-        this.setDataValue('nombre', value.toLowerCase().trim())
-      },
-      get () {
-        const nombre = this.getDataValue('nombre')
-        return nombre ? nombre.replace(/\b\w/g, (char) => char.toUpperCase()) : ''
-      }
+      unique: true
     },
     categoria_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 1,
       references: {
         model: 'ProductoCategoria',
         key: 'id'
@@ -60,6 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     medida_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'ProductoMedida',
         key: 'id'
@@ -91,8 +88,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     total: {
       type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      defaultValue: 0
+      allowNull: false
     }
   }, {
     sequelize,

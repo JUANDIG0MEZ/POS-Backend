@@ -64,15 +64,12 @@ module.exports = (sequelize, DataTypes) => {
   Usuario.init({
 
     nombre: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
-      set (value) {
-        this.setDataValue('nombre', value.toLowerCase().trim())
-      }
+      unique: true
     },
     email: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: true
     },
     contrasenia: {
@@ -81,8 +78,9 @@ module.exports = (sequelize, DataTypes) => {
 
     },
     createdAt: {
-      allowNull: false,
-      type: DataTypes.DATEONLY
+      type: DataTypes.DATEONLY,
+      allowNull: false
+
     }
 
   }, {

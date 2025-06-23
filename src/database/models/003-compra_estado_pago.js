@@ -17,7 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   CompraEstadoPago.init({
-    nombre: DataTypes.STRING(50)
+    nombre: DataTypes.STRING(50),
+    allowNull: false,
+    unique: true
   }, {
     sequelize,
     modelName: 'CompraEstadoPago',

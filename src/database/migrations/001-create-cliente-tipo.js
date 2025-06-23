@@ -1,4 +1,5 @@
 'use strict'
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -10,7 +11,7 @@ module.exports = {
         type: Sequelize.TINYINT.UNSIGNED
       },
       nombre: {
-        type: Sequelize.STRING(200),
+        type: Sequelize.STRING(50),
         allowNull: false,
         unique: true
       }

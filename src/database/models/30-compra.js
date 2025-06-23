@@ -38,8 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Compra.init({
-    cliente_id: {
+    usuario_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
@@ -113,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     nombre_cliente: {
-      type: DataTypes.STRING(200)
+      type: DataTypes.STRING(100)
     }
 
   }, {

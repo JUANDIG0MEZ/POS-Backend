@@ -11,19 +11,19 @@ module.exports = {
       },
       usuario_id: {
         type: Sequelize.TINYINT.UNSIGNED,
+        allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'
         }
       },
       descripcion: {
-        type: Sequelize.STRING(200),
-        allowNull: false,
-        unique: true
+        type: Sequelize.STRING(400),
+        allowNull: false
       },
 
       nombre: {
-        type: Sequelize.STRING(200),
+        type: Sequelize.STRING(50),
         allowNull: false,
         unique: true
       }

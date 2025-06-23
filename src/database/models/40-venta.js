@@ -31,8 +31,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Venta.init({
-    cliente_id: {
+    usuario_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
@@ -47,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     cliente_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Cliente',
@@ -99,7 +100,10 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     nombre_cliente: {
-      type: DataTypes.STRING(200)
+      type: DataTypes.STRING(100)
+    },
+    direccion: {
+      type: DataTypes.STRING(120)
     }
 
   }, {

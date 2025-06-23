@@ -26,10 +26,19 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Pago.init({
-    cliente_id: {
+    usuario_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'Usuario',
+        key: 'id'
+      }
+    },
+    cliente_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'Cliente',
         key: 'id'
       }
     },

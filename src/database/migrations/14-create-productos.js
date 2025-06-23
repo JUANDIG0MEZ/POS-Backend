@@ -11,13 +11,14 @@ module.exports = {
       },
       usuario_id: {
         type: Sequelize.TINYINT.UNSIGNED,
+        allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'
         }
       },
       nombre: {
-        type: Sequelize.STRING(200),
+        type: Sequelize.STRING(300),
         allowNull: false,
         unique: true
       },

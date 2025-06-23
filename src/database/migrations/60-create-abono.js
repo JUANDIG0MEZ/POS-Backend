@@ -11,14 +11,11 @@ module.exports = {
       },
       usuario_id: {
         type: Sequelize.TINYINT.UNSIGNED,
+        allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'
         }
-      },
-      fecha: {
-        type: Sequelize.DATEONLY,
-        allowNull: false
       },
       cliente_id: {
         type: Sequelize.SMALLINT.UNSIGNED,
@@ -28,6 +25,11 @@ module.exports = {
           key: 'id'
         }
       },
+      fecha: {
+        type: Sequelize.DATEONLY,
+        allowNull: false
+      },
+
       hora: {
         type: Sequelize.TIME,
         allowNull: false

@@ -38,27 +38,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Cliente.init({
-    cliente_id: {
+    usuario_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
       }
     },
     nombre: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(10),
       allowNull: false,
-      unique: true,
-      set (value) {
-        this.setDataValue('nombre', value.toLowerCase().trim())
-      },
-      get () {
-        const nombre = this.getDataValue('nombre')
-        return nombre ? nombre.replace(/\b\w/g, (char) => char.toUpperCase()) : ''
-      }
+      unique: true
     },
     direccion: {
-      type: DataTypes.STRING(150),
+      type: DataTypes.STRING(100),
       allowNull: true
     },
     telefono: {
@@ -66,13 +60,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     email: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: true
     },
     tipo_id: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
-      defaultValue: 3,
       references: {
         model: 'clientes_tipos',
         key: 'id'

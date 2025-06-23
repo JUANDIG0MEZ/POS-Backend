@@ -23,25 +23,22 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductoCategoria.init({
-    cliente_id: {
+    usuario_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
       }
     },
     descripcion: {
-      type: DataTypes.STRING(200),
-      allowNull: false,
-      unique: true
+      type: DataTypes.STRING(400),
+      allowNull: false
     },
     nombre: {
-      type: DataTypes.STRING(200),
-      unique: true,
+      type: DataTypes.STRING(50),
       allowNull: false,
-      set (value) {
-        this.setDataValue('nombre', value.toLowerCase().trim())
-      }
+      unique: true
     }
   }, {
     sequelize,
@@ -52,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeCreate (categoria) {
         if (categoria.nombre === '') {
-          throw new ErrorUsuario('El nombre de la categoria no puede estar vacio')
+          throw new ErrorUsuario('Escribe el nombre de la categoria.')
         }
       }
     }

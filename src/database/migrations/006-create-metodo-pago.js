@@ -10,7 +10,9 @@ module.exports = {
         type: Sequelize.TINYINT.UNSIGNED
       },
       nombre: {
-        type: Sequelize.STRING(100)
+        type: Sequelize.STRING(50),
+        allowNull: false,
+        unique: true
       }
     })
   },

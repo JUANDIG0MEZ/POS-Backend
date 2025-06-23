@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   ClienteTipo.init({
     nombre: {
-      type: DataTypes.STRING(200),
+      type: DataTypes.STRING(50),
       allowNull: false,
       unique: true,
       set (value) {

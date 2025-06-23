@@ -11,18 +11,19 @@ module.exports = {
       },
       usuario_id: {
         type: Sequelize.TINYINT.UNSIGNED,
+        allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'
         }
       },
       nombre: {
-        type: Sequelize.STRING(200),
+        type: Sequelize.STRING(100),
         allowNull: false,
         unique: true
       },
       direccion: {
-        type: Sequelize.STRING(150),
+        type: Sequelize.STRING(100),
         allowNull: true
       },
       telefono: {
@@ -30,13 +31,12 @@ module.exports = {
         allowNull: true
       },
       email: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING(50),
         allowNull: true
       },
       tipo_id: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
-        defaultValue: 0,
         references: {
           model: 'ClienteTipo',
           key: 'id'
