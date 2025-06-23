@@ -1,7 +1,6 @@
+'use strict'
 const { cargarCategorias } = require('../datosFaker')
 const { ProductoCategoria } = require('../models')
-
-'use strict'
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -16,5 +15,4 @@ module.exports = {
     await transaction.commit()
   }
 
-
-};
+}

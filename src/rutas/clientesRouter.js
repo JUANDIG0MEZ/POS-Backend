@@ -17,7 +17,8 @@ const {
 
 const {
   crearPagosFacturas,
-  crearAbonosFacturas
+  crearAbonosFacturas,
+  crearCliente
 } = require('../servicios/clientes/postCliente')
 
 const router = express.Router()
@@ -113,22 +114,15 @@ router.post('/:id/abonar', async (req, res, next) => {
   }
 })
 
-// router.post('/', async (req, res)=> {
-//     const body = req.body
-//     try {
-//         const cliente = await crearCliente(body)
-//         res.json({
-//             message: 'Cliente creado',
-//             body: cliente
-//         })
-//     }
-//     catch (error) {
-//         res.json({
-//             message: 'Error al crear el cliente',
-//             error
-//         })
-//     }
-// })
+router.post('/', async (req, res, next) => {
+  try {
+    const body = req.body
+    const cliente = await crearCliente(body)
+    res.json(respuesta('Cliente creado', cliente))
+  } catch (error) {
+    next(error)
+  }
+})
 
 // router.post('/abonos', async (req, res)=> {
 //     const body = req.body

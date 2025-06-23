@@ -10,11 +10,11 @@ module.exports = {
         type: Sequelize.TINYINT.UNSIGNED
       },
       nombre: {
-        type: Sequelize.STRING(200)
+        type: Sequelize.STRING(200),
+        allowNull: false,
+        unique: true
       },
       email: {
-        allowNull: false,
-        unique: true,
         type: Sequelize.STRING(100)
       },
       contrasenia: {
@@ -24,7 +24,7 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       }
     })
   },

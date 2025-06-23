@@ -23,6 +23,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductoCategoria.init({
+    cliente_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      references: {
+        model: 'Usuario',
+        key: 'id'
+      }
+    },
     descripcion: {
       type: DataTypes.STRING(200),
       allowNull: false,
@@ -34,13 +41,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       set (value) {
         this.setDataValue('nombre', value.toLowerCase().trim())
-      }
-    },
-    cliente_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
-      references: {
-        model: 'Usuario',
-        key: 'id'
       }
     }
   }, {

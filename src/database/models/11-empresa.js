@@ -20,14 +20,29 @@ module.exports = (sequelize, DataTypes) => {
 
     nombre: {
       type: DataTypes.STRING(200),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     cliente_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      unique: true,
       references: {
         model: 'Usuario',
         key: 'id'
       }
+    },
+    nit: {
+      type: DataTypes.STRING
+    },
+    direccion: {
+      type: DataTypes.STRING
+    },
+    telefono: {
+      type: DataTypes.STRING(20)
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATEONLY
     }
 
   }, {

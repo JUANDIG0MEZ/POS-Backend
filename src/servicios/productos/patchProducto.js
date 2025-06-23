@@ -13,7 +13,7 @@ const fs = require('fs').promises
 
 async function modificarProducto (req, id) {
   const transaction = await sequelize.transaction()
-    try {
+  try {
     const body = JSON.parse(req.body.data)
 
     // Se eliminan las imagenes que se borraron
@@ -58,18 +58,18 @@ async function modificarProducto (req, id) {
     imagenesUrl = imagenesUrl.map(url => {
       return {
         producto_id: producto.id,
-        url_imagen: url        
-            }
+        url_imagen: url
+      }
     })
 
     await ProductoImagen.bulkCreate(imagenesUrl, { transaction })
 
     await transaction.commit()
-        return true
+    return true
   } catch (error) {
     await transaction.rollback()
-        throw error
-    }
+    throw error
+  }
 }
 
 module.exports = {

@@ -2,7 +2,6 @@ const {
   Producto,
   Cliente,
   ClienteTipo,
-  ProductoMarca,
   ProductoMedida,
   ProductoCategoria,
 
@@ -22,7 +21,6 @@ async function cargarDatosIniciales () {
   const [
     producto,
     clientes,
-    productoMarca,
     productoCategoria,
     productoMedida,
     compraEstadoEntrega,
@@ -34,7 +32,6 @@ async function cargarDatosIniciales () {
   ] = await Promise.all([
     Producto.findAll(InitOptions.Producto()),
     Cliente.findAll(InitOptions.Cliente()),
-    ProductoMarca.findAll(InitOptions.ProductoMarca()),
     ProductoCategoria.findAll(InitOptions.ProductoCategoria()),
     ProductoMedida.findAll(InitOptions.ProductoMedida()),
     CompraEstadoEntrega.findAll(InitOptions.CompraEstadoEntrega()),
@@ -48,7 +45,6 @@ async function cargarDatosIniciales () {
   return {
     producto,
     clientes,
-    productoMarca,
     productoCategoria,
     productoMedida,
     compraEstadoEntrega,

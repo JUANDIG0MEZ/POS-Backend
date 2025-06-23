@@ -70,6 +70,19 @@ module.exports = (sequelize, DataTypes) => {
       set (value) {
         this.setDataValue('nombre', value.toLowerCase().trim())
       }
+    },
+    email: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    contrasenia: {
+      allowNull: false,
+      type: DataTypes.STRING(250)
+
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATEONLY
     }
 
   }, {

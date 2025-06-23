@@ -1,48 +1,42 @@
 const {
   ProductoMedida,
-  ProductoCategoria,
-  ProductoMarca
+  ProductoCategoria
 } = require('../../database/models')
 
-class ClaseProducto {
-  static excluir (permisos) {
-    const atributos = []
+const { col } = require('sequelize')
 
-    if (!permisos.precio_compra) {
-      atributos.push('precio_compra')
+class ClaseProducto {
+  static atributos () {
+    return {
+      exclude: ['categoria_id', 'medida_id'],
+      include: [
+        [col('medidaProducto.nombre'), 'medida'],
+        [col('categoriaProducto.nombre'), 'categoria']]
     }
-    if (!permisos.cantidad) {
-      atributos.push('cantidad')
-    }
-    if (!permisos.total) {
-      atributos.push('total')
-    }
-    return atributos
   }
 
   static incluir () {
     return [
-      { model: ProductoMedida, attributes: ['nombre'], as: 'medidaProducto' },
-      { model: ProductoCategoria, attributes: ['nombre'], as: 'categoriaProducto' },
-      { model: ProductoMarca, attributes: ['nombre'], as: 'marcaProducto' }
+      { model: ProductoMedida, attributes: [], as: 'medidaProducto' },
+      { model: ProductoCategoria, attributes: [], as: 'categoriaProducto' }
     ]
   }
 
-  static formatear (productos, permisos) {
-    return productos.map(producto => {
-      return {
-        id: producto.id,
-        nombre: producto.nombre,
-        marca: producto.marcaProducto ? producto.marcaProducto.nombre : '',
-        categoria: producto.categoriaProducto ? producto.categoriaProducto.nombre : '',
-        medida: producto.medidaProducto ? producto.medidaProducto.nombre : '',
-        precio_venta: producto.precio_venta,
+  static formatearLista (productos, permisos) {
+    return productos.map(producto => this.formatear(producto))
+  }
 
-        precio_compra: permisos.precio_compra ? producto.precio_compra : null,
-        cantidad: permisos.cantidad ? producto.cantidad : null,
-        total: permisos.total ? producto.total : null
-      }
-    })
+  static formatear (producto) {
+    return {
+      id: producto.id,
+      nombre: producto.nombre,
+      categoria: producto.categoria,
+      medida: producto.medida,
+      precio_venta: producto.precio_venta,
+      precio_compra: producto.precio_compra,
+      cantidad: producto.cantidad,
+      total: producto.total
+    }
   }
 }
 

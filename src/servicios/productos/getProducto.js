@@ -11,9 +11,9 @@ async function cargarProductos () {
   const permisos = { precio_compra: true, cantidad: true, total: true }
 
   const productos = await Producto.findAll({
-    // attributes: { exclude: ['marca_id', 'categoria_id', 'medida_id'] },
+    attributes: { exclude: ['categoria_id', 'medida_id'] },
     include: ClaseProducto.incluir(),
-    exclude: ClaseProducto.excluir(permisos),
+    exclude: ClaseProducto.excluir(),
     order: [['id', 'DESC']]
 
   })

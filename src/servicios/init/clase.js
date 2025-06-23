@@ -2,7 +2,6 @@ const {
   // Producto,
   // Cliente,
   // ClienteTipo,
-  ProductoMarca,
   ProductoMedida,
   ProductoCategoria
 
@@ -20,16 +19,14 @@ const { col } = require('sequelize')
 class InitOptions {
   static Producto () {
     const attributes = {
-      exclude: ['categoria_id', 'medida_id', 'marca_id'],
+      exclude: ['categoria_id', 'medida_id'],
       include: [
-        [col('marcaProducto.nombre'), 'marca'],
         [col('medidaProducto.nombre'), 'medida'],
         [col('categoriaProducto.nombre'), 'categoria']
       ]
     }
 
     const include = [
-      { model: ProductoMarca, attributes: [], as: 'marcaProducto' },
       { model: ProductoMedida, attributes: [], as: 'medidaProducto' },
       { model: ProductoCategoria, attributes: [], as: 'categoriaProducto' }
     ]
@@ -45,12 +42,6 @@ class InitOptions {
     const attributes = ['id', 'nombre']
     return {
       attributes
-
-    }
-  }
-
-  static ProductoMarca () {
-    return {
 
     }
   }

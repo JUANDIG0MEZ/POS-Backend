@@ -25,6 +25,7 @@
   "homepage": "https://github.com/JUANDIG0MEZ/inventarioBackend#readme",
   "dependencies": {
     "@hapi/boom": "^10.0.1",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "express": "4.21.2",
     "joi": "^17.13.3",

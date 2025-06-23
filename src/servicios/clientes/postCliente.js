@@ -7,6 +7,13 @@ const {
   Venta
 } = require('../../database/models')
 
+async function crearCliente (body) {
+  const cliente = await Cliente.create(body)
+  return {
+    cliente
+  }
+}
+
 async function crearPago (infoPago, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
   const hora = new Date().toTimeString().split(' ')[0]
@@ -224,5 +231,7 @@ module.exports = {
   crearPagoFactura,
   crearPagosFacturas,
   crearAbonoFactura,
-  crearAbonosFacturas
+  crearAbonosFacturas,
+
+  crearCliente
 }

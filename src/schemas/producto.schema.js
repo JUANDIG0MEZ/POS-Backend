@@ -16,10 +16,6 @@ const crearProductoSchema = Joi.object({
 
   categoria: string,
   categoria_id: entero,
-
-  marca: string,
-  marca_id: entero,
-
   cantidad: entero
 })
 

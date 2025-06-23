@@ -12,6 +12,7 @@ module.exports = {
       },
       usuario_id: {
         type: Sequelize.TINYINT.UNSIGNED,
+        unique: true,
         references: {
           model: 'Usuario',
           key: 'id'
@@ -31,11 +32,7 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       }
     })
   },

@@ -1,12 +1,19 @@
 const {
   Producto,
   ProductoMedida,
-  ProductoMarca,
   ProductoCategoria,
   ProductoImagen,
   sequelize
 
 } = require('../../database/models')
+
+const {
+  ErrorUsuario
+} = require('../../errors/ErrorUsuario')
+
+const {
+  ClaseProducto
+} = require('./clase')
 
 // async function AgregarImagenes () {
 //   // Se guardan la url de las imagenes en la base de datos
@@ -23,15 +30,20 @@ const {
 //   await ProductoImagen.bulkCreate(imagenesUrl, { transaction })
 // }
 
-async function crearProducto (req) {
+async function crearProducto (body) {
   const transaction = await sequelize.transaction()
   try {
-    const datos = JSON.parse(req.body.data)
+    await crearMedida(body, transaction)
 
-    await crearMarca(datos, transaction)
-    await crearMedida(datos, transaction)
+    const productoCreado = await Producto.create(body, { transaction })
 
-    const producto = await Producto.create(datos, { transaction })
+    const producto = await Producto.findByPk(productoCreado.id, {
+      attributes: ClaseProducto.atributos(),
+      include: ClaseProducto.incluir(),
+      transaction
+    })
+
+    console.log(producto)
 
     await transaction.commit()
 
@@ -42,18 +54,6 @@ async function crearProducto (req) {
     await transaction.rollback()
     throw error
   }
-}
-
-async function crearMarca (datos, transaction) {
-  if (datos.marca) {
-    const [marca] = await ProductoMarca.findOrCreate({
-      where: { nombre: datos.marca },
-      defaults: { nombre: datos.marca },
-      transaction
-    })
-    datos.marca_id = marca.id
-  }
-  delete datos.marca
 }
 
 async function crearMedida (datos, transaction) {
@@ -76,7 +76,7 @@ async function crearCategoria (body) {
   })
 
   if (!creado) {
-    throw new Error('La categoria ya existe')
+    throw new ErrorUsuario('La categoria ya existe')
   }
 
   return { categoria }

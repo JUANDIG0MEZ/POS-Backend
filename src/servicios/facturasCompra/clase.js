@@ -3,7 +3,6 @@ const {
   CompraEstadoPago,
   Cliente,
   Producto,
-  ProductoMarca,
   ProductoMedida
 } = require('../../database/models')
 
@@ -111,7 +110,6 @@ class OpcionesGetDetalle {
       include: [
 
         [col('productoDetalleCompra.nombre'), 'nombre'],
-        [col('productoDetalleCompra.marcaProducto.nombre'), 'marca'],
         [col('productoDetalleCompra.medidaProducto.nombre'), 'medida']]
     }
 
@@ -125,7 +123,6 @@ class OpcionesGetDetalle {
         as: 'productoDetalleCompra',
         attributes: [],
         include: [
-          { model: ProductoMarca, as: 'marcaProducto', attributes: [] },
           { model: ProductoMedida, as: 'medidaProducto', attributes: [] }
         ]
       }
@@ -138,7 +135,7 @@ class OpcionesGetDetalle {
     return detalles.map((detalle) => (
       {
         id: detalle.producto_id,
-        descripcion: detalle.nombre + ' - ' + detalle.marca,
+        descripcion: detalle.nombre,
         medida: detalle.medida,
         cantidad: detalle.cantidad,
         precio: detalle.precio,
