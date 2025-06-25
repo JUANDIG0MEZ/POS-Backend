@@ -8,10 +8,10 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.TINYINT.UNSIGNED
+        type: Sequelize.SMALLINT.UNSIGNED
       },
       usuario_id: {
-        type: Sequelize.TINYINT.UNSIGNED,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         unique: true,
         references: {
@@ -20,20 +20,20 @@ module.exports = {
         }
       },
       nombre: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(200)
       },
       nit: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(9)
       },
       direccion: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(120)
       },
       telefono: {
         type: Sequelize.STRING(20)
       },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
+        allowNull: false
       }
     })
   },

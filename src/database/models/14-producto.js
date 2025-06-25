@@ -33,17 +33,22 @@ module.exports = (sequelize, DataTypes) => {
   }
   Producto.init({
     usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
       }
     },
-    nombre: {
-      type: DataTypes.STRING(300),
+    producto_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false
     },
+    nombre: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+
     categoria_id: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
@@ -64,26 +69,17 @@ module.exports = (sequelize, DataTypes) => {
     precio_compra: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0
-      }
+      defaultValue: 0
     },
     precio_venta: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0
-      }
+      defaultValue: 0
     },
     cantidad: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        isInt: true
-      }
+      defaultValue: 0
     },
     total: {
       type: DataTypes.BIGINT.UNSIGNED,

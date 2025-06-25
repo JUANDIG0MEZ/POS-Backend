@@ -26,8 +26,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Pago.init({
+    pago_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
+    },
     usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
@@ -35,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     cliente_id: {
-      type: DataTypes.SMALLINT.UNSIGNED,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Cliente',
@@ -52,12 +56,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     valor: {
       type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      validate: {
-        min: 0
-      }
+      allowNull: false
     },
-
     metodo_pago_id: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
@@ -66,7 +66,6 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-
     descripcion: {
       type: DataTypes.STRING(200),
       allowNull: true

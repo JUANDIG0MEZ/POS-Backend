@@ -4,21 +4,25 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Producto', {
       id: {
-        type: Sequelize.SMALLINT.UNSIGNED,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
       },
       usuario_id: {
-        type: Sequelize.TINYINT.UNSIGNED,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'
         }
       },
+      producto_id: {
+        type: Sequelize.SMALLINT.UNSIGNED,
+        allowNull: false
+      },
       nombre: {
-        type: Sequelize.STRING(300),
+        type: Sequelize.STRING(255),
         allowNull: false
       },
 

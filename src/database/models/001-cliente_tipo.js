@@ -15,10 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     nombre: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
-      set (value) {
-        this.setDataValue('nombre', value.toLowerCase().trim())
-      }
+      unique: true
     }
   }, {
     sequelize,

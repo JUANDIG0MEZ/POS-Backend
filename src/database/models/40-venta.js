@@ -31,11 +31,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Venta.init({
+    venta_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
+    },
     usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
+        key: 'id'
+      }
+    },
+    cliente_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+      references: {
+        model: 'Cliente',
         key: 'id'
       }
     },
@@ -47,60 +59,43 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TIME,
       allowNull: false
     },
-    cliente_id: {
-      type: DataTypes.SMALLINT.UNSIGNED,
-      allowNull: false,
-      references: {
-        model: 'Cliente',
-        key: 'id'
-      }
-    },
+
     pagado: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
+      defaultValue: 0
     },
     total: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
+      defaultValue: 0
     },
-
     por_pagar: {
       type: DataTypes.BIGINT.UNSIGNED,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
-    },
-    estado_pago_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
-      defaultValue: 1,
-      references: {
-        model: 'VentaEstadoPago',
-        key: 'id'
-      }
+      allowNull: false,
+      defaultValue: 0
     },
     estado_entrega_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
       defaultValue: 1,
       references: {
         model: 'VentaEstadoEntrega',
         key: 'id'
       }
     },
-
+    estado_pago_id: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 1,
+      references: {
+        model: 'VentaEstadoPago',
+        key: 'id'
+      }
+    },
     nombre_cliente: {
-      type: DataTypes.STRING(100)
+      type: DataTypes.STRING(100),
+      allowNull: false
     },
     direccion: {
       type: DataTypes.STRING(120)

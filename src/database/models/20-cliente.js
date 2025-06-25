@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-const { ErrorUsuario } = require('../../errors/ErrorUsuario')
+const { ErrorUsuario } = require('../../errors/usuario')
 
 module.exports = (sequelize, DataTypes) => {
   class Cliente extends Model {
@@ -39,15 +39,19 @@ module.exports = (sequelize, DataTypes) => {
   }
   Cliente.init({
     usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
       }
     },
+    cliente_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
+      allowNull: false
+    },
     nombre: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     direccion: {
@@ -55,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
     telefono: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(10),
       allowNull: true
     },
     email: {
@@ -66,27 +70,21 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       references: {
-        model: 'clientes_tipos',
+        model: 'ClienteTipo',
         key: 'id'
       }
+
     },
     por_pagarle: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
+      defaultValue: 0
+
     },
     debe: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
+      defaultValue: 0
     }
 
   }, {

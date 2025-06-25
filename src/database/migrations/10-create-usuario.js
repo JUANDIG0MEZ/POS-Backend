@@ -7,7 +7,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.TINYINT.UNSIGNED
+        type: Sequelize.SMALLINT.UNSIGNED
       },
       nombre: {
         type: Sequelize.STRING(50),
@@ -24,8 +24,8 @@ module.exports = {
 
       },
       createdAt: {
-        allowNull: false,
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
+        allowNull: false
       }
     })
   },

@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-const { ErrorUsuario } = require('../../errors/ErrorUsuario')
+const { ErrorUsuario } = require('../../errors/usuario')
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoCategoria extends Model {
@@ -23,8 +23,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ProductoCategoria.init({
-    usuario_id: {
+    categoria_id: {
       type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false
+    },
+    usuario_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
@@ -33,10 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     descripcion: {
       type: DataTypes.STRING(400),
-      allowNull: false
-    },
-    nombre: {
-      type: DataTypes.STRING(50),
       allowNull: false
     }
   }, {

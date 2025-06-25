@@ -9,6 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
+      detalle_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
+      },
       venta_id: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
@@ -19,7 +23,7 @@ module.exports = {
       },
 
       producto_id: {
-        type: Sequelize.SMALLINT.UNSIGNED,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Producto',

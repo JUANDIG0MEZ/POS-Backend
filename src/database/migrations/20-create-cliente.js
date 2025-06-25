@@ -7,15 +7,19 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.SMALLINT.UNSIGNED
+        type: Sequelize.INTEGER.UNSIGNED
       },
       usuario_id: {
-        type: Sequelize.TINYINT.UNSIGNED,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'
         }
+      },
+      cliente_id: {
+        type: Sequelize.SMALLINT.UNSIGNED,
+        allowNull: false
       },
       nombre: {
         type: Sequelize.STRING(100),
@@ -26,7 +30,7 @@ module.exports = {
         allowNull: true
       },
       telefono: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING(10),
         allowNull: true
       },
       email: {
@@ -51,10 +55,7 @@ module.exports = {
       debe: {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,
-        defaultValue: 0,
-        validate: {
-          min: 0
-        }
+        defaultValue: 0
       }
     })
 

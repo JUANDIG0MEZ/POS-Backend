@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DetalleVenta.init({
+    detalle_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
+    },
     venta_id: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
@@ -29,8 +33,9 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
+
     producto_id: {
-      type: DataTypes.SMALLINT.UNSIGNED,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Producto',
@@ -46,17 +51,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     precio: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-      validate: {
-        min: 0
-      }
+      allowNull: false
     },
     subtotal: {
       type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false,
-      validate: {
-        min: 0
-      }
+      allowNull: false
     }
   }, {
     sequelize,

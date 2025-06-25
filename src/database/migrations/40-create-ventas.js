@@ -9,11 +9,23 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
+      venta_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
+      },
       usuario_id: {
-        type: Sequelize.TINYINT.UNSIGNED,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Usuario',
+          key: 'id'
+        }
+      },
+      cliente_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+        references: {
+          model: 'Cliente',
           key: 'id'
         }
       },
@@ -25,14 +37,7 @@ module.exports = {
         type: Sequelize.TIME,
         allowNull: false
       },
-      cliente_id: {
-        type: Sequelize.SMALLINT.UNSIGNED,
-        allowNull: false,
-        references: {
-          model: 'Cliente',
-          key: 'id'
-        }
-      },
+
       pagado: {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false,

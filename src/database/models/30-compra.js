@@ -38,19 +38,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Compra.init({
+    compra_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false
+    },
     usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
         key: 'id'
       }
-    },
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER.UNSIGNED
     },
     fecha: {
       type: DataTypes.DATEONLY,
@@ -61,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     cliente_id: {
-      type: DataTypes.SMALLINT.UNSIGNED,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Cliente',
@@ -71,28 +69,17 @@ module.exports = (sequelize, DataTypes) => {
     pagado: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
+      defaultValue: 0
     },
     total: {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
+      defaultValue: 0
     },
     por_pagar: {
       type: DataTypes.BIGINT.UNSIGNED,
-      defaultValue: 0,
-      validate: {
-        min: 0,
-        isInt: true
-      }
+      allowNull: false,
+      defaultValue: 0
     },
     estado_entrega_id: {
       type: DataTypes.TINYINT.UNSIGNED,
@@ -103,7 +90,6 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-
     estado_pago_id: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
@@ -113,8 +99,10 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
+
     nombre_cliente: {
-      type: DataTypes.STRING(100)
+      type: DataTypes.STRING(100),
+      allowNull: false
     }
 
   }, {

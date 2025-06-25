@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   MetodoPago.init({
-    nombre: DataTypes.STRING(100),
+    nombre: DataTypes.STRING(50),
     allowNull: false,
     unique: true
   }, {

@@ -1,4 +1,4 @@
-const { ErrorUsuario } = require('../errors/ErrorUsuario')
+const { ErrorUsuario } = require('../errors/usuario')
 
 function handlerError (err, req, res, next) {
   console.log(err)

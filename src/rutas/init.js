@@ -6,14 +6,10 @@ const { respuesta } = require('./funciones')
 
 const router = express.Router()
 
-router.get('/', async (req, res, next) => {
-  try {
-    const datosIniciales = await cargarDatosIniciales()
-
-    res.json(respuesta('Datos iniciales cargados', datosIniciales))
-  } catch (error) {
-    next(error)
-  }
+router.get('/', async (req, res) => {
+  const { usuarioId } = req.usuario
+  const datosIniciales = await cargarDatosIniciales(usuarioId)
+  res.json(respuesta('Datos iniciales cargados', datosIniciales))
 })
 
 module.exports = router

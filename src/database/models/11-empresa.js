@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Empresa.init({
     usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       unique: true,
       references: {
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(200)
     },
     nit: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING(9)
     },
     direccion: {
       type: DataTypes.STRING(120)

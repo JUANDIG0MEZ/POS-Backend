@@ -18,7 +18,7 @@ const numeroMetodosPagos = 3
 const numeroAbonos = 2000
 const numeroPagos = 2000
 
-function cargarMedidas () {
+function medidas () {
   const medidas = [
     { nombre: 'unidad', categoria: 'unidad' },
     { nombre: 'servicio', categoria: 'unidad' },
@@ -42,7 +42,7 @@ function cargarMedidas () {
   return medidas
 }
 
-function cargarTiposCliente () {
+function tiposCliente () {
   const tipos = [
     { nombre: 'proveedor' },
     { nombre: 'cliente' },
@@ -52,7 +52,7 @@ function cargarTiposCliente () {
   return tipos
 }
 
-function cargarEstadosEntregaCompra () {
+function estadosEntregaCompra () {
   const estados = [
     { nombre: 'No recibido' },
     { nombre: 'Recibido' }
@@ -61,7 +61,7 @@ function cargarEstadosEntregaCompra () {
   return estados
 }
 
-function cargarEstadosPagoCompra () {
+function estadosPagoCompra () {
   const estados = [
     { nombre: 'Por pagar' },
     { nombre: 'Pagado' }
@@ -69,7 +69,7 @@ function cargarEstadosPagoCompra () {
   return estados
 }
 
-function cargarEstadosEntregaVenta () {
+function estadosEntregaVenta () {
   const estados = [
     { nombre: 'No entregado' },
     { nombre: 'Entregado' }
@@ -77,7 +77,7 @@ function cargarEstadosEntregaVenta () {
   return estados
 }
 
-function cargarEstadosPagoVenta () {
+function estadosPagoVenta () {
   const estados = [
     { nombre: 'Por pagar' },
     { nombre: 'Pagado' }
@@ -85,7 +85,7 @@ function cargarEstadosPagoVenta () {
   return estados
 }
 
-function cargarMetodosPagos () {
+function metodosPagos () {
   const metodos = [
     { nombre: 'Efectivo' },
     { nombre: 'Transferencia bancaria' },
@@ -94,7 +94,19 @@ function cargarMetodosPagos () {
   return metodos
 }
 
-async function cargarUsuarios () {
+function tipoDocumento () {
+  const tipos = [
+    { nombre: 'producto' },
+    { nombre: 'cliente' },
+    { nombre: 'compra' },
+    { nombre: 'venta' },
+    { nombre: 'pago' },
+    { nombre: 'abono' }
+  ]
+  return tipos
+}
+
+async function usuarios () {
   const contrasenia1 = '1212'
   const contrasenia2 = '4848'
   const cost = 12
@@ -111,7 +123,7 @@ async function cargarUsuarios () {
   return usuarios
 }
 
-async function cargarEmpresas () {
+async function empresas () {
   const hoy = new Date()
   const fecha = hoy.toISOString().split('T')[0]
   const empresas = [
@@ -121,7 +133,26 @@ async function cargarEmpresas () {
 
   return empresas
 }
-function cargarCategorias () {
+
+async function secuencia () {
+  const secuencias = [
+    { usuario_id: 1, tipos_documento_id: 1, valor_actual: 0 },
+    { usuario_id: 1, tipos_documento_id: 2, valor_actual: 0 },
+    { usuario_id: 1, tipos_documento_id: 3, valor_actual: 0 },
+    { usuario_id: 1, tipos_documento_id: 4, valor_actual: 0 },
+    { usuario_id: 1, tipos_documento_id: 5, valor_actual: 0 },
+    { usuario_id: 1, tipos_documento_id: 6, valor_actual: 0 },
+    { usuario_id: 2, tipos_documento_id: 1, valor_actual: 0 },
+    { usuario_id: 2, tipos_documento_id: 2, valor_actual: 0 },
+    { usuario_id: 2, tipos_documento_id: 3, valor_actual: 0 },
+    { usuario_id: 2, tipos_documento_id: 4, valor_actual: 0 },
+    { usuario_id: 2, tipos_documento_id: 5, valor_actual: 0 },
+    { usuario_id: 2, tipos_documento_id: 6, valor_actual: 0 }
+  ]
+  return secuencias
+}
+
+function categorias () {
   const nombres = ['No aplica', 'Alimentos', 'Bebidas', 'Limpieza', 'vehiculos', 'Electrodomesticos']
   const descripcion = [
     'Productos sin categoria',
@@ -132,18 +163,18 @@ function cargarCategorias () {
     'Aqui se encuentran los electrodomesticos, como neveras, lavadoras, etc.'
   ]
   const categorias = [
-    { usuario_id: 1, nombre: nombres[0], descripcion: descripcion[0] },
-    { usuario_id: 1, nombre: nombres[1], descripcion: descripcion[1] },
-    { usuario_id: 1, nombre: nombres[2], descripcion: descripcion[2] },
-    { usuario_id: 1, nombre: nombres[3], descripcion: descripcion[3] },
-    { usuario_id: 2, nombre: nombres[0], descripcion: descripcion[0] },
-    { usuario_id: 2, nombre: nombres[4], descripcion: descripcion[4] },
-    { usuario_id: 2, nombre: nombres[5], descripcion: descripcion[5] }
+    { usuario_id: 1, categoria_id: 1, nombre: nombres[0], descripcion: descripcion[0] },
+    { usuario_id: 1, categoria_id: 2, nombre: nombres[1], descripcion: descripcion[1] },
+    { usuario_id: 1, categoria_id: 3, nombre: nombres[2], descripcion: descripcion[2] },
+    { usuario_id: 1, categoria_id: 4, nombre: nombres[3], descripcion: descripcion[3] },
+    { usuario_id: 2, categoria_id: 1, nombre: nombres[0], descripcion: descripcion[0] },
+    { usuario_id: 2, categoria_id: 2, nombre: nombres[4], descripcion: descripcion[4] },
+    { usuario_id: 2, categoria_id: 3, nombre: nombres[5], descripcion: descripcion[5] }
   ]
   return categorias
 }
 
-function cargarProductos () {
+function productos () {
   const nombre1 = faker.helpers.uniqueArray(faker.commerce.productName, numeroProductos)
   const nombre2 = faker.helpers.uniqueArray(faker.commerce.productName, numeroProductos)
   const productos1 = []
@@ -151,6 +182,7 @@ function cargarProductos () {
   for (let i = 0; i < numeroProductos; i++) {
     productos1.push({
       usuario_id: 1,
+      producto_id: i + 1,
       nombre: nombre1[i],
       categoria_id: faker.number.int({ min: 1, max: 4 }),
       medida_id: faker.number.int({ min: 1, max: numeroMedidas }),
@@ -162,6 +194,7 @@ function cargarProductos () {
 
     productos2.push({
       usuario_id: 2,
+      producto_id: i + 1,
       nombre: nombre2[i],
       categoria_id: faker.number.int({ min: 5, max: 7 }),
       medida_id: faker.number.int({ min: 1, max: numeroMedidas }),
@@ -175,7 +208,7 @@ function cargarProductos () {
   return productos
 }
 
-function cargarClientes () {
+function clientes () {
   const nombre = faker.helpers.uniqueArray(faker.person.fullName, numeroClientes)
 
   const clientes1 = []
@@ -183,6 +216,7 @@ function cargarClientes () {
   for (let i = 0; i < numeroClientes; i++) {
     clientes1.push({
       usuario_id: 1,
+      cliente_id: i + 1,
       nombre: nombre[i],
       direccion: faker.location.streetAddress(),
       telefono: faker.helpers.arrayElement([32279638, 31000000, 3200000, 3500000]),
@@ -194,6 +228,7 @@ function cargarClientes () {
 
     clientes2.push({
       usuario_id: 2,
+      cliente_id: i + 1,
       nombre: nombre[i],
       direccion: faker.location.streetAddress(),
       telefono: faker.helpers.arrayElement([32279638, 31000000, 3200000, 3500000]),
@@ -208,13 +243,14 @@ function cargarClientes () {
   return clientes
 }
 
-function cargarFacturasCompra () {
+function facturasCompra () {
   const facturas1 = []
   const facturas2 = []
   for (let i = 0; i < numeroCompras; i++) {
     const fecha = faker.date.recent()
     const factura1 = {
       usuario_id: 1,
+      compra_id: i + 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
@@ -226,6 +262,7 @@ function cargarFacturasCompra () {
 
     const factura2 = {
       usuario_id: 2,
+      compra_id: i + 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: numeroClientes + 1, max: numeroClientes * 2 }),
@@ -250,13 +287,14 @@ function cargarFacturasCompra () {
   return facturas
 }
 
-function cargarFacturasVenta () {
+function facturasVenta () {
   const facturas1 = []
   const facturas2 = []
   for (let i = 0; i < numeroVentas; i++) {
     const fecha = faker.date.recent()
     const factura1 = {
       usuario_id: 1,
+      factura_id: i + 1,
       fecha: fecha.toISOString().split('T')[0], // Formato YYYY-MM-DD (DATEONLY en Sequelize)
       hora: fecha.toTimeString().split(' ')[0], // Formato HH:MM:SS (TIME en Sequelize)
       cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
@@ -269,6 +307,7 @@ function cargarFacturasVenta () {
 
     const factura2 = {
       usuario_id: 2,
+      factura_id: i + 1,
       fecha: fecha.toISOString().split('T')[0], // Formato YYYY-MM-DD (DATEONLY en Sequelize)
       hora: fecha.toTimeString().split(' ')[0], // Formato HH:MM:SS (TIME en Sequelize)
       cliente_id: faker.number.int({ min: numeroClientes + 1, max: numeroClientes * 2 }),
@@ -295,7 +334,7 @@ function cargarFacturasVenta () {
   return facturas
 }
 
-function cargarPagos () {
+function pagos () {
   const pagos1 = []
   const pagos2 = []
   for (let i = 0; i < numeroPagos; i++) {
@@ -303,6 +342,7 @@ function cargarPagos () {
 
     const pago1 = {
       usuario_id: 1,
+      pago_id: i + 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
@@ -312,6 +352,7 @@ function cargarPagos () {
 
     const pago2 = {
       usuario_id: 2,
+      pago_id: i + 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: numeroClientes, max: numeroClientes * 2 }),
@@ -339,13 +380,14 @@ function cargarPagos () {
   return pagos
 }
 
-function cargarAbonos () {
+function abonos () {
   const abonos1 = []
   const abonos2 = []
   for (let i = 0; i < numeroAbonos; i++) {
     const fecha = faker.date.recent()
     const abono1 = {
       usuario_id: 1,
+      abono_id: i + 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: 1, max: numeroClientes }),
@@ -355,6 +397,7 @@ function cargarAbonos () {
 
     const abono2 = {
       usuario_id: 2,
+      abono_id: i + 1,
       fecha: fecha.toISOString().split('T')[0],
       hora: fecha.toTimeString().split(' ')[0],
       cliente_id: faker.number.int({ min: numeroClientes + 1, max: numeroClientes * 2 }),
@@ -381,7 +424,7 @@ function cargarAbonos () {
   return abonos
 }
 
-function cargarDetallesCompra () {
+function detallesCompra () {
   const detalles1 = []
   const detalles2 = []
   for (let j = 0; j < numeroCompras; j++) {
@@ -410,7 +453,7 @@ function cargarDetallesCompra () {
   return detalles
 }
 
-function cargarDetallesVenta () {
+function detallesVenta () {
   const detalles1 = []
   const detalles2 = []
   for (let j = 0; j < numeroVentas; j++) {
@@ -442,23 +485,25 @@ function cargarDetallesVenta () {
 }
 
 module.exports = {
-  cargarMedidas,
-  cargarTiposCliente,
-  cargarEstadosEntregaCompra,
-  cargarEstadosPagoCompra,
-  cargarEstadosEntregaVenta,
-  cargarEstadosPagoVenta,
-  cargarMetodosPagos,
-  cargarUsuarios,
-  cargarEmpresas,
-  cargarCategorias,
-  cargarProductos,
-  cargarClientes,
-  cargarFacturasCompra,
-  cargarFacturasVenta,
-  cargarPagos,
-  cargarAbonos,
-  cargarDetallesCompra,
-  cargarDetallesVenta
+  medidas,
+  tiposCliente,
+  estadosEntregaCompra,
+  estadosPagoCompra,
+  estadosEntregaVenta,
+  estadosPagoVenta,
+  metodosPagos,
+  tipoDocumento,
+  usuarios,
+  empresas,
+  secuencia,
+  categorias,
+  productos,
+  clientes,
+  facturasCompra,
+  facturasVenta,
+  pagos,
+  abonos,
+  detallesCompra,
+  detallesVenta
 
 }
