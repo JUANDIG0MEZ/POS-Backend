@@ -1,22 +1,28 @@
-const Joi = require('Joi')
-const { nombre, constrasenia, email } = require('./propiedades')
+const Joi = require('joi')
+const { nombre, contrasenia, email } = require('./propiedades')
 
 // ACCESO \\
 
 const accesoUsuariosSchema = Joi.object({
-  usuario: nombre.require(),
-  contrasenia: nombre.require()
+  email: email.required(),
+  contrasenia: nombre.required()
 })
 
 // CREAR \\
 
+const verificarUsuarioSchema = Joi.object({
+  email: email.required(),
+  codigoVerificacion: Joi.string().length(6)
+})
+
 const crearUsuarioSchema = Joi.object({
-  nombre: nombre.required(),
-  constrasenia: constrasenia.required(),
-  email
+  email: email.required(),
+  contrasenia: contrasenia.required()
+
 })
 
 module.exports = {
   crearUsuarioSchema,
+  verificarUsuarioSchema,
   accesoUsuariosSchema
 }

@@ -1,0 +1,27 @@
+POST http://localhost:3000/api/v1/autenticacion/registrar HTTP/1.1
+content-type: application/json
+
+{
+    "email": "juandiego.gomez1@utp.edu.co",
+    "contrasenia": "juanchot"
+}
+
+###
+
+POST http://localhost:3000/api/v1/autenticacion/verificar HTTP/1.1
+content-type: application/json
+
+{
+    "email": "juandiego.gomez1@utp.edu.co",
+    "codigoVerificacion": "150956"
+}
+
+### 
+
+POST http://localhost:3000/api/v1/autenticacion/ingresar HTTP/1.1
+content-type: application/json
+
+{
+    "email": "juandiego.gomez1@utp.edu.co",
+    "contrasenia": "juanchot"
+}

@@ -109,15 +109,15 @@ function tipoDocumento () {
 async function usuarios () {
   const contrasenia1 = '1212'
   const contrasenia2 = '4848'
-  const cost = 12
+  const cost = Number(process.env.BCRYPT_COST)
   const hashedContrasenia1 = await bcrypt.hash(contrasenia1, cost)
   const hashedContrasenia2 = await bcrypt.hash(contrasenia2, cost)
 
   const hoy = new Date()
   const fecha = hoy.toISOString().split('T')[0]
   const usuarios = [
-    { nombre: 'Juan Diego', email: 'juan@gmail.com', contrasenia: hashedContrasenia1, createdAt: fecha },
-    { nombre: 'Jesus David', email: 'jesus@gmail.com', contrasenia: hashedContrasenia2, createdAt: fecha }
+    { nombre: 'Juan Diego', email: 'juandiego.gomez1@utp.edu.co', contrasenia: hashedContrasenia1, createdAt: fecha },
+    { nombre: 'Jesus David', email: 'juanka032917@gmail.com', contrasenia: hashedContrasenia2, createdAt: fecha }
   ]
 
   return usuarios

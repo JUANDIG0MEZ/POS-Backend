@@ -63,24 +63,34 @@ module.exports = (sequelize, DataTypes) => {
   }
   Usuario.init({
 
-    nombre: {
+    email: {
       type: DataTypes.STRING(50),
       allowNull: false,
       unique: true
-    },
-    email: {
-      type: DataTypes.STRING(50),
-      allowNull: true
     },
     contrasenia: {
       allowNull: false,
       type: DataTypes.STRING(250)
 
     },
-    createdAt: {
-      type: DataTypes.DATEONLY,
-      allowNull: false
 
+    verificado: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    codigoVerificacion: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    expiracionCodigo: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: () => new Date(Date.now() + 5 * 60 * 1000)
+    },
+    fechaCreado: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+      defaultValue: () => new Date().toISOString().split('T')[0]
     }
 
   }, {

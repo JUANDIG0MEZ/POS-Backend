@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   ProductoImagen.init({
     usuario_id: {
-      type: DataTypes.TINYINT.UNSIGNED,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     producto_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Producto',

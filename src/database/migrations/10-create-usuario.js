@@ -9,21 +9,29 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.SMALLINT.UNSIGNED
       },
-      nombre: {
+      email: {
         type: Sequelize.STRING(50),
         allowNull: false,
         unique: true
-      },
-      email: {
-        type: Sequelize.STRING(50),
-        allowNull: true
       },
       contrasenia: {
         allowNull: false,
         type: Sequelize.STRING(250)
 
       },
-      createdAt: {
+      verificado: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      codigoVerificacion: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      expiracionCodigo: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      fechaCreado: {
         type: Sequelize.DATEONLY,
         allowNull: false
       }

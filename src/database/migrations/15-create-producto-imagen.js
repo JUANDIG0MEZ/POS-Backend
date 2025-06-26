@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED
       },
       usuario_id: {
-        type: Sequelize.TINYINT.UNSIGNED,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Usuario',
@@ -18,7 +18,7 @@ module.exports = {
         }
       },
       producto_id: {
-        type: Sequelize.SMALLINT.UNSIGNED,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Producto',

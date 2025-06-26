@@ -7,7 +7,7 @@ const email = Joi.string().email().max(50)
 const nit = Joi.string().length(9)
 const telefono = Joi.string().pattern(/^\d{7}$|^\d{10}$/)
 const descripcion = Joi.string().max(255)
-const constrasenia = Joi.string().max(255)
+const contrasenia = Joi.string().max(255)
 
 const precio = Joi.number().integer().min(0).strict()
 const cantidad = Joi.number().integer().strict()
@@ -26,7 +26,7 @@ module.exports = {
   nit,
   telefono,
   descripcion,
-  constrasenia,
+  contrasenia,
   precio,
   cantidad,
   total,

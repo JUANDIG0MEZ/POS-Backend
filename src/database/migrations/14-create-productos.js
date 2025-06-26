@@ -27,9 +27,8 @@ module.exports = {
       },
 
       categoria_id: {
-        type: Sequelize.TINYINT.UNSIGNED,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
-        defaultValue: 1,
         references: {
           model: 'ProductoCategoria',
           key: 'id'
