@@ -51,8 +51,7 @@ module.exports = (sequelize, DataTypes) => {
 
     categoria_id: {
       type: DataTypes.SMALLINT.UNSIGNED,
-      allowNull: false,
-      defaultValue: 1,
+      allowNull: true,
       references: {
         model: 'ProductoCategoria',
         key: 'id'

@@ -20,20 +20,20 @@ module.exports = {
         }
       },
       nombre: {
-        type: Sequelize.STRING(200)
+        type: Sequelize.STRING(200),
+        allowNull: true
       },
       nit: {
-        type: Sequelize.STRING(9)
+        type: Sequelize.STRING(9),
+        allowNull: true
       },
       direccion: {
-        type: Sequelize.STRING(120)
+        type: Sequelize.STRING(120),
+        allowNull: true
       },
       telefono: {
-        type: Sequelize.STRING(20)
-      },
-      createdAt: {
-        type: Sequelize.DATEONLY,
-        allowNull: false
+        type: Sequelize.STRING(20),
+        allowNull: true
       }
     })
   },

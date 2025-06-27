@@ -1,7 +1,6 @@
 'use strict'
 
 const { Model } = require('sequelize')
-
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     static associate (models) {
@@ -97,7 +96,13 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Usuario',
     timestamps: false,
-    tableName: 'Usuario'
+    tableName: 'Usuario',
+    hooks: {
+      afterCreate: async (usuario, options) => {
+        // Se inicializa la secuencia para el usuario recién creado
+        await usuario.sequelize.models.Secuencia.create({ usuario_id: usuario.id }, options)
+      }
+    }
   })
   return Usuario
 }

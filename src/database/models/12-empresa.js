@@ -28,20 +28,20 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     nombre: {
-      type: DataTypes.STRING(200)
+      type: DataTypes.STRING(200),
+      allowNull: true
     },
     nit: {
-      type: DataTypes.STRING(9)
+      type: DataTypes.STRING(9),
+      allowNull: true
     },
     direccion: {
-      type: DataTypes.STRING(120)
+      type: DataTypes.STRING(120),
+      allowNull: true
     },
     telefono: {
-      type: DataTypes.STRING(20)
-    },
-    createdAt: {
-      allowNull: false,
-      type: DataTypes.DATEONLY
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
 
   }, {
