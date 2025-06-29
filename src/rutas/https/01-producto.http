@@ -1,0 +1,18 @@
+
+GET http://localhost:3000/api/v1/producto HTTP/1.1
+Cookie: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOjEsImlhdCI6MTc1MTA3NDI1MywiZXhwIjoxNzUxMTE3NDUzfQ.bqwlxluF6IQb_QiuM07uZ2emfKiHYlBiTMGoEhkWZpk
+Content-Type: application/json
+
+### 
+POST http://localhost:3000/api/v1/producto  HTTP/1.1
+Cookie: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOjEsImlhdCI6MTc1MTA3NDI1MywiZXhwIjoxNzUxMTE3NDUzfQ.bqwlxluF6IQb_QiuM07uZ2emfKiHYlBiTMGoEhkWZpk
+Content-Type: application/json
+
+{
+    "nombre": "coco mediano",
+    "precio_compra": 4000,
+    "precio_venta": 4500,
+    "cantidad": 2000,
+    "medida_id": 1
+}
+

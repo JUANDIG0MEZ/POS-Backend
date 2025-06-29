@@ -16,11 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   Secuencia.init({
     id: {
       allowNull: false,
-      autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.SMALLINT.UNSIGNED
-    },
-    usuario_id: {
       type: DataTypes.SMALLINT.UNSIGNED,
       references: {
         model: 'Usuario',

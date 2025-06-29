@@ -30,12 +30,11 @@ const crearCategoriaSchema = Joi.object({
 
 const crearProductoSchema = Joi.object({
   nombre: nombre.required(),
-  categoria_id: id.required(),
+  categoria_id: id,
   medida_id: id.required(),
   precio_compra: precio.required(),
   precio_venta: precio.required(),
-  cantidad: cantidad.required(),
-  total: total.required()
+  cantidad: cantidad.required()
 })
 
 const actualizarProductoSchema = Joi.object({

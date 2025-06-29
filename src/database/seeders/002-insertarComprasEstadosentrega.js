@@ -1,12 +1,11 @@
+'use strict'
 const { CompraEstadoEntrega } = require('../models')
-const { cargarEstadosEntregaCompra } = require('../datosFaker')
-
-'use strict';
+const { estadosEntregaCompra } = require('../datosFaker')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const estados = cargarEstadosEntregaCompra()
+    const estados = estadosEntregaCompra()
 
     const transaction = await queryInterface.sequelize.transaction()
     console.log('Estados de entrega de compra', estados.slice(0, 5))
@@ -18,5 +17,4 @@ module.exports = {
     await transaction.commit()
   }
 
-
-};
+}

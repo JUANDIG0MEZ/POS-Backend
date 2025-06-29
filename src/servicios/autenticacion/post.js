@@ -91,7 +91,7 @@ async function verificarUsuario ({ email, codigoVerificacion }) {
 }
 
 function crearToken (payload) {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '2h' })
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '12h' })
 }
 
 module.exports = {

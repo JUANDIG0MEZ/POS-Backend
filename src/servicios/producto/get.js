@@ -1,27 +1,37 @@
-async function cargarProductos () {
-  const permisos = { precio_compra: true, cantidad: true, total: true }
-
+const { Producto, ProductoCategoria } = require('../../database/models')
+const { OpcionesGet } = require('./opciones/get.js')
+const { FormatearCategoria } = require('./formatear')
+async function cargarProductos ({ usuarioId }) {
   const productos = await Producto.findAll({
-    attributes: { exclude: ['categoria_id', 'medida_id'] },
-    include: ClaseProducto.incluir(),
-    exclude: ClaseProducto.excluir(),
-    order: [['id', 'DESC']]
+    where: { usuario_id: usuarioId },
+    attributes: OpcionesGet.atributos(),
+    include: OpcionesGet.incluir(),
+    order: [['id', 'DESC']],
+    raw: true
 
   })
-
-  const productosFormateados = ClaseProducto.formatear(productos, permisos)
-
+  const productosFormateados = OpcionesGet.formatearLista(productos)
   return productosFormateados
 }
 
-async function cargarImagenesProducto (id) {
-  const imagenes = await ProductoImagen.findAll({
-    where: { producto_id: id }
+async function cargarCategorias ({ usuarioId }) {
+  const categorias = await ProductoCategoria.findAll({
+    where: { usuario_id: usuarioId },
+    raw: true
   })
-  return imagenes.map(imagen => imagen.url_imagen)
+
+  return FormatearCategoria.formatearLista(categorias)
 }
+
+// async function cargarImagenesProducto (id) {
+//   const imagenes = await ProductoImagen.findAll({
+//     where: { producto_id: id }
+//   })
+//   return imagenes.map(imagen => imagen.url_imagen)
+// }
 
 module.exports = {
   cargarProductos,
-  cargarImagenesProducto
+  cargarCategorias
+  // cargarImagenesProducto
 }

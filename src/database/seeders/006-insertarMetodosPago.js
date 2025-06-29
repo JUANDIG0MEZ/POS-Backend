@@ -1,12 +1,12 @@
 'use strict'
 
-const { cargarMetodosPagos } = require('../datosFaker')
+const { metodosPagos } = require('../datosFaker')
 const { MetodoPago } = require('../models')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const metodosPago = cargarMetodosPagos()
+    const metodosPago = metodosPagos()
 
     const transaction = await queryInterface.sequelize.transaction()
 

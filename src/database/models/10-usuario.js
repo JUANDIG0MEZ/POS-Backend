@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       afterCreate: async (usuario, options) => {
         // Se inicializa la secuencia para el usuario recién creado
-        await usuario.sequelize.models.Secuencia.create({ usuario_id: usuario.id }, options)
+        await usuario.sequelize.models.Secuencia.create({ id: usuario.id }, options)
       }
     }
   })

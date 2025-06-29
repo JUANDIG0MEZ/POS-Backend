@@ -4,6 +4,7 @@ const {
 
 function validatorHandler (schema, property) {
   return (req, res, next) => {
+    console.log('Validando', property, req[property])
     const { error, value } = schema.validate(req[property], {
       stripUnknown: true
     })

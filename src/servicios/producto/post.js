@@ -1,14 +1,40 @@
-async function crearProducto (body) {
+const { Producto, ProductoCategoria, sequelize, Secuencia } = require('../../database/models')
+const { OpcionesGet } = require('./opciones/get')
+const { ErrorUsuario } = require('../../errors/usuario.js')
+const { FormatearCategoria } = require('./formatear')
+async function crearProducto ({ usuarioId, nombre, categoria_id, medida_id, precio_compra, precio_venta, cantidad }) {
   const transaction = await sequelize.transaction()
   try {
-    await crearMedida(body, transaction)
+    console.log('Usuario Id:', usuarioId)
+    const secuencia = await Secuencia.findOne({
+      where: { id: usuarioId },
+      transaction,
+      lock: transaction.LOCK.UPDATE
+    })
 
-    const productoCreado = await Producto.create(body, { transaction })
+    const productoNuevo = {
+      usuario_id: usuarioId,
+      producto_id: secuencia.producto_id,
+      nombre,
+      categoria_id,
+      medida_id,
+      precio_compra,
+      precio_venta,
+      cantidad,
+      total: precio_compra * cantidad
+    }
 
-    const producto = await Producto.findByPk(productoCreado.id, {
-      attributes: ClaseProducto.atributos(),
-      include: ClaseProducto.incluir(),
-      transaction
+    secuencia.producto_id += 1
+
+    await Producto.create(productoNuevo, { transaction })
+    await secuencia.save({ transaction })
+
+    const producto = await Producto.findOne({
+      where: { producto_id: productoNuevo.producto_id },
+      attributes: OpcionesGet.atributos(),
+      include: OpcionesGet.incluir(),
+      transaction,
+      raw: true
     })
 
     console.log(producto)
@@ -24,30 +50,36 @@ async function crearProducto (body) {
   }
 }
 
-async function crearMedida (datos, transaction) {
-  if (datos.medida) {
-    const [medida] = await ProductoMedida.findOrCreate({
-      where: { nombre: datos.medida },
-      defaults: { nombre: datos.medida },
+async function crearCategoria ({ usuarioId, nombre, descripcion }) {
+  const transaction = await sequelize.transaction()
+  try {
+    const secuencia = await Secuencia.findOne({
+      where: { id: usuarioId },
+      lock: transaction.LOCK.UPDATE,
       transaction
     })
 
-    datos.medida_id = medida.id
+    const categoriaNueva = {
+      usuario_id: usuarioId,
+      categoria_id: secuencia.categoria_id,
+      nombre,
+      descripcion
+    }
+    secuencia.categoria_id += 1
+
+    const categoria = await ProductoCategoria.create(categoriaNueva, { transaction })
+    await secuencia.save({ transaction })
+    await transaction.commit()
+
+    const categoriaFormateada = FormatearCategoria.formatear(categoria.get({ plain: true }))
+    return {
+      categoria: categoriaFormateada
+    }
+  } catch (error) {
+    await transaction.rollback()
+    console.error('Error al crear la categoria:', error)
+    throw new ErrorUsuario('Error al crear la categoria')
   }
-  delete datos.medida
-}
-
-async function crearCategoria (body) {
-  const [categoria, creado] = await ProductoCategoria.findOrCreate({
-    where: { nombre: body.nombre },
-    defaults: { nombre: body.nombre, descripcion: body.descripcion }
-  })
-
-  if (!creado) {
-    throw new ErrorUsuario('La categoria ya existe')
-  }
-
-  return { categoria }
 }
 
 module.exports = {

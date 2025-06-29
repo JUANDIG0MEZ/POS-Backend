@@ -1,14 +1,15 @@
 'use strict'
 
-const { cargarMedidas } = require('../datosFaker')
+const { medidas } = require('../datosFaker')
 const { ProductoMedida } = require('../models')
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    const medidas = cargarMedidas()
+    const medidasProduto = medidas()
+    console.log('Medidas de producto', medidasProduto.slice(0, 1))
     const transaction = await queryInterface.sequelize.transaction()
-    await ProductoMedida.bulkCreate(medidas, {
+    await ProductoMedida.bulkCreate(medidasProduto, {
       individualHooks: true,
       validate: true,
       transaction

@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-
+const { ErrorUsuario } = require('../../errors/usuario.js')
 module.exports = (sequelize, DataTypes) => {
   class Producto extends Model {
     static associate (models) {
