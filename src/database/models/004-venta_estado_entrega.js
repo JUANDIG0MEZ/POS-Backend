@@ -6,15 +6,18 @@ module.exports = (sequelize, DataTypes) => {
   class VentaEstadoEntrega extends Model {
     static associate (models) {
       VentaEstadoEntrega.hasMany(models.Venta, {
-        foreignKey: 'estado_entrega_id',
+        foreignKey: 'id_estado_entrega',
         as: 'estadoEntregaVenta'
       })
     }
   }
   VentaEstadoEntrega.init({
-    nombre: DataTypes.STRING(50),
-    allowNull: false,
-    unique: true
+    nombre: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: true
+    }
+
   }, {
     sequelize,
     modelName: 'VentaEstadoEntrega',

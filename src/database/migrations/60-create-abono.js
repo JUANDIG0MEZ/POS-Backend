@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
-      usuario_id: {
+      id_usuario: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -21,7 +21,7 @@ module.exports = {
           key: 'id'
         }
       },
-      cliente_id: {
+      id_cliente: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
@@ -42,7 +42,7 @@ module.exports = {
         type: Sequelize.BIGINT.UNSIGNED,
         allowNull: false
       },
-      metodo_pago_id: {
+      id_metodo_pago: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -54,6 +54,12 @@ module.exports = {
         type: Sequelize.STRING(200),
         allowNull: true
       }
+    })
+
+    await queryInterface.addConstraint('Abono', {
+      fields: ['id_usuario', 'abono_id'],
+      type: 'unique',
+      name: 'unique_usuario_abono_id'
     })
   },
   async down (queryInterface, Sequelize) {

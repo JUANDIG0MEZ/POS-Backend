@@ -13,6 +13,6 @@ Content-Type: application/json
     "precio_compra": 4000,
     "precio_venta": 4500,
     "cantidad": 2000,
-    "medida_id": 1
+    "id_medida": 1
 }
 

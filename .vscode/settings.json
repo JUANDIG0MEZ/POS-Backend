@@ -1,4 +1,5 @@
 {
   "editor.formatOnSave": true,
-  "standard.autoFixOnSave": true
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.format.enable": true
 }

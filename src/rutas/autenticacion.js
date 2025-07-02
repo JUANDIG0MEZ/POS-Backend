@@ -16,8 +16,7 @@ const COOKIE_CONFIG = {
 router.post('/registrar',
   validatorHandler(crearUsuarioSchema, 'body'),
   async (req, res) => {
-    console.log(req.body)
-    const { email, contrasenia } = req.body
+    const { email, contrasenia } = req.validated.body
     await crearUsuario({ email, contrasenia })
     res.send(respuesta('Usuario creado'))
   })
@@ -25,9 +24,9 @@ router.post('/registrar',
 router.post('/verificar',
   validatorHandler(verificarUsuarioSchema, 'body'),
   async (req, res) => {
-    const { email, codigoVerificacion } = req.body
+    const { email, codigoVerificacion } = req.validated.body
     const usuario = await verificarUsuario({ email, codigoVerificacion })
-    const token = await crearToken({ usuarioId: usuario.id })
+    const token = await crearToken({ idUsuario: usuario.id })
     res.cookie('access_token', token, COOKIE_CONFIG)
     res.send(respuesta('Usuario verificado.'))
   }
@@ -36,9 +35,9 @@ router.post('/verificar',
 router.post('/ingresar',
   validatorHandler(accesoUsuariosSchema, 'body'),
   async (req, res) => {
-    const { email, contrasenia } = req.body
+    const { email, contrasenia } = req.validated.body
     const usuarioDB = await autenticarUsuario({ email, contrasenia })
-    const token = crearToken({ usuarioId: usuarioDB.id })
+    const token = crearToken({ idUsuario: usuarioDB.id })
     res.cookie('access_token', token, COOKIE_CONFIG)
     res.send(respuesta('Acceso generado'))
   })
@@ -48,9 +47,9 @@ router.post('/logout', (req, res) => {
   res.send(respuesta('Sesion cerrada correctamente'))
 })
 
-router.post('/logout', (req, res) => {
-  res.clearCookie('access_token', COOKIE_CONFIG)
-  res.send(respuesta('Sesion cerrada correctamente'))
-})
+// router.post('/logout', (req, res) => {
+//   res.clearCookie('access_token', COOKIE_CONFIG)
+//   res.send(respuesta('Sesion cerrada correctamente'))
+// })
 
 module.exports = router

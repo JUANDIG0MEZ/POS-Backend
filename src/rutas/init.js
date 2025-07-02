@@ -1,15 +1,30 @@
-// const express = require('express')
+const express = require('express')
 // const {
 //   cargarDatosIniciales
 // } = require('../servicios/init')
-// const { respuesta } = require('./funciones')
 
-// const router = express.Router()
+const {
+  cargarMetodosPago
+} = require('../servicios/init/get.js')
+const { respuesta } = require('./funcion')
+const { requireUser } = require('../middlewares/autenticationHandler')
 
-// router.get('/', async (req, res) => {
-//   const { usuarioId } = req.usuario
-//   const datosIniciales = await cargarDatosIniciales(usuarioId)
-//   res.json(respuesta('Datos iniciales cargados', datosIniciales))
-// })
+const router = express.Router()
 
-// module.exports = router
+// router.get('/',
+//   requireUser,
+//   async (req, res) => {
+//     const { idUsuario } = req.usuario
+//     const datosIniciales = await cargarDatosIniciales(idUsuario)
+//     res.json(respuesta('Datos iniciales cargados', datosIniciales))
+//   })
+
+router.get('/metodopago',
+  requireUser,
+  async (req, res) => {
+    const metodosPago = await cargarMetodosPago()
+    res.json(respuesta('Metodos pago cargados', metodosPago))
+  }
+)
+
+module.exports = router

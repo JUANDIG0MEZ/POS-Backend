@@ -7,7 +7,8 @@ const {
   id,
   nit,
   limit,
-  offset
+  offset,
+  orden
 } = require('./propiedades')
 
 // OBTENER \\
@@ -17,8 +18,12 @@ const paramsClientesSchema = Joi.object({
 })
 
 const queryClientesSchema = Joi.object({
+  id,
   limit,
-  offset
+  offset,
+  id_tipo: Joi.number().integer().min(0),
+  columna: Joi.string().valid('id', 'por_pagarle', 'debe'),
+  orden
 })
 
 // CREAR \\
@@ -27,7 +32,7 @@ const crearClienteSchema = Joi.object({
   direccion,
   telefono,
   email,
-  tipo_id: id.required()
+  id_tipo: id.required()
 })
 
 const crearEmpresaSchema = Joi.object({

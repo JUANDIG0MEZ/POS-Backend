@@ -1,23 +1,24 @@
-const { Producto, ProductoCategoria, sequelize, Secuencia } = require('../../database/models')
+const { Producto, ProductoCategoria, ProductoMedida, sequelize, Secuencia } = require('../../database/models')
 const { OpcionesGet } = require('./opciones/get')
 const { ErrorUsuario } = require('../../errors/usuario.js')
-const { FormatearCategoria } = require('./formatear')
-async function crearProducto ({ usuarioId, nombre, categoria_id, medida_id, precio_compra, precio_venta, cantidad }) {
+const { FormatearCategoria, FormatearProducto } = require('./formatear')
+async function crearProducto ({ idUsuario, nombre, categoria_id, id_medida, precio_compra, precio_venta, cantidad }) {
   const transaction = await sequelize.transaction()
   try {
-    console.log('Usuario Id:', usuarioId)
     const secuencia = await Secuencia.findOne({
-      where: { id: usuarioId },
+      where: { id: idUsuario },
       transaction,
       lock: transaction.LOCK.UPDATE
     })
 
+    const categoria = await ProductoCategoria.findOne({ where: { id_usuario: idUsuario, categoria_id } })
+
     const productoNuevo = {
-      usuario_id: usuarioId,
+      id_usuario: idUsuario,
       producto_id: secuencia.producto_id,
       nombre,
-      categoria_id,
-      medida_id,
+      id_categoria: categoria.id,
+      id_medida,
       precio_compra,
       precio_venta,
       cantidad,
@@ -30,19 +31,17 @@ async function crearProducto ({ usuarioId, nombre, categoria_id, medida_id, prec
     await secuencia.save({ transaction })
 
     const producto = await Producto.findOne({
-      where: { producto_id: productoNuevo.producto_id },
+      where: { id_usuario: idUsuario, producto_id: productoNuevo.producto_id },
       attributes: OpcionesGet.atributos(),
       include: OpcionesGet.incluir(),
       transaction,
       raw: true
     })
 
-    console.log(producto)
-
     await transaction.commit()
-
+    console.log('Producto Formateado', FormatearProducto.formatear(producto))
     return {
-      producto
+      producto: FormatearProducto.formatear(producto)
     }
   } catch (error) {
     await transaction.rollback()
@@ -50,17 +49,17 @@ async function crearProducto ({ usuarioId, nombre, categoria_id, medida_id, prec
   }
 }
 
-async function crearCategoria ({ usuarioId, nombre, descripcion }) {
+async function crearCategoria ({ idUsuario, nombre, descripcion }) {
   const transaction = await sequelize.transaction()
   try {
     const secuencia = await Secuencia.findOne({
-      where: { id: usuarioId },
+      where: { id: idUsuario },
       lock: transaction.LOCK.UPDATE,
       transaction
     })
 
     const categoriaNueva = {
-      usuario_id: usuarioId,
+      id_usuario: idUsuario,
       categoria_id: secuencia.categoria_id,
       nombre,
       descripcion

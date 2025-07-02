@@ -7,18 +7,29 @@ const {
   cantidad,
   precio,
   offset,
-  limit
+  limit,
+  enteroQuery,
+  fecha,
+  orden
 } = require('./propiedades.js')
 
 // OBTENER
 
-const queryVentasSchema = Joi.object({
-  offset,
-  limit
-})
-
 const paramsVentasSchema = Joi.object({
   id: id.required()
+})
+
+const queryVentasSchema = Joi.object({
+  venta_id: enteroQuery,
+  cliente_id: enteroQuery,
+  estado_entrega_id: enteroQuery,
+  estado_pago_id: enteroQuery,
+  fechaInicio: fecha,
+  fechaFinal: fecha,
+  columna: Joi.string().valid('venta_id', 'por_pagar'),
+  orden,
+  limit,
+  offset
 })
 
 // CREAR
@@ -35,7 +46,7 @@ const crearVentaSchema = Joi.object({
   total: total.required(),
   estado_entrega_id: id.required(),
   nombre_cliente: nombreLargo.required(),
-  productos: Joi.array(detalle)
+  productos: Joi.array().items(detalle)
 })
 
 module.exports = {

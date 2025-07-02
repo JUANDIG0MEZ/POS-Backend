@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false
       },
-      usuario_id: {
+      id_usuario: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -33,7 +33,7 @@ module.exports = {
     })
 
     await queryInterface.addConstraint('ProductoCategoria', {
-      fields: ['usuario_id', 'nombre'],
+      fields: ['id_usuario', 'nombre'],
       type: 'unique',
       name: 'unique_usuario_categoria_nombre'
 

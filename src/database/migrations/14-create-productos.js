@@ -9,7 +9,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true
       },
-      usuario_id: {
+      id_usuario: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -26,7 +26,7 @@ module.exports = {
         allowNull: false
       },
 
-      categoria_id: {
+      id_categoria: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: true,
         references: {
@@ -34,7 +34,7 @@ module.exports = {
           key: 'id'
         }
       },
-      medida_id: {
+      id_medida: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -64,7 +64,7 @@ module.exports = {
     })
 
     await queryInterface.addConstraint('Producto', {
-      fields: ['usuario_id', 'nombre'],
+      fields: ['id_usuario', 'nombre'],
       type: 'unique',
       name: 'unique_usuario_producto'
 

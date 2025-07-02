@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const { NUMBER } = require('sequelize')
 
 const nombre = Joi.string().max(50)
 const nombreLargo = Joi.string().max(100)
@@ -9,14 +10,21 @@ const telefono = Joi.string().pattern(/^\d{7}$|^\d{10}$/)
 const descripcion = Joi.string().max(255)
 const contrasenia = Joi.string().max(255)
 
-const precio = Joi.number().integer().min(0).strict()
-const cantidad = Joi.number().integer().strict()
-const total = Joi.number().integer().min(0).strict()
-const id = Joi.number().integer().min(0).strict()
+const precio = Joi.number().integer().min(0).max(Number.MAX_SAFE_INTEGER).strict()
+const cantidad = Joi.number().integer().min(0).max(Number.MAX_SAFE_INTEGER).strict()
+const total = Joi.number().integer().min(0).max(Number.MAX_SAFE_INTEGER).strict()
+const id = Joi.number().integer().min(1).max(Number.MAX_SAFE_INTEGER).strict()
+// QUERYS
 
 // Paginacion
-const limit = Joi.number().integer().strict().min(0).max(50).required()
-const offset = Joi.number().integer().strict().required()
+const limit = Joi.number().integer().min(0).max(50)
+const offset = Joi.number().integer()
+
+// querys
+const enteroQuery = Joi.number().integer().min(0)
+const fecha = Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/)
+const hora = Joi.string().pattern(/^\d{2}:\d{2}:\d{2}$/)
+const orden = Joi.string().valid('ASC', 'DESC')
 
 module.exports = {
   nombre,
@@ -31,6 +39,11 @@ module.exports = {
   cantidad,
   total,
   id,
+
   limit,
-  offset
+  offset,
+  fecha,
+  hora,
+  orden,
+  enteroQuery
 }

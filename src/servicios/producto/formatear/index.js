@@ -12,6 +12,26 @@ class FormatearCategoria {
   }
 }
 
+class FormatearProducto {
+  static formatear (producto) {
+    return {
+      id: producto.producto_id,
+      nombre: producto.nombre,
+      categoria: producto.categoria,
+      medida: producto.medida,
+      precio_venta: producto.precio_venta,
+      precio_compra: producto.precio_compra,
+      cantidad: producto.cantidad,
+      total: producto.total
+    }
+  }
+
+  static formatearLista (productos) {
+    return productos.map(producto => this.formatear(producto))
+  }
+}
+
 module.exports = {
-  FormatearCategoria
+  FormatearCategoria,
+  FormatearProducto
 }

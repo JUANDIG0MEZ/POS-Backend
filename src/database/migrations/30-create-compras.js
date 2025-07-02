@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
-      usuario_id: {
+      id_usuario: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -29,7 +29,7 @@ module.exports = {
         type: Sequelize.TIME,
         allowNull: false
       },
-      cliente_id: {
+      id_cliente: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
@@ -52,7 +52,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
-      estado_entrega_id: {
+      id_estado_entrega: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         defaultValue: 1,
@@ -61,7 +61,7 @@ module.exports = {
           key: 'id'
         }
       },
-      estado_pago_id: {
+      id_estado_pago: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         defaultValue: 1,
@@ -75,6 +75,12 @@ module.exports = {
         type: Sequelize.STRING(100),
         allowNull: false
       }
+    })
+
+    await queryInterface.addConstraint('Compra', {
+      fields: ['id_usuario', 'compra_id'],
+      type: 'unique',
+      name: 'unique_usuario_compra_id'
     })
   },
   async down (queryInterface, Sequelize) {

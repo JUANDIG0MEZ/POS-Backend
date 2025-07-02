@@ -7,38 +7,38 @@ module.exports = (sequelize, DataTypes) => {
   class Cliente extends Model {
     static associate (models) {
       Cliente.belongsTo(models.ClienteTipo, {
-        foreignKey: 'tipo_id',
+        foreignKey: 'id_tipo',
         as: 'tipoCliente'
       })
 
       Cliente.hasMany(models.Compra, {
-        foreignKey: 'cliente_id',
+        foreignKey: 'id_cliente',
         as: 'clienteCompra'
       })
 
       Cliente.hasMany(models.Venta, {
-        foreignKey: 'cliente_id',
+        foreignKey: 'id_cliente',
         as: 'clienteVenta'
       })
 
       Cliente.hasMany(models.Pago, {
-        foreignKey: 'cliente_id',
+        foreignKey: 'id_cliente',
         as: 'clientePago'
       })
 
       Cliente.hasMany(models.Abono, {
-        foreignKey: 'cliente_id',
+        foreignKey: 'id_cliente',
         as: 'clienteAbono'
       })
 
       Cliente.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioCliente'
       })
     }
   }
   Cliente.init({
-    usuario_id: {
+    id_usuario: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -66,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(50),
       allowNull: true
     },
-    tipo_id: {
+    id_tipo: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -91,25 +91,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Cliente',
     timestamps: false,
-    tableName: 'Cliente',
-    hooks: {
-      beforeCreate (cliente) {
-        const tipoId = Number(cliente.tipo_id)
-        const telefono = Number(cliente.tipo_id)
+    tableName: 'Cliente'
 
-        if (!tipoId) {
-          throw new ErrorUsuario('Tipo de usuario invalido')
-        }
-        if (!cliente.nombre) {
-          throw new ErrorUsuario('Nombre invalido')
-        }
-        if (telefono === 0) {
-          cliente.telefono = null
-        } else if (!telefono) {
-          throw new ErrorUsuario('Telefono invalido')
-        }
-      }
-    }
   })
   return Cliente
 }

@@ -7,7 +7,7 @@ const { col } = require('sequelize')
 class OpcionesGet {
   static atributos () {
     return {
-      exclude: ['categoria_id', 'medida_id'],
+      exclude: ['id_categoria', 'id_medida'],
       include: [
         [col('medidaProducto.nombre'), 'medida'],
         [col('categoriaProducto.nombre'), 'categoria']]
@@ -19,23 +19,6 @@ class OpcionesGet {
       { model: ProductoMedida, attributes: [], as: 'medidaProducto' },
       { model: ProductoCategoria, attributes: [], as: 'categoriaProducto' }
     ]
-  }
-
-  static formatearLista (productos) {
-    return productos.map(producto => this.formatear(producto))
-  }
-
-  static formatear (producto) {
-    return {
-      id: producto.producto_id,
-      nombre: producto.nombre,
-      categoria: producto.categoria,
-      medida: producto.medida,
-      precio_venta: producto.precio_venta,
-      precio_compra: producto.precio_compra,
-      cantidad: producto.cantidad,
-      total: producto.total
-    }
   }
 }
 

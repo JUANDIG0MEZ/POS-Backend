@@ -6,13 +6,13 @@ module.exports = (sequelize, DataTypes) => {
   class ProductoImagen extends Model {
     static associate (models) {
       ProductoImagen.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioProductoImagen'
       })
     }
   }
   ProductoImagen.init({
-    usuario_id: {
+    id_usuario: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    producto_id: {
+    id_producto: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {

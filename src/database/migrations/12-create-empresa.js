@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.SMALLINT.UNSIGNED
       },
-      usuario_id: {
+      id_usuario: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         unique: true,

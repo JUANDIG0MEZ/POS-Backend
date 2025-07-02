@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 function requireUser (req, res, next) {
   try {
     const token = req.cookies.access_token
-    console.log('Token recibido:', token)
     if (!token) throw new ErrorUsuario('Acceso no autorizado')
 
     const payload = jwt.verify(token, secretKey)

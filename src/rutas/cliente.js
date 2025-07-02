@@ -1,8 +1,17 @@
-// const express = require('express')
-// const {
-//   respuesta
-// } = require('./funciones')
+const express = require('express')
+const {
+  respuesta
+} = require('./funcion')
 
+const { cargarClientes, cargarClienteTipos, cargarClientesNombres } = require('../servicios/cliente/get.js')
+const { crearCliente } = require('../servicios/cliente/post.js')
+const {
+  queryClientesSchema,
+  crearClienteSchema
+} = require('../schemas/cliente.js')
+
+const { validatorHandler } = require('../middlewares/validatorHandler.js')
+const { requireUser } = require('../middlewares/autenticationHandler.js')
 // const {
 //   cargarClientes,
 //   cargarCliente,
@@ -19,14 +28,42 @@
 //   crearCliente
 // } = require('../servicios/clientes/postCliente')
 
-// const router = express.Router()
+const router = express.Router()
 
-// router.get('/',
-//   async (req, res) => {
-//     const clientes = await cargarClientes(req.query)
-//     res.json(respuesta('Clientes cargados', clientes))
-//   })
+router.get('/',
+  validatorHandler(queryClientesSchema, 'query', true),
+  requireUser,
+  async (req, res) => {
+    const {
+      limit,
+      offset,
+      columna,
+      orden,
+      cliente_id,
+      id_tipo
+    } = req.validated.query
+    const { idUsuario } = req.usuario
 
+    const clientes = await cargarClientes({ idUsuario, orden, columna, offset, limit, cliente_id, id_tipo })
+    res.json(respuesta('Clientes cargados', clientes))
+  })
+
+router.get('/nombre',
+  requireUser,
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const clientes = await cargarClientesNombres({ idUsuario })
+    res.json(respuesta('Nombres de clientes cargados', clientes))
+  }
+)
+
+router.get('/tipo',
+  requireUser,
+  async (req, res) => {
+    const tipos = await cargarClienteTipos()
+    res.json(respuesta('Tipos de cliente cargados', tipos))
+  }
+)
 // router.get('/:id',
 //   async (req, res) => {
 //     const { id } = req.params
@@ -71,12 +108,24 @@
 // //   }
 // // })
 
-// router.post('/',
-//   async (req, res) => {
-//     const body = req.body
-//     const cliente = await crearCliente(body)
-//     res.json(respuesta('Cliente creado', cliente))
-//   })
+router.post('/',
+  requireUser,
+  validatorHandler(crearClienteSchema, 'body'),
+  async (req, res) => {
+    const {
+      cliente_id,
+      nombre,
+      direccion,
+      telefono,
+      email,
+      id_tipo
+    } = req.validated.body
+    const { idUsuario } = req.usuario
+
+    const cliente = await crearCliente({ idUsuario, cliente_id, nombre, direccion, telefono, email, id_tipo })
+    console.log('cioente creado')
+    res.json(respuesta('Cliente creado', cliente))
+  })
 
 // // router.post('/abonos', async (req, res)=> {
 // //     const body = req.body
@@ -112,4 +161,4 @@
 // //     }
 // // })
 
-// module.exports = router
+module.exports = router

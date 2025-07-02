@@ -19,7 +19,7 @@ const { col } = require('sequelize')
 class InitOptions {
   static Producto () {
     const attributes = {
-      exclude: ['categoria_id', 'medida_id'],
+      exclude: ['id_categoria', 'medida_id'],
       include: [
         [col('medidaProducto.nombre'), 'medida'],
         [col('categoriaProducto.nombre'), 'categoria']

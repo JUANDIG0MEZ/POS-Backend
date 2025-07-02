@@ -11,17 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       DetalleCompra.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioDetalleCompra'
       })
       DetalleCompra.belongsTo(models.Compra, {
-        foreignKey: 'compra_id',
+        foreignKey: 'id_compra',
         as: 'compraDetalle'
 
       })
 
       DetalleCompra.belongsTo(models.Producto, {
-        foreignKey: 'producto_id',
+        foreignKey: 'id_producto',
         as: 'productoDetalleCompra'
       })
     }
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
-    compra_id: {
+    id_compra: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    producto_id: {
+    id_producto: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
@@ -77,10 +77,10 @@ module.exports = (sequelize, DataTypes) => {
           throw new Error('No se puede modificar el id de la compra o del producto')
         }
 
-        const cantidadAntes = detalle.changed('cantidad') ? Number(detalle.previous('cantidad')) : Number(detalle.cantidad)
-        const cantidadAhora = Number(detalle.cantidad)
-        const precioAhora = Number(detalle.precio)
-        const subtotalAntes = detalle.changed('subtotal') ? Number(detalle.previous('subtotal')) : Number(detalle.subtotal)
+        const cantidadAntes = detalle.changed('cantidad') ? Number(detalle.previous('cantidad')) : detalle.cantidad
+        const cantidadAhora = detalle.cantidad
+        const precioAhora = detalle.precio
+        const subtotalAntes = detalle.changed('subtotal') ? Number(detalle.previous('subtotal')) : detalle.subtotal
         const subtotalAhora = cantidadAhora * precioAhora
 
         // Se actualiza el subtotal
@@ -94,7 +94,7 @@ module.exports = (sequelize, DataTypes) => {
         })
 
         // Modificar el total de la compra
-        compra.total = Number(compra.total) - subtotalAntes + subtotalAhora
+        compra.total = compra.total - subtotalAntes + subtotalAhora
 
         await compra.save({ transaction: options.transaction })
 

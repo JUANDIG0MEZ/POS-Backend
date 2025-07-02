@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
-      usuario_id: {
+      id_usuario: {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -37,7 +37,7 @@ module.exports = {
         type: Sequelize.STRING(50),
         allowNull: true
       },
-      tipo_id: {
+      id_tipo: {
         type: Sequelize.TINYINT.UNSIGNED,
         allowNull: false,
         references: {
@@ -60,7 +60,7 @@ module.exports = {
     })
 
     await queryInterface.addConstraint('Cliente', {
-      fields: ['usuario_id', 'nombre'],
+      fields: ['id_usuario', 'nombre'],
       type: 'unique',
       name: 'unique_usuario_cliente'
 

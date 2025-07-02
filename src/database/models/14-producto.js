@@ -6,33 +6,33 @@ module.exports = (sequelize, DataTypes) => {
   class Producto extends Model {
     static associate (models) {
       Producto.belongsTo(models.ProductoCategoria, {
-        foreignKey: 'categoria_id',
+        foreignKey: 'id_categoria',
         as: 'categoriaProducto'
       })
 
       Producto.belongsTo(models.ProductoMedida, {
-        foreignKey: 'medida_id',
+        foreignKey: 'id_medida',
         as: 'medidaProducto'
       })
 
       Producto.hasMany(models.DetalleCompra, {
-        foreignKey: 'producto_id',
+        foreignKey: 'id_producto',
         as: 'productoDetalleCompra'
       })
 
       Producto.hasMany(models.DetalleVenta, {
-        foreignKey: 'producto_id',
+        foreignKey: 'id_producto',
         as: 'productoDetalleVenta'
       })
 
       Producto.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioProducto'
       })
     }
   }
   Producto.init({
-    usuario_id: {
+    id_usuario: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
 
-    categoria_id: {
+    id_categoria: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: true,
       references: {
@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    medida_id: {
+    id_medida: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       references: {

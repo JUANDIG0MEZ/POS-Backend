@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
-      compra_id: {
+      id_compra: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
@@ -21,7 +21,7 @@ module.exports = {
           key: 'id'
         }
       },
-      producto_id: {
+      id_producto: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
@@ -51,7 +51,7 @@ module.exports = {
     })
 
     await queryInterface.addConstraint('DetalleCompra', {
-      fields: ['compra_id', 'producto_id'],
+      fields: ['id_compra', 'id_producto'],
       type: 'unique',
       name: 'unique_compra_producto'
     })

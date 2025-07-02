@@ -11,20 +11,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       MetodoPago.hasMany(models.Pago, {
-        foreignKey: 'metodo_pago_id',
+        foreignKey: 'id_metodo_pago',
         as: 'pagoMetodoPago'
       })
 
       MetodoPago.hasMany(models.Abono, {
-        foreignKey: 'metodo_pago_id',
+        foreignKey: 'id_metodo_pago',
         as: 'abonoMetodoPago'
       })
     }
   }
   MetodoPago.init({
-    nombre: DataTypes.STRING(50),
-    allowNull: false,
-    unique: true
+    nombre: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: true
+    }
   }, {
     sequelize,
     modelName: 'MetodoPago',

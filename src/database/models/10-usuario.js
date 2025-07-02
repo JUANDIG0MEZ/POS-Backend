@@ -5,57 +5,57 @@ module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     static associate (models) {
       Usuario.hasMany(models.Producto, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioProducto'
       })
 
       Usuario.hasMany(models.Empresa, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioEmpresa'
       })
 
       Usuario.hasMany(models.ProductoCategoria, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioProductoCategoria'
       })
 
       Usuario.hasMany(models.ProductoImagen, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioProductoImagen'
       })
 
       Usuario.hasMany(models.Cliente, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioCliente'
       })
 
       Usuario.hasMany(models.Venta, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioVenta'
       })
 
       Usuario.hasMany(models.Compra, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioCompra'
       })
 
       Usuario.hasMany(models.Pago, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioPago'
       })
 
       Usuario.hasMany(models.Abono, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioAbono'
       })
 
       Usuario.hasMany(models.DetalleCompra, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioDetalleCompra'
       })
 
       Usuario.hasMany(models.DetalleVenta, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioDetalleVenta'
       })
     }

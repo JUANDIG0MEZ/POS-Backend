@@ -11,16 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       Pago.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioPago'
       })
       Pago.belongsTo(models.Cliente, {
-        foreignKey: 'cliente_id',
+        foreignKey: 'id_cliente',
         as: 'clientePago'
       })
 
       Pago.belongsTo(models.MetodoPago, {
-        foreignKey: 'metodo_pago_id',
+        foreignKey: 'id_metodo_pago',
         as: 'pagoMetodoPago'
       })
     }
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
-    usuario_id: {
+    id_usuario: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    cliente_id: {
+    id_cliente: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT.UNSIGNED,
       allowNull: false
     },
-    metodo_pago_id: {
+    id_metodo_pago: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       references: {

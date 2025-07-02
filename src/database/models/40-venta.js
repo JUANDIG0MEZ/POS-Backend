@@ -6,26 +6,26 @@ module.exports = (sequelize, DataTypes) => {
   class Venta extends Model {
     static associate (models) {
       Venta.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioVenta'
       })
       Venta.belongsTo(models.Cliente, {
-        foreignKey: 'cliente_id',
+        foreignKey: 'id_cliente',
         as: 'clienteVenta'
       })
 
       Venta.hasMany(models.DetalleVenta, {
-        foreignKey: 'venta_id',
+        foreignKey: 'id_venta',
         as: 'ventaDetalle'
       })
 
       Venta.belongsTo(models.VentaEstadoPago, {
-        foreignKey: 'estado_pago_id',
+        foreignKey: 'id_estado_pago',
         as: 'estadoPagoVenta'
       })
 
       Venta.belongsTo(models.VentaEstadoEntrega, {
-        foreignKey: 'estado_entrega_id',
+        foreignKey: 'id_estado_entrega',
         as: 'estadoEntregaVenta'
       })
     }
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
-    usuario_id: {
+    id_usuario: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    cliente_id: {
+    id_cliente: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     },
-    estado_entrega_id: {
+    id_estado_entrega: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       defaultValue: 1,
@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    estado_pago_id: {
+    id_estado_pago: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       defaultValue: 1,

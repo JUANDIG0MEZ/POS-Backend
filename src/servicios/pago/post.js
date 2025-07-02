@@ -1,11 +1,19 @@
-async function crearPago (infoPago, transaction) {
+const { Pago } = require('../../database/models')
+
+async function crearPago ({ pago_id, idUsuario, cliente_id, metodo_pago_id, valor, descripcion }, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
   const hora = new Date().toTimeString().split(' ')[0]
 
-  infoPago.fecha = fecha
-  infoPago.hora = hora
-
-  await Pago.create(infoPago, { transaction })
+  const nuevoPago = {
+    pago_id,
+    idUsuario,
+    cliente_id,
+    fecha,
+    hora,
+    metodo_pago_id,
+    descripcion
+  }
+  await Pago.create(nuevoPago, { transaction })
 }
 
 async function crearPagoCompra (body, idFactura) {
@@ -57,7 +65,6 @@ async function crearPagoCompras (body, idCliente) {
       throw Error('El pago es mayor a la deuda')
     }
 
-    console.log('creando pago', body)
     const compras = await Compra.findAll({
       where: {
         estado_pago_id: 1,

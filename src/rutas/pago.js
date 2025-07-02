@@ -19,16 +19,16 @@
 // router.post('/compra',
 //   validatorHandler(crearPagoCompraSchema, 'body'),
 //   async (req, res) => {
-//     const { usuarioId } = req.usuario
-//     const data = await crearPagoCompra(req.body, usuarioId)
+//     const { idUsuario } = req.usuario
+//     const data = await crearPagoCompra(req.body, idUsuario)
 //     res.json(respuesta('Pago realizado', data))
 //   })
 
 // router.post('/cliente',
 //   validatorHandler(crearPagoClienteSchema, 'body'),
 //   async (req, res) => {
-//     const { usuarioId } = req.usuario
-//     const data = await crearPagoCompras(req.body, usuarioId)
+//     const { idUsuario } = req.usuario
+//     const data = await crearPagoCompras(req.body, idUsuario)
 //     res.json(respuesta('Pago realizado', data))
 //   }
 // )

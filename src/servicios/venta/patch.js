@@ -23,7 +23,6 @@ async function modificarVenta (body, idVenta) {
     }
 
     await transaction.commit()
-    console.log(info)
     return {
       info
     }

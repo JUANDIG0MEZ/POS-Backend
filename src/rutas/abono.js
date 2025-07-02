@@ -10,7 +10,7 @@ router.get('/',
   validatorHandler(queryAbonosSchema, 'query'),
   validatorHandler(paramsAbonosSchema, 'params'),
   async (req, res) => {
-    const { usuarioId } = req.usuario
+    const { idUsuario } = req.usuario
     const data = await obtenerAbonos()
     res.json(respuesta('Pago realizado', data))
   }
@@ -19,16 +19,16 @@ router.get('/',
 router.post('/venta',
   validatorHandler(crearAbonoVentaSchema, 'body'),
   async (req, res) => {
-    const { usuarioId } = req.usuario
-    const data = await crearAbonoVenta(req.body, usuarioId)
+    const { idUsuario } = req.usuario
+    const data = await crearAbonoVenta(req.body, idUsuario)
     res.json(respuesta('Pago realizado', data))
   })
 
 router.post('/cliente',
   validatorHandler(crearAbonoClienteSchema, 'body'),
   async (req, res) => {
-    const { usuarioId } = req.usuario
-    const data = await crearAbonoVentas(req.body, usuarioId)
+    const { idUsuario } = req.usuario
+    const data = await crearAbonoVentas(req.body, idUsuario)
     res.json(respuesta('Pago realizado', data))
   }
 )

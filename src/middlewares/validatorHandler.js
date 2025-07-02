@@ -2,17 +2,16 @@ const {
   ErrorUsuario
 } = require('../errors/usuario')
 
-function validatorHandler (schema, property) {
+function validatorHandler (schema, property, convert = false) {
   return (req, res, next) => {
-    console.log('Validando', property, req[property])
     const { error, value } = schema.validate(req[property], {
+      convert,
       stripUnknown: true
     })
-    if (error) {
-      const errorUsuario = new ErrorUsuario(error.message)
-      return next(errorUsuario)
-    }
-    req[property] = value
+    if (error) return next(new ErrorUsuario(error.message))
+
+    req.validated = req.validated || {}
+    req.validated[property] = value
     next()
   }
 }

@@ -6,18 +6,18 @@ module.exports = (sequelize, DataTypes) => {
   class Empresa extends Model {
     static associate (models) {
       Empresa.hasMany(models.Producto, {
-        foreignKey: 'medida_id',
+        foreignKey: 'id_medida',
         as: 'medidaProducto'
       })
 
       Empresa.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioEmpresa'
       })
     }
   }
   Empresa.init({
-    usuario_id: {
+    id_usuario: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       unique: true,

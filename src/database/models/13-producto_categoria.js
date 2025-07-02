@@ -12,12 +12,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       ProductoCategoria.hasMany(models.Producto, {
-        foreignKey: 'categoria_id',
+        foreignKey: 'id_categoria',
         as: 'categoriaProducto'
       })
 
       ProductoCategoria.belongsTo(models.Usuario, {
-        foreignKey: 'usuario_id',
+        foreignKey: 'id_usuario',
         as: 'usuarioProductoCategoria'
       })
     }
@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false
     },
-    usuario_id: {
+    id_usuario: {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
