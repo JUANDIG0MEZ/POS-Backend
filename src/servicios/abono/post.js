@@ -1,27 +1,24 @@
 const { Abono, Secuencia } = require('../../database/models')
 
-async function crearAbono ({ idUsuario, cliente_id, metodo_pago_id, valor, descripcion }, transaction) {
+async function crearAbono ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
   const hora = new Date().toTimeString().split(' ')[0]
 
-  const secuencia = await Secuencia.findOne({
-    where: {
-      id: idUsuario
-    }
-  })
+  const secuencia = await Secuencia.findByPk(idUsuario)
 
   const nuevoAbono = {
     id_usuario: idUsuario,
     abono_id: secuencia.abono_id,
-    cliente_id,
-    metodo_pago_id,
+    id_cliente,
+    id_metodo_pago,
     valor,
     descripcion,
     fecha,
     hora
   }
+
   secuencia.abono_id += 1
-  secuencia.save({ transaction })
+  await secuencia.save({ transaction })
 
   await Abono.create(nuevoAbono, { transaction })
 }

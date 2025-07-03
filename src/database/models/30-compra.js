@@ -122,13 +122,10 @@ module.exports = (sequelize, DataTypes) => {
           compra.pagado = pagado
           compra.por_pagar = porPagar
 
-          const clienteId = compra.get('cliente_id')
+          const idCliente = compra.get('id_cliente')
           const Cliente = compra.sequelize.models.Cliente
-          const cliente = await Cliente.findOne({
-            where: {
-              id_usuario: compra.id_usuario,
-              cliente_id: clienteId
-            },
+
+          const cliente = await Cliente.findByPk(idCliente, {
             transaction: options.transaction,
             lock: options.transaction.LOCK.UPDATE
           })

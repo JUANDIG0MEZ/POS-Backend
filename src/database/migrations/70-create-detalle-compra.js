@@ -9,10 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER.UNSIGNED
       },
-      detalle_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: false
-      },
       id_compra: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,

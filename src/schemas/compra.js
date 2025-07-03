@@ -23,8 +23,8 @@ const paramsComprasSchema = Joi.object({
 const queryComprasSchema = Joi.object({
   compra_id: enteroQuery,
   cliente_id: enteroQuery,
-  estado_entrega_id: enteroQuery,
-  estado_pago_id: enteroQuery,
+  id_estado_entrega: enteroQuery,
+  id_estado_pago: enteroQuery,
   fechaInicio: fecha,
   fechaFinal: fecha,
   columna: Joi.string().valid('compra_id', 'por_pagar'),
@@ -35,7 +35,7 @@ const queryComprasSchema = Joi.object({
 
 // CREAR \\
 
-const detalle = Joi.object({
+const detalles = Joi.object({
   producto_id: id.required(),
   cantidad: cantidad.required(),
   precio: precio.required()
@@ -51,12 +51,19 @@ const crearCompraSchema = Joi.object({
     descripcion: nombreLargo.strict(),
     nombre_cliente: nombreLargo.strict()
   }),
-  productos: Joi.array().items(detalle)
+  detalles: Joi.array().items(detalles)
+})
+
+// MODIFICAR \\
+
+const modificarDetallesSchema = Joi.object({
+  detalles: Joi.array().items(detalles)
 })
 
 module.exports = {
   paramsComprasSchema,
   queryComprasSchema,
-  crearCompraSchema
+  crearCompraSchema,
+  modificarDetallesSchema
 
 }

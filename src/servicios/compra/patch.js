@@ -1,11 +1,17 @@
-async function modificarCompra (body, idCompra) {
+const { sequelize, Compra, DetalleCompra, Producto } = require('../../database/models')
+
+async function modificarCompra ({ idUsuario, detalles, compra_id }) {
   const transaction = await sequelize.transaction()
+
+  console.log('detalles', detalles)
   try {
-    for (const dataDetalle of body) {
+    const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id } })
+    for (const dataDetalle of detalles) {
+      const producto = await Producto.findOne({ where: { id_usuario: idUsuario, producto_id: dataDetalle.producto_id } })
       const detalle = await DetalleCompra.findOne({
         where: {
-          compra_id: idCompra,
-          producto_id: dataDetalle.producto_id
+          id_compra: compra.id,
+          id_producto: producto.id
         },
         transaction,
         lock: transaction.LOCK.UPDATE
@@ -15,7 +21,7 @@ async function modificarCompra (body, idCompra) {
       await detalle.save({ transaction })
     }
 
-    const compra = await Compra.findByPk(idCompra, { transaction })
+    await compra.reload({ transaction })
     const info = {
       pagado: compra.pagado,
       total: compra.total,

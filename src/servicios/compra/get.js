@@ -1,6 +1,7 @@
-const { OpcionesGetCompras } = require('./opciones/get.js')
+const { OpcionesGetCompras, OpcionesGetDetalle } = require('./opciones/get.js')
 
-const { Compra, CompraEstadoEntrega, CompraEstadoPago } = require('../../database/models')
+const { Compra, CompraEstadoEntrega, CompraEstadoPago, DetalleCompra } = require('../../database/models')
+const { FormatearCompras, FormatearDetalles } = require('./formatear/index.js')
 
 async function cargarCompraEstadoEntrega () {
   const estados = CompraEstadoEntrega.findAll()
@@ -12,43 +13,42 @@ async function cargarCompraEstadoPago () {
   return estados
 }
 
-// async function cargarFacturaCompra (id) {
-//   const info = await Compra.findByPk(id, {
-//     attributes: OpcionesGetCompra.atributos(),
-//     include: OpcionesGetCompra.incluir()
-//   })
-
-//   const datos = await DetalleCompra.findAll({
-//     where: {
-//       compra_id: id
-//     },
-//     attributes: OpcionesGetDetalle.atributos(),
-//     include: OpcionesGetDetalle.incluir(),
-//     raw: true
-//   })
-
-//   const datosFormateados = OpcionesGetDetalle.formatear(datos)
-
-//   return { datos: datosFormateados, info }
-// }
-
 async function cargarCompras ({ idUsuario, compra_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal, columna, orden, offset, limit }) {
   const { count, rows } = await Compra.findAndCountAll(
     {
       // id, estado_entrega_id, cliente_id, fecha_desde, fecha_hasta, estado_pago_id
-      where: OpcionesGetCompras.donde({ idUsuario, compra_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal }),
+      where: await OpcionesGetCompras.donde({ idUsuario, compra_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal }),
       include: OpcionesGetCompras.incluir(),
 
       attributes: OpcionesGetCompras.atributos(),
       limit,
       offset,
-      order: OpcionesGetCompras.orden(orden, columna),
+      order: OpcionesGetCompras.orden({ orden, columna }),
       raw: true
 
     }
   )
 
-  return { count, rows }
+  return { count, rows: FormatearCompras.formatearLista(rows) }
+}
+
+async function cargarCompra ({ idUsuario, compra_id }) {
+  console.log('idUsuario', idUsuario)
+  console.log('compra_id', compra_id)
+  const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id } })
+  console.log('compra', compra.dataValues)
+  const datos = await DetalleCompra.findAll({
+    where: { id_compra: compra.id },
+    attributes: OpcionesGetDetalle.atributos(),
+    include: OpcionesGetDetalle.incluir(),
+    raw: true
+  })
+
+  console.log('datos', datos)
+
+  const datosFormateados = FormatearDetalles.formatearLista(datos)
+
+  return { datos: datosFormateados, info: compra }
 }
 
 // async function cargarComprasCliente (clienteId, query) {
@@ -67,5 +67,6 @@ async function cargarCompras ({ idUsuario, compra_id, cliente_id, id_estado_entr
 module.exports = {
   cargarCompras,
   cargarCompraEstadoEntrega,
-  cargarCompraEstadoPago
+  cargarCompraEstadoPago,
+  cargarCompra
 }

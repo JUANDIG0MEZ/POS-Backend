@@ -7,13 +7,18 @@ const router = express.Router()
 const {
   cargarCompras,
   cargarCompraEstadoEntrega,
-  cargarCompraEstadoPago
+  cargarCompraEstadoPago,
+  cargarCompra
 } = require('../servicios/compra/get.js')
+
+const {
+  modificarCompra
+} = require('../servicios/compra/patch.js')
 
 const {
   crearFacturaCompra
 } = require('../servicios/compra/post.js')
-const { queryComprasSchema, crearCompraSchema } = require('../schemas/compra.js')
+const { queryComprasSchema, crearCompraSchema, modificarDetallesSchema } = require('../schemas/compra.js')
 const { requireUser } = require('../middlewares/autenticationHandler.js')
 // const {
 //   cargarFacturasCompra,
@@ -48,6 +53,7 @@ router.get('/',
       offset,
       limit
     } = req.validated.query
+    console.log('query', req.validated.query)
     const { idUsuario } = req.usuario
     const facturas = await cargarCompras({ idUsuario, compra_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal, columna, orden, offset, limit })
     res.json(respuesta('Facturas de compra cargadas', facturas))
@@ -67,20 +73,27 @@ router.get('/estadopago',
     res.json(respuesta('Estados de compra cargados', estados))
   })
 
-// router.get('/:id',
-//   async (req, res) => {
-//     const id = req.params.id
-//     const factura = await cargarFacturaCompra(id)
-//     res.send(respuesta('Factura de compra cargada', factura))
-//   })
+router.get('/:id',
+  requireUser,
+  async (req, res) => {
+    const compra_id = req.params.id
+    const { idUsuario } = req.usuario
+    const factura = await cargarCompra({ idUsuario, compra_id })
+    res.send(respuesta('Factura de compra cargada', factura))
+  })
 
-// router.patch('/:id',
-//   async (req, res) => {
-//     const body = req.body
-//     const id = req.params.id
-//     const factura = await modificarCompra(body, id)
-//     res.json(respuesta('Factura de compra modificada', factura))
-//   })
+router.patch('/:id',
+  requireUser,
+  validatorHandler(modificarDetallesSchema, 'body'),
+  async (req, res) => {
+    const {
+      detalles
+    } = req.validated.body
+    const { idUsuario } = req.usuario
+    const compra_id = req.params.id
+    const factura = await modificarCompra({ idUsuario, detalles, compra_id })
+    res.json(respuesta('Factura de compra modificada', factura))
+  })
 
 router.post('/',
   requireUser,

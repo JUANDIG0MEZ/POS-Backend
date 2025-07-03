@@ -1,4 +1,4 @@
-const { sequelize, Secuencia, Compra, DetalleCompra, Producto } = require('../../database/models')
+const { sequelize, Secuencia, Compra, DetalleCompra, Producto, Cliente } = require('../../database/models')
 const { crearAbono } = require('../abono/post')
 
 async function crearFacturaCompra ({ idUsuario, info, detalles }) {
@@ -8,8 +8,6 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
   const transaction = await sequelize.transaction()
 
   try {
-    console.log(info)
-
     const {
       cliente_id,
       id_metodo_pago,
@@ -29,10 +27,9 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
     if (pagado > total) throw new Error('El valor pagado no puede ser mayor al total.')
     if (cliente_id < 2 && (pagado !== total || !nombre_cliente)) throw new Error('Para este cliente el valor pagado de la factura debe ser igual al total.')
     if (id_metodo_pago > 1 && !descripcion) throw new Error('Debes agregar informacion del pago')
-    const secuencia = await Secuencia.findOne({
-      where: { id: idUsuario }
-    })
 
+    const secuencia = await Secuencia.findOne({ where: { id: idUsuario } })
+    const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id } })
     const compraId = secuencia.compra_id
 
     // Crear la compra
@@ -41,7 +38,7 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
       compra_id: compraId,
       fecha: fechaFormato,
       hora: horaFormato,
-      cliente_id,
+      id_cliente: cliente.id,
       id_metodo_pago,
       id_estado_entrega,
       nombre_cliente
@@ -51,41 +48,36 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
     const compra = await Compra.create(compraNueva, { transaction })
 
     for (const detalle of detalles) {
-      const {
-        producto_id,
-        cantidad,
-        precio
-      } = detalle
-
-      const producto = Producto.findOne({ where: { id_usuario: idUsuario, producto_id } })
+      const { producto_id, cantidad, precio } = detalle
+      const producto = await Producto.findOne({ where: { id_usuario: idUsuario, producto_id } })
 
       const detalleCrear = {
         id_producto: producto.id,
+        id_compra: compra.id,
         cantidad,
-        precio
+        precio,
+        subtotal: cantidad * precio
       }
 
-      await DetalleCompra.create({
-        detalleCrear,
-        id_compra: compra.id
-      }, { transaction })
+      await DetalleCompra.create(detalleCrear, { transaction })
     }
 
     let descripcionCompleta = ''
     // Agregarle el valor pagado a la compra
     await compra.reload({ transaction })
     if (pagado > compra.total) throw new Error('El valor pagado no puede ser mayor al total')
-
     if (pagado > 0) descripcionCompleta = `Abono a factura ${compraId}.`
-    if (metodo_pago_id > 1) descripcionCompleta = descripcionCompleta + ' Info ' + descripcion
+    if (id_metodo_pago > 1) descripcionCompleta = descripcionCompleta + ' Info ' + descripcion
 
     compra.pagado = pagado
-    await compra.save({ transaction })
     secuencia.compra_id += 1
+
+    await compra.save({ transaction })
     await secuencia.save({ transaction })
+    console.log('antes de crear abono')
+    await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcionCompleta }, transaction)
 
-    await crearAbono({ idUsuario, cliente_id, metodo_pago_id, valor: pagado, descripcionCompleta }, transaction)
-
+    console.log('despues de crear abono')
     // Productos modificados
     const productos = []
     for (const detalle of detalles) {

@@ -5,10 +5,6 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
   class DetalleVenta extends Model {
     static associate (models) {
-      DetalleVenta.belongsTo(models.Usuario, {
-        foreignKey: 'id_usuario',
-        as: 'usuarioDetalleVenta'
-      })
       DetalleVenta.belongsTo(models.Venta, {
         foreignKey: 'id_venta',
         as: 'ventaDetalle'
@@ -21,10 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   DetalleVenta.init({
-    detalle_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
-    },
+
     id_venta: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
@@ -104,14 +97,13 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate: async (detalle, options) => {
         // Crear una instancia de Producto y Compra
         const Producto = detalle.sequelize.models.Producto
-
-        const producto = await Producto.findByPk(detalle.producto_id, {
+        const producto = await Producto.findByPk(detalle.id_producto, {
           transaction: options.transaction,
           lock: options.transaction.LOCK.UPDATE
         })
 
         const Venta = detalle.sequelize.models.Venta
-        const venta = await Venta.findByPk(detalle.venta_id, {
+        const venta = await Venta.findByPk(detalle.id_venta, {
           transaction: options.transaction,
           lock: options.transaction.LOCK.UPDATE
         })
@@ -121,7 +113,6 @@ module.exports = (sequelize, DataTypes) => {
         const precio = Number(detalle.precio)
 
         producto.cantidad = cantidadProducto - cantidadDetalle
-
         await producto.save({ transaction: options.transaction })
 
         detalle.subtotal = cantidadDetalle * precio

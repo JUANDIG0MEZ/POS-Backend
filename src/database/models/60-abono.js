@@ -79,9 +79,9 @@ module.exports = (sequelize, DataTypes) => {
 
     hooks: {
       beforeCreate: async (abono, options) => {
-        const metodoPago = Number(abono.metodo_pago_id)
+        const metodoPago = Number(abono.id_metodo_pago)
         const valor = Number(abono.valor)
-        const clienteId = Number(abono.cliente_id)
+        const idCliente = Number(abono.id_cliente)
 
         if (valor <= 0) {
           throw new Error('El valor del abono no puede ser 0')
@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
         if (!abono.fecha || !abono.hora) {
           throw new Error('La fecha y hora son requeridas')
         }
-        if (!clienteId) {
+        if (!idCliente) {
           throw new Error('El cliente es requerido')
         }
         if (!metodoPago) {
