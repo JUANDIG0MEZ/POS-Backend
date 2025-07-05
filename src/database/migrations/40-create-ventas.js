@@ -78,7 +78,8 @@ module.exports = {
         allowNull: false
       },
       direccion: {
-        type: Sequelize.STRING(120)
+        type: Sequelize.STRING(120),
+        allowNull: true
       }
 
     })

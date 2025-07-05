@@ -1,15 +1,27 @@
 const {
   Cliente,
-  ClienteTipo
-  // Abono,
-  // Pago,
-  // Venta,
-  // Compra
+  ClienteTipo,
+  Abono,
+  Pago,
+  Venta,
+  Compra
 } = require('../../database/models')
-const { FormatearClientes } = require('./formatear/index.js')
 
 const {
-  OpcionesGet
+  FormatearGetVentaCliente,
+  FormatearGetCompraCliente,
+  FormatearGetAbonoCliente,
+  FormatearGetPagoCliente,
+  FormatearGetClientes
+} = require('./formatear/get.js')
+
+const {
+  OpcionesGetCliente,
+  OpcionesGetClientes,
+  OpcionesGetClienteCompra,
+  OpcionesGetClienteAbono,
+  OpcionesGetClientePago,
+  OpcionesGetClienteVenta
 } = require('./opciones/get.js')
 
 async function cargarClienteTipos () {
@@ -17,26 +29,28 @@ async function cargarClienteTipos () {
   return tipos
 }
 
-// async function cargarCliente (id) {
-//   const cliente = await Cliente.findByPk(id, {
-//     attributes: ClaseCliente.atributos(),
-//     include: ClaseCliente.incluir()
-//   })
+async function cargarCliente ({ idUsuario, cliente_id }) {
+  const cliente = await Cliente.findOne({
+    where: { id_usuario: idUsuario, cliente_id },
+    attributes: OpcionesGetCliente.atributos(),
+    include: OpcionesGetCliente.incluir()
 
-//   return cliente
-// }
+  })
+
+  return cliente
+}
 
 async function cargarClientes ({ idUsuario, orden, columna, offset, limit, cliente_id, id_tipo }) {
   const { count, rows } = await Cliente.findAndCountAll({
-    attributes: OpcionesGet.atributos(),
-    include: OpcionesGet.incluir(),
-    where: OpcionesGet.donde({ idUsuario, cliente_id, id_tipo }),
+    attributes: OpcionesGetClientes.atributos(),
+    include: OpcionesGetClientes.incluir(),
+    where: OpcionesGetClientes.donde({ idUsuario, cliente_id, id_tipo }),
     limit,
     offset,
-    order: OpcionesGet.orden({ orden, columna }),
+    order: OpcionesGetClientes.orden({ orden, columna }),
     raw: true
   })
-  return { count, rows: FormatearClientes.formatearLista(rows) }
+  return { count, rows: FormatearGetClientes.formatearLista(rows) }
 }
 
 async function cargarClientesNombres ({ idUsuario }) {
@@ -45,13 +59,65 @@ async function cargarClientesNombres ({ idUsuario }) {
     attributes: ['nombre', 'cliente_id']
   })
 
-  const clientesFormateados = FormatearClientes.formatearLista(clientes)
-
+  const clientesFormateados = FormatearGetClientes.formatearLista(clientes)
   return clientesFormateados
 }
 
+async function cargarVentasCliente ({ idUsuario, cliente_id, limit }) {
+  const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id } })
+  const { count, rows } = await Venta.findAndCountAll({
+    where: { id_usuario: idUsuario, id_cliente: cliente.id },
+    attributes: OpcionesGetClienteVenta.atributos(),
+    include: OpcionesGetClienteVenta.incluir(),
+    limit
+  })
+  return { count, rows: FormatearGetVentaCliente.formatearLista(rows) }
+}
+
+async function cargarComprasCliente ({ idUsuario, cliente_id, limit }) {
+  const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id } })
+  const { count, rows } = await Compra.findAndCountAll({
+    where: { id_usuario: idUsuario, id_cliente: cliente.id },
+    attributes: OpcionesGetClienteCompra.atributos(),
+    include: OpcionesGetClienteCompra.incluir(),
+    limit,
+    raw: true
+
+  })
+  return { count, rows: FormatearGetCompraCliente.formatearLista(rows) }
+}
+
+async function cargarAbonosCliente ({ idUsuario, cliente_id, limit }) {
+  const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id } })
+  const { count, rows } = await Abono.findAndCountAll({
+    where: { id_usuario: idUsuario, id_cliente: cliente.id },
+    attributes: OpcionesGetClienteAbono.atributos(),
+    include: OpcionesGetClienteAbono.incluir(),
+    limit,
+    raw: true
+  })
+  return { count, rows: FormatearGetAbonoCliente.formatearLista(rows) }
+}
+
+async function cargarPagosCliente ({ idUsuario, cliente_id, limit }) {
+  const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id } })
+  const { count, rows } = await Pago.findAndCountAll({
+    where: { id_usuario: idUsuario, id_cliente: cliente.id },
+    attributes: OpcionesGetClientePago.atributos(),
+    include: OpcionesGetClientePago.incluir(),
+    limit,
+    raw: true
+  })
+  return { count, rows: FormatearGetPagoCliente.formatearLista(rows) }
+}
+
 module.exports = {
+  cargarCliente,
   cargarClientes,
   cargarClienteTipos,
-  cargarClientesNombres
+  cargarClientesNombres,
+  cargarVentasCliente,
+  cargarComprasCliente,
+  cargarAbonosCliente,
+  cargarPagosCliente
 }

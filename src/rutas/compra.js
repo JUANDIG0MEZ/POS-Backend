@@ -82,7 +82,7 @@ router.get('/:id',
     res.send(respuesta('Factura de compra cargada', factura))
   })
 
-router.patch('/:id',
+router.patch('/:id/detalle',
   requireUser,
   validatorHandler(modificarDetallesSchema, 'body'),
   async (req, res) => {

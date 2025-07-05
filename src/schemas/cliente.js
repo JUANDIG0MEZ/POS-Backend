@@ -26,6 +26,11 @@ const queryClientesSchema = Joi.object({
   orden
 })
 
+const queryClienteSchema = Joi.object({
+  limit: limit.required(),
+  offset: offset.required()
+})
+
 // CREAR \\
 const crearClienteSchema = Joi.object({
   nombre: nombreLargo.required(),
@@ -43,6 +48,7 @@ const crearEmpresaSchema = Joi.object({
 })
 
 module.exports = {
+  queryClienteSchema,
   queryClientesSchema,
   paramsClientesSchema,
   crearClienteSchema,

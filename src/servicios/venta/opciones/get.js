@@ -2,12 +2,24 @@ const { Op, col } = require('sequelize')
 const {
   VentaEstadoEntrega,
   VentaEstadoPago,
-  Cliente
+  Producto,
+  ProductoMedida
 } = require('../../../database/models')
+
+class OpcionesGetVenta {
+  static atributos () {
+    const attributes = {
+      exclude: ['id_usuario', 'estado_pago_id', 'por_pagar', 'cliente_id']
+    }
+
+    return attributes
+  }
+}
+
 class OpcionesGetVentas {
   static atributos () {
     const attributes = {
-      exclude: ['estado_pago_id', 'estado_entrega_id', 'pagado', 'cliente_id'],
+      exclude: ['id_estado_pago', 'id_estado_entrega', 'pagado', 'cliente_id'],
       include: [
         [col('estadoEntregaVenta.nombre'), 'estado_entrega'],
         [col('estadoPagoVenta.nombre'), 'estado_pago']]
@@ -23,7 +35,7 @@ class OpcionesGetVentas {
     ]
   }
 
-  static donde ({ idUsuario, venta_id, cliente_id, estado_entrega_id, estado_pago_id, fechaInicio, fechaFinal }) {
+  static donde ({ idUsuario, venta_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal }) {
     const where = { id_usuario: idUsuario }
 
     if (venta_id) {
@@ -31,8 +43,8 @@ class OpcionesGetVentas {
       return where
     }
 
-    if (estado_entrega_id) where.estado_entrega_id = estado_entrega_id
-    if (estado_pago_id) where.estado_pago_id = estado_pago_id
+    if (id_estado_entrega) where.id_estado_entrega = id_estado_entrega
+    if (id_estado_pago) where.id_estado_pago = id_estado_pago
     if (cliente_id) where.cliente_id = cliente_id
     if (fechaInicio || fechaFinal) {
       if (!fechaInicio) fechaInicio = '1900-01-01'
@@ -54,6 +66,34 @@ class OpcionesGetVentas {
   }
 }
 
+class OpcionesGetDetalle {
+  static atributos () {
+    const attributes = {
+      exclude: ['compra_id'],
+      include: [
+        [col('productoDetalleVenta.nombre'), 'nombre'],
+        [col('productoDetalleVenta.medidaProducto.nombre'), 'medida']]
+    }
+
+    return attributes
+  }
+
+  static incluir () {
+    const include = [
+      {
+        model: Producto,
+        as: 'productoDetalleVenta',
+        attributes: [],
+        include: [
+          { model: ProductoMedida, as: 'medidaProducto', attributes: [] }
+        ]
+      }]
+    return include
+  }
+}
+
 module.exports = {
-  OpcionesGetVentas
+  OpcionesGetVenta,
+  OpcionesGetVentas,
+  OpcionesGetDetalle
 }

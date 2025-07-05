@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
         })
 
         if (detalle.changed('cantidad')) {
-          producto.cantidad = Number(producto.cantidad) - cantidadAntes + cantidadAhora
+          producto.cantidad = producto.cantidad - cantidadAntes + cantidadAhora
           await producto.save({ transaction: options.transaction })
         }
       },

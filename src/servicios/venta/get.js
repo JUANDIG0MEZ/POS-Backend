@@ -1,5 +1,6 @@
-const { OpcionesGetVentas } = require('./opciones/get')
-const { Venta, VentaEstadoEntrega, VentaEstadoPago } = require('../../database/models')
+const { OpcionesGetVenta, OpcionesGetVentas, OpcionesGetDetalle } = require('./opciones/get')
+const { Venta, VentaEstadoEntrega, VentaEstadoPago, DetalleVenta, Cliente } = require('../../database/models')
+const { FormatearGetVentas, FormatearGetDetallesVenta } = require('./formatear')
 
 async function cargarVentaEstadoEntrega () {
   const estados = await VentaEstadoEntrega.findAll({})
@@ -11,62 +12,39 @@ async function cargarVentaEstadoPago () {
   return estados
 }
 
-async function cargarVentas (idUsuario, venta_id, cliente_id, estado_entrega_id, estado_pago_id, fechaInicio, fechaFinal, columna, orden, offset, limit) {
+async function cargarVentas ({ idUsuario, venta_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal, columna, orden, offset, limit }) {
   const { count, rows } = await Venta.findAndCountAll(
     {
       attributes: OpcionesGetVentas.atributos(),
       include: OpcionesGetVentas.incluir(),
-      where: OpcionesGetVentas.donde({ idUsuario, venta_id, cliente_id, estado_entrega_id, estado_pago_id, fechaInicio, fechaFinal }),
+      where: OpcionesGetVentas.donde({ idUsuario, venta_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal }),
       order: OpcionesGetVentas.orden({ columna, orden }),
       limit,
       offset,
       raw: true
     }
   )
-  return { count, rows }
+  return { count, rows: FormatearGetVentas.formatearLista(rows) }
 }
 
-// async function cargarFacturaVenta (id) {
-//   const info = await Venta.findByPk(id, {
-//     attributes: OpcionesGetVenta.atributos(),
-//     include: OpcionesGetVenta.incluir()
-//   })
+async function cargarVenta ({ idUsuario, venta_id }) {
+  const venta = await Venta.findOne({
+    where: { id_usuario: idUsuario, venta_id },
+    attributes: OpcionesGetVenta.atributos()
+  })
 
-//   const datos = await DetalleVenta.findAll({
-//     where: {
-//       venta_id: id
-//     },
-//     attributes: OpcionesGetDetalle.atributos(),
-//     include: OpcionesGetDetalle.incluir(),
-//     raw: true
-//   })
-
-//   const datosFormateados = OpcionesGetDetalle.formatear(datos)
-
-//   return { datos: datosFormateados, info }
-// }
-
-// module.exports = {
-//   cargarFacturasVenta,
-//   cargarFacturaVenta
-
-// }
-
-// async function cargarVentasCliente (clienteId, query) {
-//   const { count, rows } = await Venta.findAndCountAll({
-//     where: OpcionesVentas.donde(clienteId),
-//     include: OpcionesVentas.incluir(),
-//     attributes: OpcionesVentas.atributos(),
-//     order: OpcionesVentas.orden(),
-//     limit: Math.min(Number(query.limit), 50),
-//     offset: Number(query.offset)
-//   })
-
-//   return { count, rows }
-// }
+  const detalles = await DetalleVenta.findAll({
+    where: { id_venta: venta.id },
+    attributes: OpcionesGetDetalle.atributos(),
+    include: OpcionesGetDetalle.incluir(),
+    raw: true
+  })
+  return { datos: FormatearGetDetallesVenta.formatearLista(detalles), info: venta }
+}
 
 module.exports = {
   cargarVentaEstadoEntrega,
   cargarVentaEstadoPago,
-  cargarVentas
+  cargarVentas,
+  cargarVenta
 }

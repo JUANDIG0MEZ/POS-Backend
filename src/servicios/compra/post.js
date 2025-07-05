@@ -66,18 +66,18 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
     // Agregarle el valor pagado a la compra
     await compra.reload({ transaction })
     if (pagado > compra.total) throw new Error('El valor pagado no puede ser mayor al total')
-    if (pagado > 0) descripcionCompleta = `Abono a factura ${compraId}.`
-    if (id_metodo_pago > 1) descripcionCompleta = descripcionCompleta + ' Info ' + descripcion
+    if (pagado > 0) {
+      if (id_metodo_pago > 1) descripcionCompleta = 'Info: ' + descripcion
+      descripcionCompleta = `Abono a la compra #${compraId}. ` + descripcionCompleta
+      await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcionCompleta }, transaction)
+    }
 
     compra.pagado = pagado
     secuencia.compra_id += 1
 
     await compra.save({ transaction })
     await secuencia.save({ transaction })
-    console.log('antes de crear abono')
-    await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcionCompleta }, transaction)
 
-    console.log('despues de crear abono')
     // Productos modificados
     const productos = []
     for (const detalle of detalles) {

@@ -10,7 +10,8 @@ const {
   limit,
   enteroQuery,
   fecha,
-  orden
+  orden,
+  direccion
 } = require('./propiedades.js')
 
 // OBTENER
@@ -22,8 +23,8 @@ const paramsVentasSchema = Joi.object({
 const queryVentasSchema = Joi.object({
   venta_id: enteroQuery,
   cliente_id: enteroQuery,
-  estado_entrega_id: enteroQuery,
-  estado_pago_id: enteroQuery,
+  id_estado_entrega: enteroQuery,
+  id_estado_pago: enteroQuery,
   fechaInicio: fecha,
   fechaFinal: fecha,
   columna: Joi.string().valid('venta_id', 'por_pagar'),
@@ -41,16 +42,28 @@ const detalle = Joi.object({
 })
 
 const crearVentaSchema = Joi.object({
-  cliente_id: id.required(),
-  pagado: total.required(),
-  total: total.required(),
-  estado_entrega_id: id.required(),
-  nombre_cliente: nombreLargo.required(),
-  productos: Joi.array().items(detalle)
+  info: Joi.object({
+    cliente_id: id.required(),
+    pagado: total.required(),
+    total: total.required(),
+    id_estado_entrega: id.required(),
+    id_metodo_pago: id.required(),
+    descripcion: nombreLargo.strict(),
+    nombre_cliente: nombreLargo.strict(),
+    direccion
+  }),
+  detalles: Joi.array().items(detalle).required()
+})
+
+// MODIFICAR
+
+const modificarDetallesVentaSchema = Joi.object({
+  detalles: Joi.array().items(detalle)
 })
 
 module.exports = {
   paramsVentasSchema,
   queryVentasSchema,
-  crearVentaSchema
+  crearVentaSchema,
+  modificarDetallesVentaSchema
 }

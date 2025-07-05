@@ -1,9 +1,31 @@
 const {
-  ClienteTipo
+  ClienteTipo,
+  CompraEstadoEntrega,
+  CompraEstadoPago,
+  VentaEstadoEntrega,
+  VentaEstadoPago,
+  MetodoPago
 } = require('../../../database/models')
 
 const { col } = require('sequelize')
-class OpcionesGet {
+
+class OpcionesGetCliente {
+  static atributos () {
+    const attributes = {
+      exclude: ['tipo_id'],
+      include: [[col('tipoCliente.nombre'), 'tipo']]
+    }
+    return attributes
+  }
+
+  static incluir () {
+    return [
+      { model: ClienteTipo, attributes: [], as: 'tipoCliente' }
+    ]
+  }
+}
+
+class OpcionesGetClientes {
   static atributos () {
     const attributes = {
       exclude: ['id_tipo', 'telefono', 'id', 'email', 'id_usuario', 'direccion'],
@@ -40,6 +62,87 @@ class OpcionesGet {
   }
 }
 
+class OpcionesGetClienteCompra {
+  static atributos () {
+    return {
+      exclude: ['id', 'id_usuario', 'id_cliente', 'pagado', 'id_estado_entrega', 'id_estado_pago', 'nombre_cliente'],
+      include: [
+        [col('estadoEntregaCompra.nombre'), 'estado_entrega'],
+        [col('estadoPagoCompra.nombre'), 'estado_pago']
+
+      ]
+    }
+  }
+
+  static incluir () {
+    return [
+      { model: CompraEstadoEntrega, attributes: [], as: 'estadoEntregaCompra' },
+      { model: CompraEstadoPago, attributes: [], as: 'estadoPagoCompra' }
+    ]
+  }
+}
+
+class OpcionesGetClienteVenta {
+  static atributos () {
+    return {
+      exclude: ['id', 'id_usuario', 'id_cliente', 'pagado', 'id_estado_entrega', 'id_estado_pago', 'nombre_cliente'],
+      include: [
+        [col('estadoEntregaVenta.nombre'), 'estado_entrega'],
+        [col('estadoPagoVenta.nombre'), 'estado_pago']
+
+      ]
+    }
+  }
+
+  static incluir () {
+    return [
+      { model: VentaEstadoEntrega, attributes: [], as: 'estadoEntregaVenta' },
+      { model: VentaEstadoPago, attributes: [], as: 'estadoPagoVenta' }
+    ]
+  }
+}
+
+class OpcionesGetClienteAbono {
+  static atributos () {
+    return {
+      exclude: ['id', 'id_usuario', 'id_cliente', 'id_metodo_pago'],
+      include: [
+        [col('abonoMetodoPago.nombre'), 'metodo_pago']
+
+      ]
+    }
+  }
+
+  static incluir () {
+    return [
+      { model: MetodoPago, attributes: [], as: 'abonoMetodoPago' }
+    ]
+  }
+}
+
+class OpcionesGetClientePago {
+  static atributos () {
+    return {
+      exclude: ['id', 'id_usuario', 'id_cliente', 'id_metodo_pago'],
+      include: [
+        [col('pagoMetodoPago.nombre'), 'metodo_pago']
+
+      ]
+    }
+  }
+
+  static incluir () {
+    return [
+      { model: MetodoPago, attributes: [], as: 'pagoMetodoPago' }
+    ]
+  }
+}
+
 module.exports = {
-  OpcionesGet
+  OpcionesGetCliente,
+  OpcionesGetClientes,
+  OpcionesGetClienteCompra,
+  OpcionesGetClienteVenta,
+  OpcionesGetClienteAbono,
+  OpcionesGetClientePago
 }

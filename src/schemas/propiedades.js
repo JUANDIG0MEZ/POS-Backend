@@ -18,7 +18,7 @@ const id = Joi.number().integer().min(1).max(Number.MAX_SAFE_INTEGER).strict()
 
 // Paginacion
 const limit = Joi.number().integer().min(0).max(50)
-const offset = Joi.number().integer()
+const offset = Joi.number().integer().min(0)
 
 // querys
 const enteroQuery = Joi.number().integer().min(0)

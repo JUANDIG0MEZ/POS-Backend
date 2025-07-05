@@ -1,4 +1,4 @@
-const { Abono, Secuencia } = require('../../database/models')
+const { Abono, Secuencia, Pago } = require('../../database/models')
 
 async function crearAbono ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
   const fecha = new Date().toISOString().split('T')[0]

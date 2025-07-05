@@ -3,21 +3,16 @@ const {
   respuesta
 } = require('./funcion')
 
-const { cargarClientes, cargarClienteTipos, cargarClientesNombres } = require('../servicios/cliente/get.js')
+const { cargarCliente, cargarClientes, cargarClienteTipos, cargarClientesNombres, cargarAbonosCliente, cargarComprasCliente, cargarVentasCliente, cargarPagosCliente } = require('../servicios/cliente/get.js')
 const { crearCliente } = require('../servicios/cliente/post.js')
 const {
   queryClientesSchema,
-  crearClienteSchema
+  crearClienteSchema,
+  queryClienteSchema
 } = require('../schemas/cliente.js')
 
 const { validatorHandler } = require('../middlewares/validatorHandler.js')
 const { requireUser } = require('../middlewares/autenticationHandler.js')
-// const {
-//   cargarClientes,
-//   cargarCliente,
-//   cargarAbonosCliente,
-//   cargarPagosCliente
-// } = require('../servicios/clientes/getCliente')
 
 // const {
 //   cargarComprasCliente,
@@ -64,39 +59,59 @@ router.get('/tipo',
     res.json(respuesta('Tipos de cliente cargados', tipos))
   }
 )
-// router.get('/:id',
-//   async (req, res) => {
-//     const { id } = req.params
-//     const cliente = await cargarCliente(id)
-//     res.send(respuesta('Cliente cargado', cliente))
-//   })
 
-// router.get('/:id/abonos',
-//   async (req, res) => {
-//     const { id } = req.params
-//     const abonos = await cargarAbonosCliente(id, req.query)
-//     res.send(respuesta('Abonos cargados', abonos))
-//   })
+router.get('/:id',
+  requireUser,
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const cliente = await cargarCliente({ idUsuario, cliente_id: id })
+    res.send(respuesta('Cliente cargado', cliente))
+  })
 
-// router.get('/:id/pagos',
-//   async (req, res) => {
-//     const { id } = req.params
-//     const pagos = await cargarPagosCliente(id, req.query)
-//     res.send(respuesta('Pagos cargados', pagos))
-//   })
+router.get('/:id/abonos',
+  requireUser,
+  validatorHandler(queryClienteSchema, 'query', true),
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const { limit } = req.validated.query
+    const abonos = await cargarAbonosCliente({ idUsuario, cliente_id: id, limit })
+    res.send(respuesta('Abonos cargados', abonos))
+  })
 
-// router.get('/:id/compras',
-//   async (req, res) => {
-//     const { id } = req.params
-//     const compras = await cargarComprasCliente(id, req.query)
-//     res.send(respuesta('Compras cargadas', compras))
-//   })
+router.get('/:id/pagos',
+  requireUser,
+  validatorHandler(queryClienteSchema, 'query', true),
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const { limit } = req.validated.query
+    const pagos = await cargarPagosCliente({ idUsuario, cliente_id: id, limit })
+    res.send(respuesta('Pagos cargados', pagos))
+  })
 
-// router.get('/:id/ventas', async (req, res) => {
-//   const { id } = req.params
-//   const ventas = await cargarVentasCliente(id, req.query)
-//   res.send(respuesta('Ventas cargadas', ventas))
-// })
+router.get('/:id/compras',
+  requireUser,
+  validatorHandler(queryClienteSchema, 'query', true),
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const { limit } = req.validated.query
+    const compras = await cargarComprasCliente({ idUsuario, cliente_id: id, limit })
+    res.send(respuesta('Compras cargadas', compras))
+  })
+
+router.get('/:id/ventas',
+  requireUser,
+  validatorHandler(queryClienteSchema, 'query', true),
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const { limit } = req.validated.query
+    const ventas = await cargarVentasCliente({ idUsuario, cliente_id: id, limit })
+    res.send(respuesta('Ventas cargadas', ventas))
+  })
 
 // // router.post('/:id/pagos', async (req, res, ) => {
 // //   try {

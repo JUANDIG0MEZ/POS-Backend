@@ -7,21 +7,6 @@ const {
 } = require('../../database/models')
 
 const { col } = require('sequelize')
-class ClaseCliente {
-  static atributos () {
-    const attributes = {
-      exclude: ['tipo_id'],
-      include: [[col('tipoCliente.nombre'), 'tipo']]
-    }
-    return attributes
-  }
-
-  static incluir () {
-    return [
-      { model: ClienteTipo, attributes: [], as: 'tipoCliente' }
-    ]
-  }
-}
 
 // Opciones al optener los abonos
 class OpcionesAbonos {

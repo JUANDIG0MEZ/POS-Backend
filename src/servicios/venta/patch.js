@@ -1,20 +1,26 @@
-async function modificarVenta (body, idVenta) {
+const { sequelize, Venta, DetalleVenta, Producto } = require('../../database/models')
+
+async function modificarDetalleVenta ({ idUsuario, venta_id, detalles }) {
   const transaction = await sequelize.transaction()
   try {
-    for (const dataDetalle of body) {
+    const venta = await Venta.findOne({ where: { id_usuario: idUsuario, venta_id } })
+    for (const dataDetalle of detalles) {
+      const producto = await Producto.findOne({ where: { id_usuario: idUsuario, producto_id: dataDetalle.producto_id } })
       const detalle = await DetalleVenta.findOne({
         where: {
-          venta_id: idVenta,
-          producto_id: dataDetalle.producto_id
+          id_venta: venta.id,
+          id_producto: producto.id
         },
         transaction,
         lock: transaction.LOCK.UPDATE
       })
       detalle.cantidad = dataDetalle.cantidad
       detalle.precio = dataDetalle.precio
+      console.log('Modificando detalle')
       await detalle.save({ transaction })
+      console.log('Detalle modificado')
     }
-    const venta = await Venta.findByPk(idVenta, { transaction })
+    await venta.reload({ transaction })
     const info = {
       pagado: venta.pagado,
       total: venta.total,
@@ -33,5 +39,5 @@ async function modificarVenta (body, idVenta) {
 }
 
 module.exports = {
-  modificarVenta
+  modificarDetalleVenta
 }

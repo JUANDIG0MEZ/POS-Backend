@@ -1,5 +1,5 @@
 const { Cliente, Secuencia, sequelize } = require('../../database/models')
-const { FormatearClientes } = require('./formatear/index.js')
+const { FormatearGetClientes } = require('./formatear/get.js')
 const { OpcionesGet } = require('./opciones/get.js')
 async function crearCliente ({ idUsuario, nombre, direccion, telefono, email, id_tipo }) {
   const transaction = await sequelize.transaction()
@@ -35,7 +35,7 @@ async function crearCliente ({ idUsuario, nombre, direccion, telefono, email, id
     })
 
     await transaction.commit()
-    return FormatearClientes.formatear(cliente)
+    return FormatearGetClientes.formatear(cliente)
   } catch (error) {
     await transaction.rollback()
     throw (error)
