@@ -1,4 +1,4 @@
-class FormatearCompras {
+class FormatearGetCompras {
   static formatear (compra) {
     return {
       id: compra.compra_id,
@@ -17,7 +17,7 @@ class FormatearCompras {
   }
 }
 
-class FormatearDetalles {
+class FormatearGetDetalleCompra {
   static formatear (detalle) {
     return {
       id: detalle.id_producto,
@@ -35,6 +35,6 @@ class FormatearDetalles {
 }
 
 module.exports = {
-  FormatearCompras,
-  FormatearDetalles
+  FormatearGetCompras,
+  FormatearGetDetalleCompra
 }

@@ -24,14 +24,14 @@ const queryPagosSchema = Joi.object({
 const crearPagoClienteSchema = Joi.object({
   cliente_id: id.required(),
   valor: total.required(),
-  metodo_pago_id: id.required(),
+  id_metodo_pago: id.required(),
   descripcion
 })
 
 const crearPagoCompraSchema = Joi.object({
   compra_id: id.required(),
   valor: total.required(),
-  metodo_pago_id: id.required(),
+  id_metodo_pago: id.required(),
   descripcion
 })
 

@@ -69,7 +69,6 @@ router.get('/',
       limit
     } = req.validated.query
     const { idUsuario } = req.usuario
-    console.log('querys de ventas', req.validated.query)
     const facturas = await cargarVentas({ idUsuario, venta_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal, columna, orden, offset, limit })
     res.json(respuesta('Facturas de venta cargadas', facturas))
   })

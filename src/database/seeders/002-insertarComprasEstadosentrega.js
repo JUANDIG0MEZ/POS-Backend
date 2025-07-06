@@ -8,7 +8,7 @@ module.exports = {
     const estados = estadosEntregaCompra()
 
     const transaction = await queryInterface.sequelize.transaction()
-    console.log('Estados de entrega de compra', estados.slice(0, 5))
+    console.log('Estados de entrega de compra', estados.slice(0, 1))
     await CompraEstadoEntrega.bulkCreate(estados, {
       individualHooks: true,
       validate: true,

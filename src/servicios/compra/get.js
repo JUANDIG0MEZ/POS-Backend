@@ -1,7 +1,6 @@
 const { OpcionesGetCompras, OpcionesGetDetalle } = require('./opciones/get.js')
-
 const { Compra, CompraEstadoEntrega, CompraEstadoPago, DetalleCompra } = require('../../database/models')
-const { FormatearCompras, FormatearDetalles } = require('./formatear/index.js')
+const { FormatearGetCompras, FormatearGetDetalleCompra } = require('./formatear/index.js')
 
 async function cargarCompraEstadoEntrega () {
   const estados = CompraEstadoEntrega.findAll()
@@ -16,10 +15,8 @@ async function cargarCompraEstadoPago () {
 async function cargarCompras ({ idUsuario, compra_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal, columna, orden, offset, limit }) {
   const { count, rows } = await Compra.findAndCountAll(
     {
-      // id, estado_entrega_id, cliente_id, fecha_desde, fecha_hasta, estado_pago_id
       where: await OpcionesGetCompras.donde({ idUsuario, compra_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal }),
       include: OpcionesGetCompras.incluir(),
-
       attributes: OpcionesGetCompras.atributos(),
       limit,
       offset,
@@ -29,14 +26,11 @@ async function cargarCompras ({ idUsuario, compra_id, cliente_id, id_estado_entr
     }
   )
 
-  return { count, rows: FormatearCompras.formatearLista(rows) }
+  return { count, rows: FormatearGetCompras.formatearLista(rows) }
 }
 
 async function cargarCompra ({ idUsuario, compra_id }) {
-  console.log('idUsuario', idUsuario)
-  console.log('compra_id', compra_id)
   const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id } })
-  console.log('compra', compra.dataValues)
   const datos = await DetalleCompra.findAll({
     where: { id_compra: compra.id },
     attributes: OpcionesGetDetalle.atributos(),
@@ -44,11 +38,7 @@ async function cargarCompra ({ idUsuario, compra_id }) {
     raw: true
   })
 
-  console.log('datos', datos)
-
-  const datosFormateados = FormatearDetalles.formatearLista(datos)
-
-  return { datos: datosFormateados, info: compra }
+  return { datos: FormatearGetDetalleCompra.formatearLista(datos), info: compra }
 }
 
 // async function cargarComprasCliente (clienteId, query) {

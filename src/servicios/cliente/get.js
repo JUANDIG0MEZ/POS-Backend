@@ -69,6 +69,7 @@ async function cargarVentasCliente ({ idUsuario, cliente_id, limit }) {
     where: { id_usuario: idUsuario, id_cliente: cliente.id },
     attributes: OpcionesGetClienteVenta.atributos(),
     include: OpcionesGetClienteVenta.incluir(),
+    order: OpcionesGetClienteVenta.orden(),
     limit
   })
   return { count, rows: FormatearGetVentaCliente.formatearLista(rows) }
@@ -80,6 +81,7 @@ async function cargarComprasCliente ({ idUsuario, cliente_id, limit }) {
     where: { id_usuario: idUsuario, id_cliente: cliente.id },
     attributes: OpcionesGetClienteCompra.atributos(),
     include: OpcionesGetClienteCompra.incluir(),
+    order: OpcionesGetClienteCompra.orden(),
     limit,
     raw: true
 
@@ -93,6 +95,7 @@ async function cargarAbonosCliente ({ idUsuario, cliente_id, limit }) {
     where: { id_usuario: idUsuario, id_cliente: cliente.id },
     attributes: OpcionesGetClienteAbono.atributos(),
     include: OpcionesGetClienteAbono.incluir(),
+    order: OpcionesGetClienteAbono.orden(),
     limit,
     raw: true
   })
@@ -105,6 +108,7 @@ async function cargarPagosCliente ({ idUsuario, cliente_id, limit }) {
     where: { id_usuario: idUsuario, id_cliente: cliente.id },
     attributes: OpcionesGetClientePago.atributos(),
     include: OpcionesGetClientePago.incluir(),
+    order: OpcionesGetClientePago.orden(),
     limit,
     raw: true
   })

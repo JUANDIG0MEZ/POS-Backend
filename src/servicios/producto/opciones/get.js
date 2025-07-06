@@ -4,10 +4,10 @@ const {
 } = require('../../../database/models/index.js')
 
 const { col } = require('sequelize')
-class OpcionesGet {
+class OpcionesGetProducto {
   static atributos () {
     return {
-      exclude: ['id_categoria', 'id_medida'],
+      exclude: ['id', 'id_usuario', 'id_categoria', 'id_medida'],
       include: [
         [col('medidaProducto.nombre'), 'medida'],
         [col('categoriaProducto.nombre'), 'categoria']]
@@ -23,5 +23,5 @@ class OpcionesGet {
 }
 
 module.exports = {
-  OpcionesGet
+  OpcionesGetProducto
 }

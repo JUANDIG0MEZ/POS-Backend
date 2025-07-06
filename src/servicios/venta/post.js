@@ -65,18 +65,11 @@ async function crearVenta ({ idUsuario, info, detalles }) {
     if (pagado > 0) {
       if (id_metodo_pago > 1) descripcionCompleta = 'Info: ' + descripcion
       descripcionCompleta = `Pago a venta #${ventaId}. ` + descripcionCompleta
-      console.log('creando pago')
-      console.log('parametros enviados', { idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: venta.total, descripcion: descripcionCompleta })
       await crearPago({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: venta.total, descripcion: descripcionCompleta }, transaction)
-      console.log('pago creado')
     }
-
-    console.log('pago creado')
 
     venta.pagado = pagado
     secuencia.venta_id += 1
-
-    console.log('Creando productos')
 
     await venta.save({ transaction })
     await secuencia.save({ transaction })

@@ -55,7 +55,7 @@ class OpcionesGetClientes {
   }
 
   static orden ({ orden, columna }) {
-    const order = orden || 'ASC'
+    const order = orden || 'DESC'
     const column = columna || 'id'
     console.log(orden, columna, order, column)
     return [[column, order]]
@@ -69,7 +69,6 @@ class OpcionesGetClienteCompra {
       include: [
         [col('estadoEntregaCompra.nombre'), 'estado_entrega'],
         [col('estadoPagoCompra.nombre'), 'estado_pago']
-
       ]
     }
   }
@@ -80,6 +79,10 @@ class OpcionesGetClienteCompra {
       { model: CompraEstadoPago, attributes: [], as: 'estadoPagoCompra' }
     ]
   }
+
+  static orden () {
+    return [['id', 'DESC']]
+  }
 }
 
 class OpcionesGetClienteVenta {
@@ -88,9 +91,7 @@ class OpcionesGetClienteVenta {
       exclude: ['id', 'id_usuario', 'id_cliente', 'pagado', 'id_estado_entrega', 'id_estado_pago', 'nombre_cliente'],
       include: [
         [col('estadoEntregaVenta.nombre'), 'estado_entrega'],
-        [col('estadoPagoVenta.nombre'), 'estado_pago']
-
-      ]
+        [col('estadoPagoVenta.nombre'), 'estado_pago']]
     }
   }
 
@@ -99,6 +100,10 @@ class OpcionesGetClienteVenta {
       { model: VentaEstadoEntrega, attributes: [], as: 'estadoEntregaVenta' },
       { model: VentaEstadoPago, attributes: [], as: 'estadoPagoVenta' }
     ]
+  }
+
+  static orden () {
+    return [['id', 'DESC']]
   }
 }
 
@@ -118,6 +123,10 @@ class OpcionesGetClienteAbono {
       { model: MetodoPago, attributes: [], as: 'abonoMetodoPago' }
     ]
   }
+
+  static orden () {
+    return [['id', 'DESC']]
+  }
 }
 
 class OpcionesGetClientePago {
@@ -126,15 +135,16 @@ class OpcionesGetClientePago {
       exclude: ['id', 'id_usuario', 'id_cliente', 'id_metodo_pago'],
       include: [
         [col('pagoMetodoPago.nombre'), 'metodo_pago']
-
       ]
     }
   }
 
   static incluir () {
-    return [
-      { model: MetodoPago, attributes: [], as: 'pagoMetodoPago' }
-    ]
+    return [{ model: MetodoPago, attributes: [], as: 'pagoMetodoPago' }]
+  }
+
+  static orden () {
+    return [['id', 'DESC']]
   }
 }
 

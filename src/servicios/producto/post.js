@@ -1,7 +1,7 @@
-const { Producto, ProductoCategoria, ProductoMedida, sequelize, Secuencia } = require('../../database/models')
-const { OpcionesGet } = require('./opciones/get')
+const { Producto, ProductoCategoria, sequelize, Secuencia } = require('../../database/models')
+const { OpcionesGetProducto } = require('./opciones/get')
 const { ErrorUsuario } = require('../../errors/usuario.js')
-const { FormatearCategoria, FormatearProducto } = require('./formatear')
+const { FormatearGetCategoria, FormatearGetProducto } = require('./formatear')
 async function crearProducto ({ idUsuario, nombre, categoria_id, id_medida, precio_compra, precio_venta, cantidad }) {
   const transaction = await sequelize.transaction()
   try {
@@ -32,16 +32,15 @@ async function crearProducto ({ idUsuario, nombre, categoria_id, id_medida, prec
 
     const producto = await Producto.findOne({
       where: { id_usuario: idUsuario, producto_id: productoNuevo.producto_id },
-      attributes: OpcionesGet.atributos(),
-      include: OpcionesGet.incluir(),
+      attributes: OpcionesGetProducto.atributos(),
+      include: OpcionesGetProducto.incluir(),
       transaction,
       raw: true
     })
 
     await transaction.commit()
-    console.log('Producto Formateado', FormatearProducto.formatear(producto))
     return {
-      producto: FormatearProducto.formatear(producto)
+      producto: FormatearGetProducto.formatear(producto)
     }
   } catch (error) {
     await transaction.rollback()
@@ -70,7 +69,7 @@ async function crearCategoria ({ idUsuario, nombre, descripcion }) {
     await secuencia.save({ transaction })
     await transaction.commit()
 
-    const categoriaFormateada = FormatearCategoria.formatear(categoria.get({ plain: true }))
+    const categoriaFormateada = FormatearGetCategoria.formatear(categoria.get({ plain: true }))
     return {
       categoria: categoriaFormateada
     }

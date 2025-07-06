@@ -6,8 +6,7 @@ const cliente = require('./cliente.js')
 const compra = require('./compra.js')
 const venta = require('./venta.js')
 const init = require('./init.js')
-
-// const pago = require('./pago')
+const pago = require('./pago')
 
 function routerAPI (app) {
   const router = express.Router()
@@ -20,7 +19,7 @@ function routerAPI (app) {
   router.use('/compra', compra)
   router.use('/venta', venta)
   router.use('/cliente', cliente)
-  // router.use('/pago', pago)
+  router.use('/pago', pago)
 }
 
 module.exports = routerAPI

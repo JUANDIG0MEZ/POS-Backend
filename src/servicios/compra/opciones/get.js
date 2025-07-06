@@ -48,11 +48,8 @@ class OpcionesGetCompras {
   }
 
   static orden ({ orden, columna }) {
-    console.log('orden', { orden, columna })
     const orden2 = orden || 'ASC'
     const columna2 = columna || 'compra_id'
-
-    console.log('orden2', orden2, 'columna', columna)
     return [[columna2, orden2]]
   }
 }

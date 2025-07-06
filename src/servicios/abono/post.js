@@ -1,4 +1,4 @@
-const { Abono, Secuencia, Pago } = require('../../database/models')
+const { Abono, Secuencia, Venta, sequelize } = require('../../database/models')
 
 async function crearAbono ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
@@ -23,47 +23,34 @@ async function crearAbono ({ idUsuario, id_cliente, id_metodo_pago, valor, descr
   await Abono.create(nuevoAbono, { transaction })
 }
 
-module.exports = {
-  crearAbono
+async function crearAbonoVenta ({ idUsuario, venta_id }, { id_metodo_pago, valor, descripcion }) {
+  const transaction = await sequelize.transaction()
+  try {
+    const venta = await Venta.findOne({
+      where: { id_usuario: idUsuario, venta_id },
+      transaction,
+      lock: transaction.LOCK.UPDATE
+    })
+
+    const porPagar = Number(venta.por_pagar)
+    if (valor > porPagar) throw Error('El abono es mayor a la deuda')
+    venta.pagado = venta.pagado + valor
+    await venta.save({ transaction })
+
+    let descripcionCompleta = `Abono a factura de venta # ${venta_id}`
+    if (descripcion) descripcionCompleta += ', Info: ' + descripcion
+
+    await crearAbono({ idUsuario, id_cliente: venta.id_cliente, id_metodo_pago, valor, descripcion: descripcionCompleta }, transaction)
+    await transaction.commit()
+
+    return {
+      pagado: venta.pagado
+    }
+  } catch (error) {
+    await transaction.rollback()
+    throw error
+  }
 }
-
-// async function crearAbonoVenta (body, idFactura) {
-//   const transaction = await sequelize.transaction()
-//   try {
-//     const valorAbono = Number(body.valor)
-//     const metodoPagoId = Number(body.metodoPagoId)
-
-//     const venta = await Venta.findByPk(idFactura, {
-//       transaction,
-//       lock: transaction.LOCK.UPDATE
-//     })
-
-//     const porPagar = Number(venta.por_pagar)
-//     if (valorAbono > porPagar) {
-//       throw Error('El abono es mayor a la deuda')
-//     }
-//     venta.pagado = venta.pagado + valorAbono
-
-//     await venta.save({ transaction })
-
-//     const infoAbono = {
-//       valor: valorAbono,
-//       metodo_pago_id: metodoPagoId,
-//       cliente_id: venta.cliente_id,
-//       descripcion: body.descripcion
-//     }
-
-//     await crearAbono(infoAbono, transaction)
-//     await transaction.commit()
-
-//     return {
-//       pagado: venta.pagado
-//     }
-//   } catch (error) {
-//     await transaction.rollback()
-//     throw error
-//   }
-// }
 
 // async function crearAbonoVentas (body, idCliente) {
 //   const transaction = await sequelize.transaction()
@@ -123,3 +110,8 @@ module.exports = {
 //     throw error
 //   }
 // }
+
+module.exports = {
+  crearAbono,
+  crearAbonoVenta
+}

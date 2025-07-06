@@ -53,7 +53,6 @@ router.get('/',
       offset,
       limit
     } = req.validated.query
-    console.log('query', req.validated.query)
     const { idUsuario } = req.usuario
     const facturas = await cargarCompras({ idUsuario, compra_id, cliente_id, id_estado_entrega, id_estado_pago, fechaInicio, fechaFinal, columna, orden, offset, limit })
     res.json(respuesta('Facturas de compra cargadas', facturas))

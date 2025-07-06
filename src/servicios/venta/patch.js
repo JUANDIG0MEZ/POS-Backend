@@ -16,9 +16,7 @@ async function modificarDetalleVenta ({ idUsuario, venta_id, detalles }) {
       })
       detalle.cantidad = dataDetalle.cantidad
       detalle.precio = dataDetalle.precio
-      console.log('Modificando detalle')
       await detalle.save({ transaction })
-      console.log('Detalle modificado')
     }
     await venta.reload({ transaction })
     const info = {

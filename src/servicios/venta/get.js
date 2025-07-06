@@ -1,4 +1,4 @@
-const { OpcionesGetVenta, OpcionesGetVentas, OpcionesGetDetalle } = require('./opciones/get')
+const { OpcionesGetVenta, OpcionesGetVentas, OpcionesGetDetalleVenta } = require('./opciones/get')
 const { Venta, VentaEstadoEntrega, VentaEstadoPago, DetalleVenta, Cliente } = require('../../database/models')
 const { FormatearGetVentas, FormatearGetDetallesVenta } = require('./formatear')
 
@@ -35,8 +35,8 @@ async function cargarVenta ({ idUsuario, venta_id }) {
 
   const detalles = await DetalleVenta.findAll({
     where: { id_venta: venta.id },
-    attributes: OpcionesGetDetalle.atributos(),
-    include: OpcionesGetDetalle.incluir(),
+    attributes: OpcionesGetDetalleVenta.atributos(),
+    include: OpcionesGetDetalleVenta.incluir(),
     raw: true
   })
   return { datos: FormatearGetDetallesVenta.formatearLista(detalles), info: venta }

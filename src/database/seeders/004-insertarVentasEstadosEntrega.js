@@ -10,7 +10,7 @@ module.exports = {
 
     const transaction = await queryInterface.sequelize.transaction()
 
-    console.log('Estados de entrega de venta', estados.slice(0, 5))
+    console.log('Estados de entrega de venta', estados.slice(0, 1))
 
     for (let i = 0; i < estados.length; i++) {
       await VentaEstadoEntrega.create(estados[i], {

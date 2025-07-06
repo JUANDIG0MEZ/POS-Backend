@@ -66,7 +66,7 @@ class OpcionesGetVentas {
   }
 }
 
-class OpcionesGetDetalle {
+class OpcionesGetDetalleVenta {
   static atributos () {
     const attributes = {
       exclude: ['compra_id'],
@@ -95,5 +95,5 @@ class OpcionesGetDetalle {
 module.exports = {
   OpcionesGetVenta,
   OpcionesGetVentas,
-  OpcionesGetDetalle
+  OpcionesGetDetalleVenta
 }

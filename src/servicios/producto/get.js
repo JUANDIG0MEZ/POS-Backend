@@ -1,16 +1,17 @@
 const { Producto, ProductoCategoria, ProductoMedida } = require('../../database/models')
-const { OpcionesGet } = require('./opciones/get.js')
-const { FormatearCategoria, FormatearProducto } = require('./formatear')
+const { OpcionesGetProducto } = require('./opciones/get.js')
+const { FormatearGetCategoria, FormatearGetProducto } = require('./formatear')
+
 async function cargarProductos ({ idUsuario }) {
   const productos = await Producto.findAll({
     where: { id_usuario: idUsuario },
-    attributes: OpcionesGet.atributos(),
-    include: OpcionesGet.incluir(),
+    attributes: OpcionesGetProducto.atributos(),
+    include: OpcionesGetProducto.incluir(),
     order: [['id', 'DESC']],
     raw: true
 
   })
-  return FormatearProducto.formatearLista(productos)
+  return FormatearGetProducto.formatearLista(productos)
 }
 
 async function cargarCategorias ({ idUsuario }) {
@@ -19,7 +20,7 @@ async function cargarCategorias ({ idUsuario }) {
     raw: true
   })
 
-  return FormatearCategoria.formatearLista(categorias)
+  return FormatearGetCategoria.formatearLista(categorias)
 }
 
 async function cargarMedidas () {

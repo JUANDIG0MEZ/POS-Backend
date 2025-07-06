@@ -3,7 +3,6 @@ const { sequelize, Compra, DetalleCompra, Producto } = require('../../database/m
 async function modificarCompra ({ idUsuario, detalles, compra_id }) {
   const transaction = await sequelize.transaction()
 
-  console.log('detalles', detalles)
   try {
     const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id } })
     for (const dataDetalle of detalles) {

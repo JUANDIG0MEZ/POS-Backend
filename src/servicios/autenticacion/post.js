@@ -26,7 +26,6 @@ async function enviarCorreoVerificacion (email, codigo) {
   try {
     await transporter.sendMail(mailOptions)
   } catch (error) {
-    console.log(error)
     throw new ErrorUsuario('Error al enviar el correo de verificación')
   }
 }
@@ -80,7 +79,6 @@ async function verificarUsuario ({ email, codigoVerificacion }) {
   if (!usuario) throw new ErrorUsuario('Usuario no encontrado')
   if (usuario.verificado) throw new ErrorUsuario('Usuario ya verificado')
   if (new Date() > usuario.expiracionCodigo) throw new ErrorUsuario('El codigo ha expirado')
-  console.log(codigoVerificacion, usuario.codigoVerificacion)
   if (codigoVerificacion !== usuario.codigoVerificacion) throw new ErrorUsuario('Codigo incorrecto')
 
   usuario.verificado = true

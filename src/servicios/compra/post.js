@@ -2,9 +2,6 @@ const { sequelize, Secuencia, Compra, DetalleCompra, Producto, Cliente } = requi
 const { crearAbono } = require('../abono/post')
 
 async function crearFacturaCompra ({ idUsuario, info, detalles }) {
-  // Esta funcion consiste de 3 pasos.
-  // 1- Crear compra y agregar sus detalles
-  // 2-
   const transaction = await sequelize.transaction()
 
   try {
@@ -69,7 +66,7 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
     if (pagado > 0) {
       if (id_metodo_pago > 1) descripcionCompleta = 'Info: ' + descripcion
       descripcionCompleta = `Abono a la compra #${compraId}. ` + descripcionCompleta
-      await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcionCompleta }, transaction)
+      await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcion: descripcionCompleta }, transaction)
     }
 
     compra.pagado = pagado

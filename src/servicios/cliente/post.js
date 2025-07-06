@@ -1,6 +1,6 @@
 const { Cliente, Secuencia, sequelize } = require('../../database/models')
 const { FormatearGetClientes } = require('./formatear/get.js')
-const { OpcionesGet } = require('./opciones/get.js')
+const { OpcionesGetClientes } = require('./opciones/get.js')
 async function crearCliente ({ idUsuario, nombre, direccion, telefono, email, id_tipo }) {
   const transaction = await sequelize.transaction()
   try {
@@ -28,8 +28,8 @@ async function crearCliente ({ idUsuario, nombre, direccion, telefono, email, id
 
     const cliente = await Cliente.findOne({
       where: { id_usuario: idUsuario, cliente_id },
-      attributes: OpcionesGet.atributos(),
-      include: OpcionesGet.incluir(),
+      attributes: OpcionesGetClientes.atributos(),
+      include: OpcionesGetClientes.incluir(),
       transaction,
       raw: true
     })

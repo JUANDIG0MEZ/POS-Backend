@@ -138,7 +138,6 @@ router.post('/',
     const { idUsuario } = req.usuario
 
     const cliente = await crearCliente({ idUsuario, cliente_id, nombre, direccion, telefono, email, id_tipo })
-    console.log('cioente creado')
     res.json(respuesta('Cliente creado', cliente))
   })
 
