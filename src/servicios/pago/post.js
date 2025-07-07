@@ -64,7 +64,7 @@ async function crearPagoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, va
 
     const compras = await Compra.findAll({
       where: { id_usuario: idUsuario, id_estado_pago: 1, id_cliente: cliente.id },
-      attributes: ['id', 'total', 'pagado', 'por_pagar', 'id_cliente'],
+      attributes: ['id', 'total', 'pagado', 'por_pagar'],
       order: [['id', 'ASC']],
       transaction,
       lock: transaction.LOCK.UPDATE

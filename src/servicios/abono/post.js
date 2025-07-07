@@ -1,4 +1,5 @@
-const { Abono, Secuencia, Venta, sequelize } = require('../../database/models')
+const { Abono, Secuencia, Venta, sequelize, Cliente } = require('../../database/models')
+const { ErrorUsuario } = require('../../errors/usuario')
 
 async function crearAbono ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
@@ -52,66 +53,61 @@ async function crearAbonoVenta ({ idUsuario, venta_id }, { id_metodo_pago, valor
   }
 }
 
-// async function crearAbonoVentas (body, idCliente) {
-//   const transaction = await sequelize.transaction()
-//   try {
-//     const valorAbono = Number(body.valor)
-//     const metodoPagoId = Number(body.metodoPagoId)
-//     const cliente = await Cliente.findByPk(idCliente, { transaction })
+async function crearAbonoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion }) {
+  const transaction = await sequelize.transaction()
+  try {
+    const cliente = await Cliente.findOne({
+      where: { id_usuario: idUsuario, cliente_id },
+      transaction
+    })
 
-//     if (valorAbono > Number(cliente.debe)) {
-//       throw Error('El abono es mayor a la deuda')
-//     }
+    if (valor > Number(cliente.debe)) throw ErrorUsuario('El abono es mayor a la deuda')
 
-//     const ventas = await Venta.findAll({
-//       where: {
-//         estado_pago_id: 1,
-//         cliente_id: idCliente
-//       },
-//       attributes: ['id', 'total', 'pagado', 'por_pagar', 'cliente_id'],
-//       order: [['id', 'ASC']],
-//       transaction,
-//       lock: transaction.LOCK.UPDATE
-//     })
+    const ventas = await Venta.findAll({
+      where: { id_usuario: idUsuario, id_estado_pago: 1, id_cliente: cliente.id },
+      attributes: ['id', 'total', 'pagado', 'por_pagar', 'id_cliente'],
+      order: [['id', 'ASC']],
+      transaction,
+      lock: transaction.LOCK.UPDATE
+    })
 
-//     let valorRestante = valorAbono
+    let valorRestante = valor
 
-//     for (const venta of ventas) {
-//       const porPagar = venta.por_pagar
+    console.log('{ idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion }', { idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion })
 
-//       if (valorRestante <= porPagar) {
-//         venta.pagado = venta.pagado + valorRestante
-//         await venta.save({ transaction })
-//         break
-//       } else {
-//         valorRestante = valorRestante - porPagar
-//         venta.pagado = venta.total
-//         await venta.save({ transaction })
-//       }
-//     }
+    for (const venta of ventas) {
+      const porPagar = venta.por_pagar
 
-//     await cliente.reload({ transaction })
+      if (valorRestante <= porPagar) {
+        venta.pagado = venta.pagado + valorRestante
+        valorRestante = 0
+        await venta.save({ transaction })
+        break
+      } else {
+        valorRestante = valorRestante - porPagar
+        venta.pagado = venta.total
+        await venta.save({ transaction })
+      }
+    }
 
-//     const infoAbono = {
-//       valor: valorAbono,
-//       metodo_pago_id: metodoPagoId,
-//       cliente_id: idCliente,
-//       descripcion: body.descripcion
-//     }
+    if (valorRestante > 0) throw new ErrorUsuario('Ocurrio algun error al pagar las facturas de compra')
 
-//     await crearAbono(infoAbono, transaction)
+    await cliente.reload({ transaction })
 
-//     await transaction.commit()
-//     return {
-//       debe: cliente.debe
-//     }
-//   } catch (error) {
-//     await transaction.rollback()
-//     throw error
-//   }
-// }
+    await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor, descripcion }, transaction)
+
+    await transaction.commit()
+    return {
+      debe: cliente.debe
+    }
+  } catch (error) {
+    await transaction.rollback()
+    throw error
+  }
+}
 
 module.exports = {
   crearAbono,
-  crearAbonoVenta
+  crearAbonoVenta,
+  crearAbonoCliente
 }

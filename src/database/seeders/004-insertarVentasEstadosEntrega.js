@@ -1,4 +1,5 @@
-'use strict'
+
+        console.log('entreto al hook', detalle.dataValues)'use strict'
 
 const { VentaEstadoEntrega } = require('../models')
 const { estadosEntregaVenta } = require('../datosFaker')

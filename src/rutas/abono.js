@@ -1,20 +1,10 @@
 const express = require('express')
-const { respuesta } = require('./funciones')
+const { respuesta } = require('./funcion')
 const { validatorHandler } = require('../middlewares/validatorHandler')
-const { crearAbonoVenta, crearAbonoVentas } = require('../servicios/abono/post.js')
-const { crearAbonoVentaSchema, crearAbonoClienteSchema, queryAbonosSchema, paramsAbonosSchema } = require('../schemas/abonos')
+const { crearAbonoVenta, crearAbonoCliente } = require('../servicios/abono/post.js')
+const { crearAbonoVentaSchema, crearAbonoClienteSchema } = require('../schemas/abonos')
 const { requireUser } = require('../middlewares/autenticationHandler.js')
 const router = express.Router()
-
-// router.get('/',
-//   validatorHandler(queryAbonosSchema, 'query'),
-//   validatorHandler(paramsAbonosSchema, 'params'),
-//   async (req, res) => {
-//     const { idUsuario } = req.usuario
-//     const data = await obtenerAbonos()
-//     res.json(respuesta('Pago realizado', data))
-//   }
-// )
 
 router.post('/venta',
   requireUser,
@@ -32,10 +22,17 @@ router.post('/venta',
   })
 
 router.post('/cliente',
+  requireUser,
   validatorHandler(crearAbonoClienteSchema, 'body'),
   async (req, res) => {
+    const {
+      cliente_id,
+      id_metodo_pago,
+      valor,
+      descripcion
+    } = req.validated.body
     const { idUsuario } = req.usuario
-    const data = await crearAbonoVentas(req.body, idUsuario)
+    const data = await crearAbonoCliente({ idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion })
     res.json(respuesta('Pago realizado', data))
   }
 )

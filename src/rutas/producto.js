@@ -1,13 +1,8 @@
-// const { cargarImagenesProducto } = require('../servicios/productos/getProducto')
 const { crearProducto, crearCategoria } = require('../servicios/producto/post.js')
-// const { modificarProducto } = require('../servicios/productos/patchProducto')
 
 const {
   crearProductoSchema,
   crearCategoriaSchema
-//   crearCategoriaSchema,
-//   actualizarProductoSchema,
-//   paramsProductosSchema,
 } = require('../schemas/producto')
 const { validatorHandler } = require('../middlewares/validatorHandler')
 

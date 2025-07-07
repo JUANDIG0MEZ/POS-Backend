@@ -48,6 +48,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_usuario',
         as: 'usuarioAbono'
       })
+
+      Usuario.hasMany(models.AjusteInventario, {
+        foreignKey: 'id_usaurio',
+        as: 'ajusteUsuario'
+      })
     }
   }
   Usuario.init({

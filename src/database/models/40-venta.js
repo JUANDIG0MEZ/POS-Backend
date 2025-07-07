@@ -124,11 +124,14 @@ module.exports = (sequelize, DataTypes) => {
           venta.por_pagar = porPagar
 
           const idCliente = venta.get('id_cliente')
+          console.log('venta', venta.dataValues)
           const Cliente = venta.sequelize.models.Cliente
           const cliente = await Cliente.findByPk(idCliente, {
             transaction: options.transaction,
             lock: options.transaction.LOCK.UPDATE
           })
+
+          console.log('cliente', cliente.dataValues)
 
           cliente.debe = cliente.debe - venta.previous('por_pagar') + porPagar
           await cliente.save({ transaction: options.transaction })

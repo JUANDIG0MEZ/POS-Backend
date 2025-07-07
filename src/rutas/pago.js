@@ -6,20 +6,9 @@ const { requireUser } = require('../middlewares/autenticationHandler')
 const {
   crearPagoCompra,
   crearPagoCliente
-//   crearPagoCompras
 } = require('../servicios/pago/post.js')
-// const { cargarPagosCliente } = require('../servicios/clientes/getCliente')
 
 const router = express.Router()
-
-// router.get('/',
-//   validatorHandler(queryPagosSchema, 'query'),
-//   validatorHandler(paramsPagosSchema, 'params'),
-//   async (req, res) => {
-//     const data = await cargarPagosCliente()
-//     res.json(respuesta('Pagos cargados.', data))
-//   }
-// )
 
 router.post('/compra',
   requireUser,

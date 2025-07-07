@@ -82,7 +82,6 @@ module.exports = (sequelize, DataTypes) => {
         compra.total = compra.total - subtotalAntes + subtotalAhora
         await compra.save({ transaction: options.transaction })
 
-        console.log('entreto al hook', detalle.dataValues)
         // Modificar el stock del producto si la cantidad ha cambiado
 
         const Producto = detalle.sequelize.models.Producto

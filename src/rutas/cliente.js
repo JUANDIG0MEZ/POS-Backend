@@ -14,15 +14,6 @@ const {
 const { validatorHandler } = require('../middlewares/validatorHandler.js')
 const { requireUser } = require('../middlewares/autenticationHandler.js')
 
-// const {
-//   cargarComprasCliente,
-//   cargarVentasCliente
-// } = require('../servicios/clientes/getCliente')
-
-// const {
-//   crearCliente
-// } = require('../servicios/clientes/postCliente')
-
 const router = express.Router()
 
 router.get('/',

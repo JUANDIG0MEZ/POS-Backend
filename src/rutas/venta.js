@@ -1,10 +1,6 @@
 const express = require('express')
 const { validatorHandler } = require('../middlewares/validatorHandler')
 const { requireUser } = require('../middlewares/autenticationHandler')
-// const {
-//   cargarFacturasVenta,
-//   cargarFacturaVenta
-// } = require('../servicios/facturasVenta/getFacturaVenta')
 
 const {
   cargarVentaEstadoEntrega,
@@ -18,23 +14,12 @@ const {
 } = require('../servicios/venta/post.js')
 
 const {
-  modificarDetalleVenta
+  modificarDetalleVenta,
+  modificarEstadoEntregaVenta
 } = require('../servicios/venta/patch.js')
 
-// const {
-//   crearFacturaVenta
-// } = require('../servicios/facturasVenta/postFacturaVenta')
-
-// const {
-//   modificarVenta
-// } = require('../servicios/facturasVenta/patchFacturaVenta')
-
-// const {
-//   crearAbonoFactura
-// } = require('../servicios/clientes/postCliente')
-
 const { respuesta } = require('./funcion')
-const { queryVentasSchema, crearVentaSchema, modificarDetallesVentaSchema } = require('../schemas/venta.js')
+const { queryVentasSchema, crearVentaSchema, modificarDetallesVentaSchema, modificarIdEstadoEntregaVenta } = require('../schemas/venta.js')
 
 const router = express.Router()
 
@@ -93,6 +78,20 @@ router.patch('/:id/detalle',
     res.json(respuesta('Factura de venta modificada', factura))
   })
 
+router.patch('/:id/estado-entrega',
+  requireUser,
+  validatorHandler(modificarIdEstadoEntregaVenta, 'body'),
+  async (req, res) => {
+    const {
+      id_estado_entrega
+    } = req.validated.body
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const estado = await modificarEstadoEntregaVenta({ idUsuario, venta_id: id, id_estado_entrega })
+    res.json(respuesta('Estado de la entrega ha sido modificada', estado))
+  }
+)
+
 router.post('/',
   requireUser,
   validatorHandler(crearVentaSchema, 'body'),
@@ -105,12 +104,5 @@ router.post('/',
     const factura = await crearVenta({ idUsuario, info, detalles })
     res.json(respuesta('Factura de venta creada', factura))
   })
-
-// router.patch('/:id/abonar', async (req, res, next) => {
-//   const id = req.params.id
-//   const body = req.body
-//   const abono = await crearAbonoFactura(body, id)
-//   res.json(respuesta('Abono realizado', abono))
-// })
 
 module.exports = router

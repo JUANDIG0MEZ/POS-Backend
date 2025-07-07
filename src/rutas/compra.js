@@ -12,30 +12,15 @@ const {
 } = require('../servicios/compra/get.js')
 
 const {
-  modificarCompra
+  modificarCompra,
+  modificarEstadoEntregaCompra
 } = require('../servicios/compra/patch.js')
 
 const {
   crearFacturaCompra
 } = require('../servicios/compra/post.js')
-const { queryComprasSchema, crearCompraSchema, modificarDetallesSchema } = require('../schemas/compra.js')
+const { queryComprasSchema, crearCompraSchema, modificarDetallesSchema, modificarIdEstadoEntregaCompra } = require('../schemas/compra.js')
 const { requireUser } = require('../middlewares/autenticationHandler.js')
-// const {
-//   cargarFacturasCompra,
-//   cargarFacturaCompra,
-//   cargarEstadosComprasEntrega,
-//   cargarEstadosComprasPago
-// } = require('../servicios/facturasCompra/getFacturaCompra')
-
-// const {
-//   modificarCompra
-// } = require('../servicios/facturasCompra/patchFacturaCompra')
-
-// const {
-//   crearFacturaCompra
-// } = require('../servicios/facturasCompra/postFacturaCompra')
-
-// const router = express.Router()
 
 router.get('/',
   requireUser,
@@ -93,6 +78,22 @@ router.patch('/:id/detalle',
     const factura = await modificarCompra({ idUsuario, detalles, compra_id })
     res.json(respuesta('Factura de compra modificada', factura))
   })
+
+router.patch('/:id/estado-entrega',
+  requireUser,
+  validatorHandler(modificarIdEstadoEntregaCompra, 'body'),
+  async (req, res) => {
+    const {
+      id_estado_entrega
+    } = req.validated.body
+    console.log('Entro a modificar estado entrega', id_estado_entrega)
+
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const estado = await modificarEstadoEntregaCompra({ idUsuario, compra_id: id, id_estado_entrega })
+    res.json(respuesta('Estado de la entrega ha sido modificada', estado))
+  }
+)
 
 router.post('/',
   requireUser,

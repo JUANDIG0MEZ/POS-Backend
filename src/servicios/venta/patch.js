@@ -1,5 +1,12 @@
 const { sequelize, Venta, DetalleVenta, Producto } = require('../../database/models')
 
+async function modificarEstadoEntregaVenta ({ idUsuario, venta_id, id_estado_entrega }) {
+  const venta = await Venta.findOne({ where: { id_usuario: idUsuario, venta_id } })
+  venta.id_estado_entrega = id_estado_entrega
+  await venta.save()
+  return id_estado_entrega
+}
+
 async function modificarDetalleVenta ({ idUsuario, venta_id, detalles }) {
   const transaction = await sequelize.transaction()
   try {
@@ -37,5 +44,6 @@ async function modificarDetalleVenta ({ idUsuario, venta_id, detalles }) {
 }
 
 module.exports = {
-  modificarDetalleVenta
+  modificarDetalleVenta,
+  modificarEstadoEntregaVenta
 }
