@@ -57,6 +57,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       defaultValue: 1
+    },
+    ajuste_id: {
+      type: DataTypes.SMALLINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 1
     }
   }, {
     sequelize,

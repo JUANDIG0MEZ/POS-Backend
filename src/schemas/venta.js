@@ -52,13 +52,13 @@ const crearVentaSchema = Joi.object({
     nombre_cliente: nombreLargo.strict(),
     direccion
   }),
-  detalles: Joi.array().items(detalle).required()
+  detalles: Joi.array().items(detalle).unique('producto_id').required()
 })
 
 // MODIFICAR
 
 const modificarDetallesVentaSchema = Joi.object({
-  detalles: Joi.array().items(detalle)
+  detalles: Joi.array().items(detalle).unique('producto_id').required()
 })
 
 const modificarIdEstadoEntregaVenta = Joi.object({

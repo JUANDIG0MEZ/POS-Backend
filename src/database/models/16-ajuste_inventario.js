@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   AjusteInventario.init({
     ajuste_id: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false
     },
     id_usuario: {
-      type: DataTypes.SMALLINT,
+      type: DataTypes.SMALLINT.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Usuario',
@@ -40,7 +40,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'AjusteInventario',
-    tableName: 'AjusteInventario'
+    tableName: 'AjusteInventario',
+    timestamps: false
   })
   return AjusteInventario
 }

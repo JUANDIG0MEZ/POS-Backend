@@ -1,6 +1,8 @@
-const { Producto, ProductoCategoria, ProductoMedida } = require('../../database/models')
-const { OpcionesGetProducto } = require('./opciones/get.js')
+const { Producto, ProductoCategoria, ProductoMedida, AjusteInventario, DetalleAjuste } = require('../../database/models')
+const { OpcionesGetProducto, OpcionesGetAjustesInventario, OpcionesGetProductoAjustesInventario } = require('./opciones/get.js')
 const { FormatearGetCategoria, FormatearGetProducto } = require('./formatear')
+const { FormatearAjustesInventario } = require('./formatear/get.js')
+const { cantidad } = require('../../schemas/propiedades.js')
 
 async function cargarProductos ({ idUsuario }) {
   const productos = await Producto.findAll({
@@ -28,6 +30,47 @@ async function cargarMedidas () {
   return medidas
 }
 
+async function cargarAjustesInventario ({ idUsuario }, { offset, limit }) {
+  const { count, rows } = await AjusteInventario.findAndCountAll({
+    where: { id_usuario: idUsuario },
+    attributes: OpcionesGetAjustesInventario.atributos(),
+    limit,
+    offset
+  })
+  return { count, rows: FormatearAjustesInventario.formatearLista(rows) }
+}
+
+async function cargarAjusteInventario ({ idUsuario, ajuste_id }) {
+  const ajuste = await AjusteInventario.findOne({
+    where: { id_usuario: idUsuario, ajuste_id }
+  })
+  const detallesAjuste = await DetalleAjuste.findAll({
+    where: { id_ajuste: ajuste.id }
+  })
+
+  const detallesAntes = []
+  const detallesAhora = []
+
+  for (const detalle of detallesAjuste) {
+    const {
+      id_producto,
+      cantidad_antes,
+      cantidad_ahora
+    } = detalle
+    const producto = await Producto.findOne({
+      where: { id: id_producto },
+      attributes: OpcionesGetProductoAjustesInventario.atributos(),
+      include: OpcionesGetProductoAjustesInventario.incluir(),
+      raw: true
+    })
+
+    detallesAntes.push({ ...producto, cantidad: cantidad_antes })
+    detallesAhora.push({ ...producto, cantidad: cantidad_ahora })
+  }
+
+  return { ajuste, detallesAntes, detallesAhora }
+}
+
 // async function cargarImagenesProducto (id) {
 //   const imagenes = await ProductoImagen.findAll({
 //     where: { producto_id: id }
@@ -38,6 +81,8 @@ async function cargarMedidas () {
 module.exports = {
   cargarProductos,
   cargarCategorias,
-  cargarMedidas
+  cargarMedidas,
+  cargarAjusteInventario,
+  cargarAjustesInventario
   // cargarImagenesProducto
 }

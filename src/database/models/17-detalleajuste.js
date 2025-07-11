@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   DetalleAjuste.init({
     id_ajuste: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'AjusteInventario',
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     id_producto: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Producto',
@@ -44,7 +44,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'DetalleAjuste',
-    tableName: 'DetalleAjuste'
+    tableName: 'DetalleAjuste',
+    timestamps: false
   })
   return DetalleAjuste
 }

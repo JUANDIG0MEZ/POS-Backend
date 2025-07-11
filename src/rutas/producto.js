@@ -1,15 +1,31 @@
-const { crearProducto, crearCategoria } = require('../servicios/producto/post.js')
+const {
+  queryAjusteSchema,
+  crearProductoSchema,
+  crearCategoriaSchema,
+  crearAjusteInventarioSchema,
+  actualizarProductoSchema
+} = require('../schemas/producto')
 
 const {
-  crearProductoSchema,
-  crearCategoriaSchema
-} = require('../schemas/producto')
+  cargarProductos,
+  cargarCategorias,
+  cargarMedidas,
+  cargarAjustesInventario,
+  cargarAjusteInventario
+} = require('../servicios/producto/get')
+
+const {
+  modificarProducto
+} = require('../servicios/producto/patch.js')
+const {
+  crearProducto,
+  crearCategoria,
+  crearAjusteInventario
+} = require('../servicios/producto/post.js')
+
 const { validatorHandler } = require('../middlewares/validatorHandler')
-
 const { respuesta } = require('./funcion.js')
-
 const express = require('express')
-const { cargarProductos, cargarCategorias, cargarMedidas } = require('../servicios/producto/get')
 const { requireUser } = require('../middlewares/autenticationHandler')
 
 const router = express.Router()
@@ -67,12 +83,49 @@ router.post('/categoria',
     res.json(respuesta('Categoria creada', categoria))
   })
 
-// router.patch('/:id',
-//   validatorHandler(actualizarProductoSchema, 'body'),
-//   async (req, res) => {
-//     const { id } = req.params
-//     const producto = await modificarProducto(req.body, id)
-//     res.json(respuesta('Producto modificado', producto))
-//   })
+router.get('/ajuste',
+  requireUser,
+  validatorHandler(queryAjusteSchema, 'query', true),
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { limit, offset } = req.validated.query
+    const ajustes = await cargarAjustesInventario({ idUsuario }, { limit, offset })
+    res.json(respuesta('Ajustes cargados', ajustes))
+  }
+)
+
+router.get('/ajuste/:id',
+  requireUser,
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const ajuste = await cargarAjusteInventario({ idUsuario, ajuste_id: id })
+    res.json(respuesta('Ajustes cargado', ajuste))
+  }
+)
+
+router.post('/ajuste',
+  requireUser,
+  validatorHandler(crearAjusteInventarioSchema, 'body'),
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const {
+      detalles
+    } = req.validated.body
+    console.log('detalles', detalles)
+    const ajuste = await crearAjusteInventario({ idUsuario, detalles })
+    res.json(respuesta('Ajuste creado', ajuste))
+  }
+)
+
+router.patch('/:id',
+  requireUser,
+  validatorHandler(actualizarProductoSchema, 'body'),
+  async (req, res) => {
+    const { idUsuario } = req.usuario
+    const { id } = req.params
+    const producto = await modificarProducto({ idUsuario, producto_id: id, body: req.validated.body })
+    res.json(respuesta('Producto modificado', producto))
+  })
 
 module.exports = router

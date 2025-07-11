@@ -19,8 +19,8 @@ class FormatearGetProducto {
       nombre: producto.nombre,
       categoria: producto.categoria,
       medida: producto.medida,
-      precio_venta: producto.precio_venta,
       precio_compra: producto.precio_compra,
+      precio_venta: producto.precio_venta,
       cantidad: producto.cantidad,
       total: producto.total
     }

@@ -86,7 +86,6 @@ router.patch('/:id/estado-entrega',
     const {
       id_estado_entrega
     } = req.validated.body
-    console.log('Entro a modificar estado entrega', id_estado_entrega)
 
     const { idUsuario } = req.usuario
     const { id } = req.params

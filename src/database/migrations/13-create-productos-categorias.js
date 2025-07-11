@@ -23,7 +23,7 @@ module.exports = {
       },
       descripcion: {
         type: Sequelize.STRING(400),
-        allowNull: false
+        allowNull: true
       },
 
       nombre: {

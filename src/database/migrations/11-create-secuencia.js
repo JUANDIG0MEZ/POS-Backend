@@ -46,6 +46,11 @@ module.exports = {
         type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         defaultValue: 1
+      },
+      ajuste_id: {
+        type: Sequelize.SMALLINT.UNSIGNED,
+        allowNull: false,
+        defaultValue: 1
       }
     })
   },

@@ -8,14 +8,14 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       ajuste_id: {
-        type: Sequelize.SMALLINT,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false
       },
       id_usuario: {
-        type: Sequelize.SMALLINT,
+        type: Sequelize.SMALLINT.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Usuario',
@@ -31,8 +31,14 @@ module.exports = {
         allowNull: false
       }
     })
+
+    await queryInterface.addConstraint('AjusteInventario', {
+      fields: ['ajuste_id', 'id_usuario'],
+      type: 'unique',
+      name: 'unque_ajuste_inventario_usuario'
+    })
   },
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('AjusteInventaros')
+    await queryInterface.dropTable('AjusteInventario')
   }
 }

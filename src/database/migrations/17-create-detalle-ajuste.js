@@ -7,10 +7,10 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER.UNSIGNED
       },
       id_ajuste: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: 'AjusteInventario',
@@ -18,7 +18,7 @@ module.exports = {
         }
       },
       id_producto: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         references: {
           model: 'Producto',
@@ -34,6 +34,12 @@ module.exports = {
         allowNull: false
       }
 
+    })
+
+    await queryInterface.addConstraint('DetalleAjuste', {
+      fields: ['id_ajuste', 'id_producto'],
+      type: 'unique',
+      name: 'unique_detalle_ajuste_inventario'
     })
   },
   async down (queryInterface, Sequelize) {
