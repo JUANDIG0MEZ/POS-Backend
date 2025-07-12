@@ -1,7 +1,8 @@
 'use strict'
 
 const { Model } = require('sequelize')
-const { ErrorUsuario } = require('../../errors/usuario.js')
+const { multiplicarYRedondear } = require('../../utils/decimales')
+const { esNumeroSeguro } = require('../../utils/decimales.js')
 module.exports = (sequelize, DataTypes) => {
   class Producto extends Model {
     static associate (models) {
@@ -76,9 +77,6 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
       get () {
         return Number(this.getDataValue('precio_compra'))
-      },
-      validate: {
-
       }
     },
     precio_venta: {
@@ -95,6 +93,9 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
       get () {
         return Number(this.getDataValue('cantidad'))
+      },
+      validate: {
+        esNumeroSeguro
       }
     },
     total: {
@@ -102,6 +103,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       get () {
         return Number(this.getDataValue('total'))
+      },
+      validate: {
+        esNumeroSeguro
       }
     }
   }, {
@@ -112,20 +116,13 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeUpdate: (producto) => {
         if (producto.changed('cantidad') || producto.changed('precio_compra')) {
-          const cantidad = producto.cantidad
-          const precioCompra = producto.precio_compra
-
-          if (cantidad < 0) producto.total = 0
-          else producto.total = cantidad * precioCompra
+          if (producto.cantidad < 0) producto.total = 0
+          else producto.total = multiplicarYRedondear(producto.cantidad, producto.precio_compra)
         }
       },
       beforeCreate (producto) {
-        const cantidad = producto.cantidad
-        const precioCompra = producto.precio_compra
-
-        if (cantidad < 0) throw new Error('La cantidad no puede ser negativa')
-
-        producto.total = cantidad * precioCompra
+        if (producto.cantidad < 0) throw new Error('La cantidad no puede ser negativa')
+        producto.total = multiplicarYRedondear(producto.cantidad, producto.precio_compra)
       }
     }
   })

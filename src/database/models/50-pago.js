@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-
+const { esNumeroSeguro } = require('../../utils/decimales')
 module.exports = (sequelize, DataTypes) => {
   class Pago extends Model {
     /**
@@ -59,6 +59,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       get () {
         return Number(this.getDataValue('valor'))
+      },
+      validate: {
+        esNumeroSeguro
       }
     },
     id_metodo_pago: {
@@ -82,15 +85,11 @@ module.exports = (sequelize, DataTypes) => {
 
     hooks: {
       beforeCreate: async (pago, options) => {
-        const metodoPago = pago.id_metodo_pago
-        const valor = pago.valor
-        const idCliente = pago.id_cliente
-
-        if (valor <= 0) throw new Error('El valor del pago no puede ser 0')
-        if (!(metodoPago < 2) && !pago.descripcion) throw new Error('Se debe agregar informacion del pago')
+        if (pago.valor <= 0) throw new Error('El valor del pago no puede ser 0')
+        if (!pago.id_metodo_pago) throw new Error('El método de pago es requerido')
+        if (pago.id_metodo_pago > 1 && !pago.descripcion) throw new Error('Se debe agregar informacion del pago')
         if (!pago.fecha || !pago.hora) throw new Error('La fecha y hora son requeridas')
-        if (!idCliente) throw new Error('El cliente es requerido')
-        if (!metodoPago) throw new Error('El método de pago es requerido')
+        if (!pago.id_cliente) throw new Error('El cliente es requerido')
       }
     }
   })

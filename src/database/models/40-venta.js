@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-
+const { esNumeroSeguro } = require('../../utils/decimales.js')
 module.exports = (sequelize, DataTypes) => {
   class Venta extends Model {
     static associate (models) {
@@ -70,7 +70,8 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
       get () {
         return Number(this.getDataValue('pagado'))
-      }
+      },
+      esNumeroSeguro
     },
     total: {
       type: DataTypes.DECIMAL(15, 3),
@@ -82,7 +83,8 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         mayorQuePagado (value) {
           if (value < this.pagado) throw new Error('El valor abonado no puede ser mayor al total')
-        }
+        },
+        esNumeroSeguro
       }
     },
     por_pagar: {
@@ -135,34 +137,26 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     hooks: {
       beforeUpdate: async (venta, options) => {
-        if (venta.changed('total')) throw new Error('No esta permitido actualizar el total')
         if (venta.changed('pagado')) {
-          const total = venta.total
-          const pagado = venta.pagado
+          const nuevoPorPagar = venta.total - venta.pagado
 
-          const porPagar = total - pagado
-
-          venta.pagado = pagado
-          venta.por_pagar = porPagar
-
-          const idCliente = venta.id_cliente
           const Cliente = venta.sequelize.models.Cliente
-          const cliente = await Cliente.findByPk(idCliente, {
+          const cliente = await Cliente.findByPk(venta.id_cliente, {
             transaction: options.transaction,
             lock: options.transaction.LOCK.UPDATE
           })
 
-          cliente.debe = cliente.debe - venta.previous('por_pagar') + porPagar
+          cliente.debe = cliente.debe - venta.por_pagar + nuevoPorPagar
           await cliente.save({ transaction: options.transaction })
 
+          venta.por_pagar = nuevoPorPagar
           if (venta.por_pagar > 0) venta.estado_pago = 1
           else venta.estado_pago = 2
         }
       },
 
       beforeCreate: async (venta, options) => {
-        const clienteId = venta.cliente_id
-        if (clienteId < 2 && !venta.nombre_cliente) throw new Error('Nombre de cliente invalido')
+        if (venta.clienteId < 2 && !venta.nombre_cliente) throw new Error('Nombre de cliente invalido')
       }
 
     }

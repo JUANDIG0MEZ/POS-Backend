@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-
+const { multiplicarYRedondear, esNumeroSeguro } = require('../../utils/decimales')
 module.exports = (sequelize, DataTypes) => {
   class DetalleCompra extends Model {
     /**
@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       validate: {
+        esNumeroSeguro,
         min: 0
       },
       get () {
@@ -55,6 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       validate: {
+        esNumeroSeguro,
         min: 0
       },
       get () {
@@ -66,6 +68,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       validate: {
+        esNumeroSeguro,
         min: 0
       },
       get () {
@@ -92,14 +95,10 @@ module.exports = (sequelize, DataTypes) => {
           lock: options.transaction.LOCK.UPDATE
         })
 
-        const cantidadDetalle = detalle.cantidad
-        const cantidadProducto = producto.cantidad
-        const precioDetalle = detalle.precio
-
-        producto.cantidad = cantidadProducto + cantidadDetalle
+        producto.cantidad = producto.cantidad + detalle.cantidad
         await producto.save({ transaction: options.transaction })
 
-        detalle.subtotal = cantidadDetalle * precioDetalle
+        detalle.subtotal = multiplicarYRedondear(detalle.cantidad, detalle.precio)
         compra.total = compra.total + detalle.subtotal
         await compra.save({ transaction: options.transaction })
       }

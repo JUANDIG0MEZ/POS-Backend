@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-
+const { esNumeroSeguro } = require('../../utils/decimales.js')
 module.exports = (sequelize, DataTypes) => {
   class Cliente extends Model {
     static associate (models) {
@@ -81,6 +81,7 @@ module.exports = (sequelize, DataTypes) => {
         return Number(this.getDataValue('por_pagarle'))
       },
       validate: {
+        esNumeroSeguro,
         min: 0
       }
     },
@@ -92,6 +93,7 @@ module.exports = (sequelize, DataTypes) => {
         return Number(this.getDataValue('debe'))
       },
       validate: {
+        esNumeroSeguro,
         min: 0
       }
     }

@@ -2,9 +2,17 @@ const { Producto, ProductoCategoria, sequelize, Secuencia, AjusteInventario, Det
 const { OpcionesGetProducto } = require('./opciones/get')
 const { ErrorUsuario } = require('../../errors/usuario.js')
 const { FormatearGetCategoria, FormatearGetProducto } = require('./formatear')
-
-async function crearProducto ({ idUsuario, nombre, categoria_id, id_medida, precio_compra, precio_venta, cantidad }) {
+const { multiplicarYRedondear } = require('../../utils/decimales.js')
+async function crearProducto ({ idUsuario, body }) {
   const transaction = await sequelize.transaction()
+  const {
+    nombre,
+    categoria_id,
+    id_medida,
+    precio_compra,
+    precio_venta,
+    cantidad
+  } = body
   try {
     const secuencia = await Secuencia.findOne({
       where: { id: idUsuario },
@@ -20,7 +28,7 @@ async function crearProducto ({ idUsuario, nombre, categoria_id, id_medida, prec
       precio_compra,
       precio_venta,
       cantidad,
-      total: precio_compra * cantidad
+      total: multiplicarYRedondear(precio_compra, cantidad, 3)
     }
 
     if (categoria_id) {

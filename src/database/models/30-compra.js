@@ -1,7 +1,7 @@
 'use strict'
 
 const { Model } = require('sequelize')
-
+const { esNumeroSeguro } = require('../../utils/decimales.js')
 module.exports = (sequelize, DataTypes) => {
   class Compra extends Model {
     /**
@@ -76,6 +76,9 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0,
       get () {
         return Number(this.getDataValue('pagado'))
+      },
+      validate: {
+        esNumeroSeguro
       }
     },
     total: {
@@ -86,9 +89,7 @@ module.exports = (sequelize, DataTypes) => {
         return Number(this.getDataValue('total'))
       },
       validate: {
-        mayorQuePagado (value) {
-          if (value < this.pagado) throw new Error('El valor pagado no puede ser mayor al total')
-        }
+        esNumeroSeguro
       }
     },
     por_pagar: {
@@ -140,32 +141,25 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeUpdate: async (compra, options) => {
         if (compra.changed('pagado')) {
-          const total = compra.total
-          const pagado = compra.pagado
+          const nuevoPorPagar = compra.total - compra.pagado
 
-          const porPagar = total - pagado
-
-          compra.pagado = pagado
-          compra.por_pagar = porPagar
-
-          const idCliente = compra.get('id_cliente')
           const Cliente = compra.sequelize.models.Cliente
-
-          const cliente = await Cliente.findByPk(idCliente, {
+          const cliente = await Cliente.findByPk(compra.id_cliente, {
             transaction: options.transaction,
             lock: options.transaction.LOCK.UPDATE
           })
-          cliente.por_pagarle = cliente.por_pagarle - compra.previous('por_pagar') + porPagar
+
+          cliente.por_pagarle = cliente.por_pagarle - compra.por_pagar + nuevoPorPagar
           await cliente.save({ transaction: options.transaction })
 
+          compra.por_pagar = nuevoPorPagar
           if (compra.por_pagar > 0) compra.id_estado_pago = 1
           else compra.id_estado_pago = 2
         }
       },
 
       beforeCreate: async (compra, options) => {
-        const clienteId = compra.cliente_id
-        if (clienteId < 2 && !compra.nombre_cliente) throw new Error('Nombre de cliente invalido')
+        if (compra.cliente_id < 2 && !compra.nombre_cliente) throw new Error('Nombre de cliente invalido')
       }
     }
   })

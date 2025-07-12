@@ -58,15 +58,8 @@ router.post('/',
   validatorHandler(crearProductoSchema, 'body'),
   async (req, res) => {
     const { idUsuario } = req.usuario
-    const {
-      nombre,
-      categoria_id,
-      id_medida,
-      precio_compra,
-      precio_venta,
-      cantidad
-    } = req.validated.body
-    const producto = await crearProducto({ idUsuario, nombre, categoria_id, id_medida, precio_compra, precio_venta, cantidad })
+    const { body } = req.validated.body
+    const producto = await crearProducto({ idUsuario, body })
     res.json(respuesta('Producto creado', producto))
   })
 

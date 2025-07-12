@@ -12,14 +12,13 @@ const {
 } = require('../servicios/compra/get.js')
 
 const {
-  modificarCompra,
   modificarEstadoEntregaCompra
 } = require('../servicios/compra/patch.js')
 
 const {
   crearFacturaCompra
 } = require('../servicios/compra/post.js')
-const { queryComprasSchema, crearCompraSchema, modificarDetallesSchema, modificarIdEstadoEntregaCompra } = require('../schemas/compra.js')
+const { queryComprasSchema, crearCompraSchema, modificarIdEstadoEntregaCompra } = require('../schemas/compra.js')
 const { requireUser } = require('../middlewares/autenticationHandler.js')
 
 router.get('/',
