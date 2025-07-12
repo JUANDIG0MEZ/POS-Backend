@@ -43,22 +43,22 @@ module.exports = {
         }
       },
       precio_compra: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
       },
       precio_venta: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
       },
       cantidad: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
       },
       total: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false
       }
     })

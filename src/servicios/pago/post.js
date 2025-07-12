@@ -1,6 +1,5 @@
 const { Pago, Secuencia, sequelize, Compra, Cliente } = require('../../database/models')
-const { ErrorUsuario } = require('../../errors/usuario')
-
+const { Op } = require('sequelize')
 async function crearPago ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
   const hora = new Date().toTimeString().split(' ')[0]
@@ -32,17 +31,19 @@ async function crearPagoCompra ({ idUsuario, compra_id }, { id_metodo_pago, valo
       transaction,
       lock: transaction.LOCK.UPDATE
     })
-    const porPagar = Number(compra.por_pagar)
 
-    if (valor > porPagar) throw Error('El pago es mayor a la deuda')
+    if (compra.id_estado_factura === 1) throw new Error('no se pueden hacer abonos a facturas anuladas')
+    if (valor > Number(compra.por_pagar)) throw Error('El pago es mayor a la deuda')
+
     compra.pagado = compra.pagado + valor
     await compra.save({ transaction })
 
+    //
     let descripcionCompleta = `Pago a factura de compra #${compra_id}`
     if (descripcion) descripcionCompleta += ', Info: ' + descripcion
-
     await crearPago({ idUsuario, id_cliente: compra.id_cliente, id_metodo_pago, valor, descripcion: descripcionCompleta }, transaction)
 
+    //
     await transaction.commit()
     return {
       pagado: compra.pagado
@@ -60,22 +61,23 @@ async function crearPagoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, va
       where: { id_usuario: idUsuario, cliente_id },
       transaction
     })
-    if (valor > cliente.por_pagarle) throw Error('El pago es mayor a la deuda')
+    if (valor > Number(cliente.por_pagarle)) throw Error('El pago es mayor a la deuda')
 
     const compras = await Compra.findAll({
-      where: { id_usuario: idUsuario, id_estado_pago: 1, id_cliente: cliente.id },
-      attributes: ['id', 'total', 'pagado', 'por_pagar'],
+      where: { id_usuario: idUsuario, id_estado_pago: 1, id_cliente: cliente.id, id_estado_factura: { [Op.ne]: 2 } },
+      attributes: ['id', 'total', 'pagado', 'por_pagar', 'id_cliente'],
       order: [['id', 'ASC']],
       transaction,
       lock: transaction.LOCK.UPDATE
     })
 
     let valorRestante = valor
+
     for (const compra of compras) {
       const porPagar = compra.por_pagar
 
       if (valorRestante <= porPagar) {
-        compra.pagado = compra.pagado + valorRestante
+        compra.pagado = Number(compra.pagado) + valorRestante
         valorRestante = 0
         await compra.save({ transaction })
         break
@@ -86,7 +88,11 @@ async function crearPagoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, va
       }
     }
 
-    if (valorRestante > 0) throw new ErrorUsuario('Ocurrio algun error al pagar las facturas de compra')
+    if (valorRestante > 0) {
+      cliente.por_pagarle = cliente.por_pagarle - valorRestante
+      if (Number(cliente.por_pagale) < 0) throw new Error('El saldo a favor del cliente no puede menor a 0')
+      await cliente.save({ transaction })
+    }
 
     await cliente.reload({ transaction })
 

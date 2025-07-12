@@ -30,10 +30,14 @@ module.exports = (sequelize, DataTypes) => {
           as: 'estadoEntregaCompra'
         }
       )
-
       Compra.belongsTo(models.CompraEstadoPago, {
         foreignKey: 'id_estado_pago',
         as: 'estadoPagoCompra'
+      })
+
+      Compra.belongsTo(models.EstadoFactura, {
+        foreignKey: 'id_estado_factura',
+        as: 'estadoFacturaCompra'
       })
     }
   }
@@ -67,19 +71,33 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     pagado: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('pagado'))
+      }
     },
     total: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('total'))
+      },
+      validate: {
+        mayorQuePagado (value) {
+          if (value < this.pagado) throw new Error('El valor pagado no puede ser mayor al total')
+        }
+      }
     },
     por_pagar: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('por_pagar'))
+      }
     },
     id_estado_entrega: {
       type: DataTypes.TINYINT.UNSIGNED,
@@ -103,6 +121,15 @@ module.exports = (sequelize, DataTypes) => {
     nombre_cliente: {
       type: DataTypes.STRING(100),
       allowNull: false
+    },
+    id_estado_factura: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 1,
+      references: {
+        key: 'id',
+        model: 'EstadoFactura'
+      }
     }
 
   }, {
@@ -112,13 +139,12 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     hooks: {
       beforeUpdate: async (compra, options) => {
-        if (compra.changed('pagado') || compra.changed('total')) {
-          let pagado = compra.changed('pagado') ? compra.pagado : Number(compra.previous('pagado'))
-          const total = compra.changed('total') ? compra.total : Number(compra.previous('total'))
-
-          if (pagado > total) pagado = total
+        if (compra.changed('pagado')) {
+          const total = compra.total
+          const pagado = compra.pagado
 
           const porPagar = total - pagado
+
           compra.pagado = pagado
           compra.por_pagar = porPagar
 

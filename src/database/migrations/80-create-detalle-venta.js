@@ -26,19 +26,24 @@ module.exports = {
         }
       },
       cantidad: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         validate: {
           min: 0
         }
       },
       precio: {
-        type: Sequelize.INTEGER.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false
       },
       subtotal: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false
+      },
+      isAnulada: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       }
 
     })

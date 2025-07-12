@@ -71,23 +71,38 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     precio_compra: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('precio_compra'))
+      },
+      validate: {
+
+      }
     },
     precio_venta: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('precio_venta'))
+      }
     },
     cantidad: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('cantidad'))
+      }
     },
     total: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false
+      type: DataTypes.DECIMAL(15, 3),
+      allowNull: false,
+      get () {
+        return Number(this.getDataValue('total'))
+      }
     }
   }, {
     sequelize,
@@ -97,25 +112,18 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeUpdate: (producto) => {
         if (producto.changed('cantidad') || producto.changed('precio_compra')) {
-          const cantidad = Number(producto.cantidad)
-          const precioCompra = Number(producto.precio_compra)
+          const cantidad = producto.cantidad
+          const precioCompra = producto.precio_compra
 
-          if (cantidad < 0) {
-            producto.total = 0
-          } else {
-            const total = cantidad * precioCompra
-
-            producto.total = total
-          }
+          if (cantidad < 0) producto.total = 0
+          else producto.total = cantidad * precioCompra
         }
       },
       beforeCreate (producto) {
-        const cantidad = Number(producto.cantidad)
-        const precioCompra = Number(producto.precio_compra)
+        const cantidad = producto.cantidad
+        const precioCompra = producto.precio_compra
 
-        if (cantidad < 0) {
-          throw new Error('La cantidad no puede ser negativa')
-        }
+        if (cantidad < 0) throw new Error('La cantidad no puede ser negativa')
 
         producto.total = cantidad * precioCompra
       }

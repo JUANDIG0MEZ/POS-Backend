@@ -57,10 +57,6 @@ const crearVentaSchema = Joi.object({
 
 // MODIFICAR
 
-const modificarDetallesVentaSchema = Joi.object({
-  detalles: Joi.array().items(detalle).unique('producto_id').required()
-})
-
 const modificarIdEstadoEntregaVenta = Joi.object({
   id_estado_entrega: id.required()
 })
@@ -69,6 +65,5 @@ module.exports = {
   paramsVentasSchema,
   queryVentasSchema,
   crearVentaSchema,
-  modificarDetallesVentaSchema,
   modificarIdEstadoEntregaVenta
 }

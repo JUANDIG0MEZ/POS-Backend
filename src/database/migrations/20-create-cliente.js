@@ -47,13 +47,13 @@ module.exports = {
 
       },
       por_pagarle: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
 
       },
       debe: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
       }

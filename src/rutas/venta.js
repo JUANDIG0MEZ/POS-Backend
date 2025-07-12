@@ -67,17 +67,6 @@ router.get('/:id',
     res.json(respuesta('Factura de venta cargada', factura))
   })
 
-router.patch('/:id/detalle',
-  requireUser,
-  validatorHandler(modificarDetallesVentaSchema, 'body'),
-  async (req, res) => {
-    const { detalles } = req.validated.body
-    const id = req.params.id
-    const { idUsuario } = req.usuario
-    const factura = await modificarDetalleVenta({ idUsuario, venta_id: id, detalles })
-    res.json(respuesta('Factura de venta modificada', factura))
-  })
-
 router.patch('/:id/estado-entrega',
   requireUser,
   validatorHandler(modificarIdEstadoEntregaVenta, 'body'),

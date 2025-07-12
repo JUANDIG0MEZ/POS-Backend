@@ -1,7 +1,6 @@
 'use strict'
 
 const { Model } = require('sequelize')
-const { ErrorUsuario } = require('../../errors/usuario')
 
 module.exports = (sequelize, DataTypes) => {
   class Cliente extends Model {
@@ -73,20 +72,29 @@ module.exports = (sequelize, DataTypes) => {
         model: 'ClienteTipo',
         key: 'id'
       }
-
     },
     por_pagarle: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
-
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('por_pagarle'))
+      },
+      validate: {
+        min: 0
+      }
     },
     debe: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('debe'))
+      },
+      validate: {
+        min: 0
+      }
     }
-
   }, {
     sequelize,
     modelName: 'Cliente',

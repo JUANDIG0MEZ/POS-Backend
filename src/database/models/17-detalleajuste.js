@@ -34,12 +34,18 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     cantidad_antes: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.DECIMAL(15, 3),
+      allowNull: false,
+      get () {
+        return Number(this.getDataValue('cantidad_antes'))
+      }
     },
     cantidad_ahora: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.DECIMAL(15, 3),
+      allowNull: false,
+      get () {
+        return Number(this.getDataValue('cantidad_ahora'))
+      }
     }
   }, {
     sequelize,

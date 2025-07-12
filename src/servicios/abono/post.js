@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const { Abono, Secuencia, Venta, sequelize, Cliente } = require('../../database/models')
 const { ErrorUsuario } = require('../../errors/usuario')
 
@@ -33,17 +34,19 @@ async function crearAbonoVenta ({ idUsuario, venta_id }, { id_metodo_pago, valor
       lock: transaction.LOCK.UPDATE
     })
 
-    const porPagar = Number(venta.por_pagar)
-    if (valor > porPagar) throw Error('El abono es mayor a la deuda')
+    if (venta.id_estado_factura === 1) throw new ErrorUsuario('No se puede realizar abonos a facturas anuladas')
+    if (valor > venta.por_pagar) throw Error('El abono es mayor a la deuda')
+
+    //
     venta.pagado = venta.pagado + valor
     await venta.save({ transaction })
 
+    //
     let descripcionCompleta = `Abono a factura de venta # ${venta_id}`
     if (descripcion) descripcionCompleta += ', Info: ' + descripcion
-
     await crearAbono({ idUsuario, id_cliente: venta.id_cliente, id_metodo_pago, valor, descripcion: descripcionCompleta }, transaction)
-    await transaction.commit()
 
+    await transaction.commit()
     return {
       pagado: venta.pagado
     }
@@ -61,10 +64,10 @@ async function crearAbonoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, v
       transaction
     })
 
-    if (valor > Number(cliente.debe)) throw ErrorUsuario('El abono es mayor a la deuda')
+    if (valor > cliente.debe) throw ErrorUsuario('El abono es mayor a la deuda')
 
     const ventas = await Venta.findAll({
-      where: { id_usuario: idUsuario, id_estado_pago: 1, id_cliente: cliente.id },
+      where: { id_usuario: idUsuario, id_estado_pago: 1, id_cliente: cliente.id, id_estado_factura: { [Op.ne]: 2 } },
       attributes: ['id', 'total', 'pagado', 'por_pagar', 'id_cliente'],
       order: [['id', 'ASC']],
       transaction,
@@ -72,8 +75,6 @@ async function crearAbonoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, v
     })
 
     let valorRestante = valor
-
-    console.log('{ idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion }', { idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion })
 
     for (const venta of ventas) {
       const porPagar = venta.por_pagar
@@ -90,7 +91,11 @@ async function crearAbonoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, v
       }
     }
 
-    if (valorRestante > 0) throw new ErrorUsuario('Ocurrio algun error al pagar las facturas de compra')
+    if (valorRestante > 0) {
+      cliente.debe = cliente.debe - valorRestante
+      if (cliente.debe < 0) throw new Error('Ocurrio algun error')
+      await cliente.save({ transaction })
+    }
 
     await cliente.reload({ transaction })
 

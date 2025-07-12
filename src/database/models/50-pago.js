@@ -55,8 +55,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     valor: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false
+      type: DataTypes.DECIMAL(15, 3),
+      allowNull: false,
+      get () {
+        return Number(this.getDataValue('valor'))
+      }
     },
     id_metodo_pago: {
       type: DataTypes.TINYINT.UNSIGNED,
@@ -79,25 +82,15 @@ module.exports = (sequelize, DataTypes) => {
 
     hooks: {
       beforeCreate: async (pago, options) => {
-        const metodoPago = Number(pago.id_metodo_pago)
-        const valor = Number(pago.valor)
-        const idCliente = Number(pago.id_cliente)
+        const metodoPago = pago.id_metodo_pago
+        const valor = pago.valor
+        const idCliente = pago.id_cliente
 
-        if (valor <= 0) {
-          throw new Error('El valor del pago no puede ser 0')
-        }
-        if (!(metodoPago < 2) && !pago.descripcion) {
-          throw new Error('Se debe agregar informacion del pago')
-        }
-        if (!pago.fecha || !pago.hora) {
-          throw new Error('La fecha y hora son requeridas')
-        }
-        if (!idCliente) {
-          throw new Error('El cliente es requerido')
-        }
-        if (!metodoPago) {
-          throw new Error('El método de pago es requerido')
-        }
+        if (valor <= 0) throw new Error('El valor del pago no puede ser 0')
+        if (!(metodoPago < 2) && !pago.descripcion) throw new Error('Se debe agregar informacion del pago')
+        if (!pago.fecha || !pago.hora) throw new Error('La fecha y hora son requeridas')
+        if (!idCliente) throw new Error('El cliente es requerido')
+        if (!metodoPago) throw new Error('El método de pago es requerido')
       }
     }
   })

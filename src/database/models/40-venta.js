@@ -28,6 +28,11 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_estado_entrega',
         as: 'estadoEntregaVenta'
       })
+
+      Venta.belongsTo(models.EstadoFactura, {
+        foreignKey: 'id_estado_factura',
+        as: 'estadoFacturaVenta'
+      })
     }
   }
   Venta.init({
@@ -59,21 +64,34 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TIME,
       allowNull: false
     },
-
     pagado: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('pagado'))
+      }
     },
     total: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('total'))
+      },
+      validate: {
+        mayorQuePagado (value) {
+          if (value < this.pagado) throw new Error('El valor abonado no puede ser mayor al total')
+        }
+      }
     },
     por_pagar: {
-      type: DataTypes.BIGINT.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      get () {
+        return Number(this.getDataValue('total'))
+      }
     },
     id_estado_entrega: {
       type: DataTypes.TINYINT.UNSIGNED,
@@ -100,8 +118,16 @@ module.exports = (sequelize, DataTypes) => {
     direccion: {
       type: DataTypes.STRING(120),
       allowNull: true
+    },
+    id_estado_factura: {
+      type: DataTypes.TINYINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 1,
+      references: {
+        key: 'id',
+        model: 'EstadoFactura'
+      }
     }
-
   }, {
     sequelize,
     modelName: 'Venta',
@@ -109,29 +135,22 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     hooks: {
       beforeUpdate: async (venta, options) => {
-        if (venta.changed('pagado') || venta.changed('total')) {
-          let total = venta.changed('total') ? venta.total : venta.previous('total')
-          let pagado = venta.changed('pagado') ? venta.pagado : venta.previous('pagado')
+        if (venta.changed('total')) throw new Error('No esta permitido actualizar el total')
+        if (venta.changed('pagado')) {
+          const total = venta.total
+          const pagado = venta.pagado
 
-          total = Number(total)
-          pagado = Number(pagado)
-
-          if (pagado < 0 || total < 0) throw new Error('El valor pagado y el total no puede ser menor a 0')
-          if (pagado > total) pagado = total
           const porPagar = total - pagado
 
           venta.pagado = pagado
           venta.por_pagar = porPagar
 
-          const idCliente = venta.get('id_cliente')
-          console.log('venta', venta.dataValues)
+          const idCliente = venta.id_cliente
           const Cliente = venta.sequelize.models.Cliente
           const cliente = await Cliente.findByPk(idCliente, {
             transaction: options.transaction,
             lock: options.transaction.LOCK.UPDATE
           })
-
-          console.log('cliente', cliente.dataValues)
 
           cliente.debe = cliente.debe - venta.previous('por_pagar') + porPagar
           await cliente.save({ transaction: options.transaction })
@@ -142,7 +161,7 @@ module.exports = (sequelize, DataTypes) => {
       },
 
       beforeCreate: async (venta, options) => {
-        const clienteId = Number(venta.cliente_id)
+        const clienteId = venta.cliente_id
         if (clienteId < 2 && !venta.nombre_cliente) throw new Error('Nombre de cliente invalido')
       }
 

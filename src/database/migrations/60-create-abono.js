@@ -39,7 +39,7 @@ module.exports = {
         allowNull: false
       },
       valor: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false
       },
       id_metodo_pago: {

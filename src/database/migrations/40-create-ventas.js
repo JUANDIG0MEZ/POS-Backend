@@ -39,17 +39,17 @@ module.exports = {
       },
 
       pagado: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
       },
       total: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
       },
       por_pagar: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false,
         defaultValue: 0
       },
@@ -70,9 +70,7 @@ module.exports = {
           model: 'VentaEstadoPago',
           key: 'id'
         }
-
       },
-
       nombre_cliente: {
         type: Sequelize.STRING(100),
         allowNull: false
@@ -80,6 +78,15 @@ module.exports = {
       direccion: {
         type: Sequelize.STRING(120),
         allowNull: true
+      },
+      id_estado_factura: {
+        type: Sequelize.TINYINT.UNSIGNED,
+        allowNull: false,
+        defaultValue: 1,
+        references: {
+          key: 'id',
+          model: 'EstadoFactura'
+        }
       }
 
     })

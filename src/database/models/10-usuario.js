@@ -65,9 +65,7 @@ module.exports = (sequelize, DataTypes) => {
     contrasenia: {
       allowNull: false,
       type: DataTypes.STRING(250)
-
     },
-
     verificado: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
@@ -94,7 +92,6 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'Usuario',
     hooks: {
       afterCreate: async (usuario, options) => {
-        // Se inicializa la secuencia para el usuario recién creado
         await usuario.sequelize.models.Secuencia.create({ id: usuario.id }, options)
       }
     }

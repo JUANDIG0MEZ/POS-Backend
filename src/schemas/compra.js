@@ -9,8 +9,6 @@ const {
   offset,
   fecha,
   orden,
-  nombre,
-  descripcion,
   enteroQuery
 } = require('./propiedades')
 
@@ -56,10 +54,6 @@ const crearCompraSchema = Joi.object({
 
 // MODIFICAR \\
 
-const modificarDetallesSchema = Joi.object({
-  detalles: Joi.array().items(detalles).unique('producto_id').required()
-})
-
 const modificarIdEstadoEntregaCompra = Joi.object({
   id_estado_entrega: id.required()
 })
@@ -68,7 +62,6 @@ module.exports = {
   paramsComprasSchema,
   queryComprasSchema,
   crearCompraSchema,
-  modificarDetallesSchema,
   modificarIdEstadoEntregaCompra
 
 }

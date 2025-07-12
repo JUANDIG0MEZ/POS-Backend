@@ -5,11 +5,6 @@ const { ErrorUsuario } = require('../../errors/usuario')
 
 module.exports = (sequelize, DataTypes) => {
   class ProductoCategoria extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate (models) {
       ProductoCategoria.hasMany(models.Producto, {
         foreignKey: 'id_categoria',
@@ -51,9 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 
     hooks: {
       beforeCreate (categoria) {
-        if (categoria.nombre === '') {
-          throw new ErrorUsuario('Escribe el nombre de la categoria.')
-        }
+        if (!categoria.nombre) throw new ErrorUsuario('Escribe el nombre de la categoria.')
       }
     }
   })

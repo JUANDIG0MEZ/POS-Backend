@@ -26,11 +26,11 @@ module.exports = {
         }
       },
       cantidad_antes: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false
       },
       cantidad_ahora: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL(15, 3),
         allowNull: false
       }
 

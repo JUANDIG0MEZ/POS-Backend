@@ -36,19 +36,34 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     cantidad: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       validate: {
         min: 0
+      },
+      get () {
+        return Number(this.getDataValue('cantidad'))
       }
     },
     precio: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false
+      type: DataTypes.DECIMAL(15, 3),
+      allowNull: false,
+      validate: {
+        min: 0
+      },
+      get () {
+        return Number(this.getDataValue('precio'))
+      }
     },
     subtotal: {
-      type: DataTypes.BIGINT.UNSIGNED,
-      allowNull: false
+      type: DataTypes.DECIMAL(15, 3),
+      allowNull: false,
+      validate: {
+        min: 0
+      },
+      get () {
+        return Number(this.getDataValue('subtotal'))
+      }
     }
   }, {
     sequelize,
@@ -56,35 +71,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'DetalleVenta',
     tableName: 'DetalleVenta',
     hooks: {
-      beforeUpdate: async (detalle, options) => {
-        const cantidadAntes = detalle.changed('cantidad') ? Number(detalle.previous('cantidad')) : detalle.cantidad
-        const cantidadAhora = detalle.cantidad
-        const precioAhora = detalle.precio
-        const subtotalAntes = detalle.changed('subtotal') ? Number(detalle.previous('subtotal')) : detalle.subtotal
-        const subtotalAhora = precioAhora * cantidadAhora
-
-        // Se actualiza el subtotal
-        detalle.subtotal = subtotalAhora
-
-        // Crear una instancia de Compra para modificar el total
-        const Venta = detalle.sequelize.models.Venta
-        const venta = await Venta.findByPk(detalle.id_venta, { transaction: options.transaction, lock: options.transaction.LOCK.UPDATE })
-
-        venta.total = venta.total - subtotalAntes + subtotalAhora
-        await venta.save({ transaction: options.transaction })
-
-        // Crear una instancia de Producto para modificar la cantidad
-        const Producto = detalle.sequelize.models.Producto
-        const producto = await Producto.findByPk(detalle.id_producto, {
-          transaction: options.transaction,
-          lock: options.transaction.LOCK.UPDATE
-        })
-
-        if (detalle.changed('cantidad')) {
-          producto.cantidad = producto.cantidad + cantidadAntes - cantidadAhora
-          await producto.save({ transaction: options.transaction })
-        }
-      },
 
       beforeCreate: async (detalle, options) => {
         // Crear una instancia de Producto y Compra
@@ -100,15 +86,15 @@ module.exports = (sequelize, DataTypes) => {
           lock: options.transaction.LOCK.UPDATE
         })
 
-        const cantidadDetalle = Number(detalle.cantidad)
-        const cantidadProducto = Number(producto.cantidad)
-        const precio = Number(detalle.precio)
+        const cantidadDetalle = detalle.cantidad
+        const cantidadProducto = producto.cantidad
+        const precio = detalle.precio
 
         producto.cantidad = cantidadProducto - cantidadDetalle
         await producto.save({ transaction: options.transaction })
 
         detalle.subtotal = cantidadDetalle * precio
-        venta.total = Number(venta.total) + detalle.subtotal
+        venta.total = venta.total + detalle.subtotal
 
         await venta.save({ transaction: options.transaction })
       }

@@ -1,51 +1,35 @@
 const { sequelize, Compra, DetalleCompra, Producto } = require('../../database/models')
+const { ErrorUsuario } = require('../../errors/usuario')
 
 async function modificarEstadoEntregaCompra ({ idUsuario, compra_id, id_estado_entrega }) {
-  const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id } })
-  compra.id_estado_entrega = id_estado_entrega
-  await compra.save()
-  return id_estado_entrega
-}
-
-async function modificarCompra ({ idUsuario, detalles, compra_id }) {
   const transaction = await sequelize.transaction()
-
   try {
-    const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id } })
-    for (const dataDetalle of detalles) {
-      const producto = await Producto.findOne({ where: { id_usuario: idUsuario, producto_id: dataDetalle.producto_id } })
-      const detalle = await DetalleCompra.findOne({
-        where: {
-          id_compra: compra.id,
-          id_producto: producto.id
-        },
-        transaction,
-        lock: transaction.LOCK.UPDATE
-      })
-      detalle.cantidad = dataDetalle.cantidad
-      detalle.precio = dataDetalle.precio
-      await detalle.save({ transaction })
-    }
+    const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id }, transaction })
+    if (compra.isAnulada) throw new ErrorUsuario('Esta compra ha sido anulada')
+    if (compra.id_estado_entrega === id_estado_entrega) throw new ErrorUsuario('El estado de la compra debe ser diferente')
+    const detalles = await DetalleCompra.findAll({ where: { id_compra: compra.id } }, transaction)
 
-    await compra.reload({ transaction })
-    const info = {
-      pagado: compra.pagado,
-      total: compra.total,
-      por_pagar: compra.por_pagar,
-      estado_id: compra.estado_id
-    }
+    for (const detalle of detalles) {
+      const producto = await Producto.findByPk(detalle.id_producto, { transaction, lock: transaction.LOCK.UPDATE })
 
+      if (compra.id_estado_entrega === 1 && id_estado_entrega === 2) producto.cantidad += detalle.cantidad
+      else if (compra.id_estado_entrega === 2 && id_estado_entrega === 1) producto.cantidad -= detalle.cantidad
+      else throw new Error('id no contemplado en el backend')
+
+      await producto.save({ transaction })
+    }
+    compra.id_estado_entrega = id_estado_entrega
+    await compra.save()
     await transaction.commit()
-    return {
-      info
-    }
+
+    return id_estado_entrega
   } catch (error) {
     await transaction.rollback()
-    throw new Error(error)
+    console.log(error)
+    throw new Error('Error al cambiar de estado de la compra')
   }
 }
 
 module.exports = {
-  modificarCompra,
   modificarEstadoEntregaCompra
 }
