@@ -146,8 +146,7 @@ module.exports = (sequelize, DataTypes) => {
             lock: options.transaction.LOCK.UPDATE
           })
 
-          cliente.debe = cliente.debe - venta.por_pagar + nuevoPorPagar
-          await cliente.save({ transaction: options.transaction })
+          await cliente.increment('debe', { by: nuevoPorPagar - venta.por_pagar, transaction: options.transaction })
 
           venta.por_pagar = nuevoPorPagar
           if (venta.por_pagar > 0) venta.estado_pago = 1

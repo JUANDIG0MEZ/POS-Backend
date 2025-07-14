@@ -77,7 +77,6 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
 
       beforeCreate: async (detalle, options) => {
-        // Crear una instancia de Producto y Compra
         const Producto = detalle.sequelize.models.Producto
         const producto = await Producto.findByPk(detalle.id_producto, {
           transaction: options.transaction,
@@ -90,12 +89,10 @@ module.exports = (sequelize, DataTypes) => {
           lock: options.transaction.LOCK.UPDATE
         })
 
-        producto.cantidad = producto.cantidad - detalle.cantidad
-        await producto.save({ transaction: options.transaction })
+        await producto.increment('cantidad', { by: -detalle.cantidad, transaction: options.transaction })
 
         detalle.subtotal = multiplicarYRedondear(detalle.cantidad, detalle.precio)
-        venta.total = venta.total + detalle.subtotal
-        await venta.save({ transaction: options.transaction })
+        await venta.increment('total', { by: detalle.subtotal, transaction: options.transaction })
       }
     }
   })

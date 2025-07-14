@@ -1,7 +1,7 @@
 'use strict'
 
 const { EstadoFactura } = require('../models/index.js')
-
+const { estadosFacturas } = require('../datosFaker/index.js')
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {

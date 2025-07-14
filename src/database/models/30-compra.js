@@ -4,11 +4,6 @@ const { Model } = require('sequelize')
 const { esNumeroSeguro } = require('../../utils/decimales.js')
 module.exports = (sequelize, DataTypes) => {
   class Compra extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate (models) {
       Compra.belongsTo(models.Usuario, {
         foreignKey: 'id_usuario',
@@ -149,8 +144,7 @@ module.exports = (sequelize, DataTypes) => {
             lock: options.transaction.LOCK.UPDATE
           })
 
-          cliente.por_pagarle = cliente.por_pagarle - compra.por_pagar + nuevoPorPagar
-          await cliente.save({ transaction: options.transaction })
+          await cliente.increment('por_pagarle', { by: nuevoPorPagar - compra.por_pagar, transaction: options.transaction })
 
           compra.por_pagar = nuevoPorPagar
           if (compra.por_pagar > 0) compra.id_estado_pago = 1

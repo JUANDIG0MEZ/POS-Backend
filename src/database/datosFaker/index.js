@@ -25,19 +25,12 @@ function medidas () {
     { nombre: 'caja', categoria: 'unidad' },
     { nombre: 'centimetro', categoria: 'longitud' },
     { nombre: 'metro', categoria: 'longitud' },
-    { nombre: 'pulgada', categoria: 'longitud' },
-    { nombre: 'pie', categoria: 'longitud' },
-    { nombre: 'decimetro', categoria: 'longitud' },
-    { nombre: 'kilometro', categoria: 'longitud' },
     { nombre: 'mililitro', categoria: 'volumen' },
     { nombre: 'Litro', categoria: 'volumen' },
     { nombre: 'Galon', categoria: 'volumen' },
     { nombre: 'metro cubico', categoria: 'volumen' },
     { nombre: 'gramo', categoria: 'Peso' },
-    { nombre: 'Kilogramo', categoria: 'Peso' },
-    { nombre: 'Tonelada', categoria: 'Peso' },
-    { nombre: 'Libra', categoria: 'Peso' },
-    { nombre: 'Miligramo', categoria: 'Peso' }
+    { nombre: 'Kilogramo', categoria: 'Peso' }
   ]
   return medidas
 }

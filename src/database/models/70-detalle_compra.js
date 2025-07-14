@@ -4,11 +4,6 @@ const { Model } = require('sequelize')
 const { multiplicarYRedondear, esNumeroSeguro } = require('../../utils/decimales')
 module.exports = (sequelize, DataTypes) => {
   class DetalleCompra extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate (models) {
       DetalleCompra.belongsTo(models.Compra, {
         foreignKey: 'id_compra',
@@ -83,7 +78,6 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'DetalleCompra',
     hooks: {
       beforeCreate: async (detalle, options) => {
-        // Crear una instancia de Producto y Compra
         const Producto = detalle.sequelize.models.Producto
         const producto = await Producto.findByPk(detalle.id_producto, {
           transaction: options.transaction,
@@ -95,12 +89,10 @@ module.exports = (sequelize, DataTypes) => {
           lock: options.transaction.LOCK.UPDATE
         })
 
-        producto.cantidad = producto.cantidad + detalle.cantidad
-        await producto.save({ transaction: options.transaction })
+        await producto.increment('cantidad', { by: detalle.cantidad, transaction: options.transaction })
 
         detalle.subtotal = multiplicarYRedondear(detalle.cantidad, detalle.precio)
-        compra.total = compra.total + detalle.subtotal
-        await compra.save({ transaction: options.transaction })
+        await compra.increment('total', { by: detalle.subtotal, transaction: options.transaction })
       }
 
     }

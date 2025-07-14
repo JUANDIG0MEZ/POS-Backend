@@ -5,8 +5,13 @@ module.exports = {
     await queryInterface.createTable('Secuencia', {
       id: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
+        type: Sequelize.SMALLINT.UNSIGNED
+      },
+      id_usuario: {
         type: Sequelize.SMALLINT.UNSIGNED,
+        allowNull: false,
         references: {
           model: 'Usuario',
           key: 'id'

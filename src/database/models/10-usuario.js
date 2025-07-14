@@ -53,6 +53,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_usuario',
         as: 'ajusteUsuario'
       })
+
+      Usuario.hasOne(models.Configuracion, {
+        foreignKey: 'id_usuario',
+        as: 'configuracionUsuario'
+      })
+
+      Usuario.hasOne(models.Secuencia, {
+        foreignKey: 'id_usuario',
+        as: 'secuenciaUsuario'
+      })
     }
   }
   Usuario.init({
@@ -91,9 +101,7 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     tableName: 'Usuario',
     hooks: {
-      afterCreate: async (usuario, options) => {
-        await usuario.sequelize.models.Secuencia.create({ id: usuario.id }, options)
-      }
+
     }
   })
   return Usuario
