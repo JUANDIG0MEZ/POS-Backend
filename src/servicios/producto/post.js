@@ -14,11 +14,8 @@ async function crearProducto ({ idUsuario, body }) {
     cantidad
   } = body
   try {
-    const secuencia = await Secuencia.findOne({
-      where: { id: idUsuario },
-      transaction,
-      lock: transaction.LOCK.UPDATE
-    })
+    console.log(idUsuario)
+    const secuencia = await Secuencia.findOne({ where: { id_usuario: idUsuario }, transaction, lock: transaction.LOCK.UPDATE })
 
     const productoNuevo = {
       id_usuario: idUsuario,
@@ -36,11 +33,9 @@ async function crearProducto ({ idUsuario, body }) {
       productoNuevo.id_categoria = categoria.id
     }
 
-    secuencia.producto_id += 1
+    await secuencia.increment('producto_id', { by: 1, transaction })
 
     await Producto.create(productoNuevo, { transaction })
-    await secuencia.save({ transaction })
-
     const producto = await Producto.findOne({
       where: { id_usuario: idUsuario, producto_id: productoNuevo.producto_id },
       attributes: OpcionesGetProducto.atributos(),
@@ -133,8 +128,8 @@ async function crearAjusteInventario ({ idUsuario, detalles }) {
       await producto.save({ transaction })
     }
 
-    secuencia.ajuste_id += 1
-    await secuencia.save({ transaction })
+    await secuencia.increment('ajuste_id', { by: 1, transaction })
+
     await transaction.commit()
     return ajusteInventario
   } catch (error) {

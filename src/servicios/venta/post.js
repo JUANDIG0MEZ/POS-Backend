@@ -1,5 +1,6 @@
 const { sequelize, Venta, DetalleVenta, Secuencia, Cliente, Producto } = require('../../database/models')
 const { crearPago } = require('../../servicios/pago/post.js')
+const { multiplicarYRedondear } = require('../../utils/decimales.js')
 async function crearVenta ({ idUsuario, info, detalles }) {
   const transaction = await sequelize.transaction()
 
@@ -53,7 +54,7 @@ async function crearVenta ({ idUsuario, info, detalles }) {
         id_venta: venta.id,
         cantidad,
         precio,
-        subtotal: cantidad * precio
+        subtotal: multiplicarYRedondear(cantidad, precio)
       }
 
       await DetalleVenta.create(detalleCrear, { transaction })

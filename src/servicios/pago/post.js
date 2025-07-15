@@ -1,5 +1,8 @@
 const { Pago, Secuencia, sequelize, Compra, Cliente } = require('../../database/models')
+const { crearDescripcionPagoCompra } = require('./utils')
 const { Op } = require('sequelize')
+const Decimal = require('decimal.js')
+
 async function crearPago ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
   const fecha = new Date().toISOString().split('T')[0]
   const hora = new Date().toTimeString().split(' ')[0]
@@ -17,9 +20,7 @@ async function crearPago ({ idUsuario, id_cliente, id_metodo_pago, valor, descri
     valor
   }
 
-  secuencia.pago_id += 1
-  await secuencia.save({ transaction })
-
+  await secuencia.increment('pago_id', { by: 1, transaction })
   await Pago.create(nuevoPago, { transaction })
 }
 
@@ -32,15 +33,15 @@ async function crearPagoCompra ({ idUsuario, compra_id }, { id_metodo_pago, valo
       lock: transaction.LOCK.UPDATE
     })
 
-    if (compra.id_estado_factura === 1) throw new Error('no se pueden hacer abonos a facturas anuladas')
-    if (valor > Number(compra.por_pagar)) throw Error('El pago es mayor a la deuda')
+    const valorDecimal = new Decimal(valor)
 
-    compra.pagado = compra.pagado + valor
-    await compra.save({ transaction })
+    if (compra.id_estado_factura === 1) throw new Error('no se pueden hacer abonos a facturas anuladas')
+    if (valorDecimal.gt(compra.por_pagar)) throw Error('El pago es mayor a la deuda')
+
+    await compra.increment('pagado', { by: valorDecimal.toString(), transaction })
 
     //
-    let descripcionCompleta = `Pago a factura de compra #${compra_id}`
-    if (descripcion) descripcionCompleta += ', Info: ' + descripcion
+    const descripcionCompleta = crearDescripcionPagoCompra({ compra_id, valor: valorDecimal.toString(), id_metodo_pago, descripcion })
     await crearPago({ idUsuario, id_cliente: compra.id_cliente, id_metodo_pago, valor, descripcion: descripcionCompleta }, transaction)
 
     //

@@ -1,4 +1,4 @@
-const { Usuario, sequelize } = require('../../database/models')
+const { Usuario, sequelize, Secuencia, Configuracion, Cliente } = require('../../database/models')
 const jwt = require('jsonwebtoken')
 const { ErrorUsuario } = require('../../errors/usuario')
 const crypto = require('crypto')
@@ -60,9 +60,11 @@ async function crearUsuario ({ email, contrasenia }) {
       contrasenia: hashedContrasenia
     }
     const usuarioCreado = await Usuario.create(nuevoUsuario, {
-      transaction,
-      raw: true
+      transaction
     })
+    await Cliente.create({ id_usuario: usuarioCreado.id, nombre: 'Cliente no registrado' }, { transaction })
+    await Secuencia.create({ id_usuario: usuarioCreado.id, cliente_id: 2 }, { transaction })
+    await Configuracion.create({ id_usuario: usuarioCreado.id }, { transaction })
 
     await enviarCorreoVerificacion(email, codigoVerificacion)
 

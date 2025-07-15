@@ -35,17 +35,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     cantidad_antes: {
       type: DataTypes.DECIMAL(15, 3),
-      allowNull: false,
-      get () {
-        return Number(this.getDataValue('cantidad_antes'))
-      }
+      allowNull: false
     },
     cantidad_ahora: {
       type: DataTypes.DECIMAL(15, 3),
-      allowNull: false,
-      get () {
-        return Number(this.getDataValue('cantidad_ahora'))
-      }
+      allowNull: false
     }
   }, {
     sequelize,

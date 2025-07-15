@@ -19,9 +19,7 @@ async function crearAbono ({ idUsuario, id_cliente, id_metodo_pago, valor, descr
     hora
   }
 
-  secuencia.abono_id += 1
-  await secuencia.save({ transaction })
-
+  await secuencia.increment('abono_id', { by: 1, transaction })
   await Abono.create(nuevoAbono, { transaction })
 }
 

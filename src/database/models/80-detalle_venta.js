@@ -42,9 +42,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         esNumeroSeguro,
         min: 0
-      },
-      get () {
-        return Number(this.getDataValue('cantidad'))
       }
     },
     precio: {
@@ -53,9 +50,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         esNumeroSeguro,
         min: 0
-      },
-      get () {
-        return Number(this.getDataValue('precio'))
       }
     },
     subtotal: {
@@ -64,9 +58,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         esNumeroSeguro,
         min: 0
-      },
-      get () {
-        return Number(this.getDataValue('subtotal'))
       }
     }
   }, {

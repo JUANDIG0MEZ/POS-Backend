@@ -77,9 +77,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('por_pagarle'))
-      },
       validate: {
         esNumeroSeguro,
         min: 0
@@ -89,9 +86,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('debe'))
-      },
       validate: {
         esNumeroSeguro,
         min: 0

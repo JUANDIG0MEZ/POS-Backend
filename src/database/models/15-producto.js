@@ -74,26 +74,17 @@ module.exports = (sequelize, DataTypes) => {
     precio_compra: {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('precio_compra'))
-      }
+      defaultValue: 0
     },
     precio_venta: {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('precio_venta'))
-      }
+      defaultValue: 0
     },
     cantidad: {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('cantidad'))
-      },
       validate: {
         esNumeroSeguro
       }
@@ -101,9 +92,6 @@ module.exports = (sequelize, DataTypes) => {
     total: {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      get () {
-        return Number(this.getDataValue('total'))
-      },
       validate: {
         esNumeroSeguro
       }

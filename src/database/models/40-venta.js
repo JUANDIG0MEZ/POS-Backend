@@ -68,18 +68,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('pagado'))
-      },
       esNumeroSeguro
     },
     total: {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
       defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('total'))
-      },
       validate: {
         mayorQuePagado (value) {
           if (value < this.pagado) throw new Error('El valor abonado no puede ser mayor al total')
@@ -90,10 +84,7 @@ module.exports = (sequelize, DataTypes) => {
     por_pagar: {
       type: DataTypes.DECIMAL(15, 3),
       allowNull: false,
-      defaultValue: 0,
-      get () {
-        return Number(this.getDataValue('total'))
-      }
+      defaultValue: 0
     },
     id_estado_entrega: {
       type: DataTypes.TINYINT.UNSIGNED,

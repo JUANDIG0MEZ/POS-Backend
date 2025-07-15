@@ -41,9 +41,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         esNumeroSeguro,
         min: 0
-      },
-      get () {
-        return Number(this.getDataValue('cantidad'))
       }
 
     },
@@ -53,9 +50,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         esNumeroSeguro,
         min: 0
-      },
-      get () {
-        return Number(this.getDataValue('precio'))
       }
 
     },
@@ -65,9 +59,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         esNumeroSeguro,
         min: 0
-      },
-      get () {
-        return Number(this.getDataValue('subtotal'))
       }
 
     }
@@ -77,24 +68,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'DetalleCompra',
     tableName: 'DetalleCompra',
     hooks: {
-      beforeCreate: async (detalle, options) => {
-        const Producto = detalle.sequelize.models.Producto
-        const producto = await Producto.findByPk(detalle.id_producto, {
-          transaction: options.transaction,
-          lock: options.transaction.LOCK.UPDATE
-        })
-        const Compra = detalle.sequelize.models.Compra
-        const compra = await Compra.findByPk(detalle.id_compra, {
-          transaction: options.transaction,
-          lock: options.transaction.LOCK.UPDATE
-        })
-
-        await producto.increment('cantidad', { by: detalle.cantidad, transaction: options.transaction })
-
-        detalle.subtotal = multiplicarYRedondear(detalle.cantidad, detalle.precio)
-        await compra.increment('total', { by: detalle.subtotal, transaction: options.transaction })
-      }
-
     }
   })
   return DetalleCompra

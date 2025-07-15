@@ -35,6 +35,7 @@ router.get('/',
   async (req, res) => {
     const { idUsuario } = req.usuario
     const productos = await cargarProductos({ idUsuario })
+    console.log(productos)
     res.json(respuesta('Producto cargados', productos))
   })
 
@@ -58,7 +59,7 @@ router.post('/',
   validatorHandler(crearProductoSchema, 'body'),
   async (req, res) => {
     const { idUsuario } = req.usuario
-    const { body } = req.validated.body
+    const body = req.validated.body
     const producto = await crearProducto({ idUsuario, body })
     res.json(respuesta('Producto creado', producto))
   })

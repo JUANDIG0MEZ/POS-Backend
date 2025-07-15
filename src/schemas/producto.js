@@ -7,7 +7,8 @@ const {
   cantidad,
   total,
   limit,
-  offset
+  offset,
+  booleano
 } = require('./propiedades')
 
 // OBTENER

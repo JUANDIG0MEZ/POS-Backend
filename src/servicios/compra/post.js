@@ -1,5 +1,9 @@
+const Decimal = require('decimal.js')
+const { crearDescripcionPagoCompra } = require('../pago/utils')
 const { sequelize, Secuencia, Compra, DetalleCompra, Producto, Cliente } = require('../../database/models')
-const { crearAbono } = require('../abono/post')
+const { multiplicarYRedondear, redondear } = require('../../utils/decimales')
+const { crearPago } = require('../pago/post.js')
+const { generarFecha, generarHora } = require('../../utils/fechas')
 
 async function crearFacturaCompra ({ idUsuario, info, detalles }) {
   const transaction = await sequelize.transaction()
@@ -15,15 +19,11 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
       nombre_cliente
     } = info
 
-    // Variables necesarias
-    const fechaActual = new Date()
-    const fechaFormato = fechaActual.toISOString().split('T')[0]
-    const horaFormato = fechaActual.toTimeString().split(' ')[0]
-
     // Validaciones iniciales
-    if (pagado > total) throw new Error('El valor pagado no puede ser mayor al total.')
-    if (cliente_id < 2 && (pagado !== total || !nombre_cliente)) throw new Error('Para este cliente el valor pagado de la factura debe ser igual al total.')
-    if (id_metodo_pago > 1 && !descripcion) throw new Error('Debes agregar informacion del pago')
+    const totalDecimal = new Decimal(total)
+    const pagadoDecimal = new Decimal(total)
+    if (pagadoDecimal.gt(totalDecimal)) throw new Error('El valor pagado no puede ser mayor al total.')
+    if (cliente_id < 2 && (!pagadoDecimal.eq(totalDecimal) || !nombre_cliente)) throw new Error('Para este cliente el valor pagado de la factura debe ser igual al total.')
 
     const secuencia = await Secuencia.findOne({ where: { id: idUsuario } })
     const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id } })
@@ -33,8 +33,8 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
     const compraNueva = {
       id_usuario: idUsuario,
       compra_id: compraId,
-      fecha: fechaFormato,
-      hora: horaFormato,
+      fecha: generarFecha(),
+      hora: generarHora(),
       id_cliente: cliente.id,
       id_metodo_pago,
       id_estado_entrega,
@@ -44,36 +44,36 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
     // CREAR LA COMPRA Y SUS DETALLES
     const compra = await Compra.create(compraNueva, { transaction })
 
+    let totalCompraDecimal = new Decimal(0)
     for (const detalle of detalles) {
       const { producto_id, cantidad, precio } = detalle
       const producto = await Producto.findOne({ where: { id_usuario: idUsuario, producto_id } })
+
+      const subTotal = multiplicarYRedondear(cantidad, precio)
 
       const detalleCrear = {
         id_producto: producto.id,
         id_compra: compra.id,
         cantidad,
         precio,
-        subtotal: cantidad * precio
+        subtotal: subTotal.toString()
       }
 
+      totalCompraDecimal = totalCompraDecimal.plus(subTotal)
+
       await DetalleCompra.create(detalleCrear, { transaction })
+      await producto.increment('cantidad', { by: detalle.cantidad, transaction })
     }
 
-    let descripcionCompleta = ''
-    // Agregarle el valor pagado a la compra
-    await compra.reload({ transaction })
-    if (pagado > compra.total) throw new Error('El valor pagado no puede ser mayor al total')
-    if (pagado > 0) {
-      if (id_metodo_pago > 1) descripcionCompleta = 'Info: ' + descripcion
-      descripcionCompleta = `Abono a la compra #${compraId}. ` + descripcionCompleta
-      await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcion: descripcionCompleta }, transaction)
-    }
+    const descripcionCompleta = crearDescripcionPagoCompra({ compra_id: compraId, pagado, id_metodo_pago, descripcion })
+    await crearPago({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcion: descripcionCompleta }, transaction)
 
-    compra.pagado = pagado
-    secuencia.compra_id += 1
-
-    await compra.save({ transaction })
-    await secuencia.save({ transaction })
+    await compra.update(
+      {
+        total: redondear(totalCompraDecimal).toString(),
+        pagado: redondear(pagado).toString()
+      }, { transaction })
+    await secuencia.increment('compra_id', { by: 1, transaction })
 
     // Productos modificados
     const productos = []

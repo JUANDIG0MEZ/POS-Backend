@@ -10,10 +10,29 @@ const nit = Joi.string().length(9)
 const telefono = Joi.string().pattern(/^\d{7}$|^\d{10}$/)
 const descripcion = Joi.string().max(255)
 const contrasenia = Joi.string().max(255)
+const decimalString = Joi.string()
+  .pattern(/^$|^-?\d+(\.\d{1,3})?$/)
+  .custom((value, helpers) => {
+    const Decimal = require('decimal.js')
 
-const precio = Joi.number().precision(3).min(0).max(MAX_SAFE).strict()
-const cantidad = Joi.number().precision(3).min(0).max(MAX_SAFE).strict()
-const total = Joi.number().precision(3).min(0).max(MAX_SAFE).strict()
+    try {
+      const num = new Decimal(value)
+      const min = new Decimal(0)
+      const max = new Decimal('999999999999.999')
+      if (num.lt(min) || num.gt(max)) {
+        return helpers.message('El valor debe estar entre 0 y 999999999.999')
+      }
+    } catch (err) {
+      return helpers.message('No es un número decimal válido')
+    }
+
+    return value
+  })
+
+const booleano = Joi.boolean().strict()
+const precio = decimalString.strict()
+const cantidad = decimalString.strict()
+const total = decimalString.strict()
 const id = Joi.number().integer().min(1).max(Number.MAX_SAFE_INTEGER).strict()
 // QUERYS
 
@@ -40,7 +59,7 @@ module.exports = {
   cantidad,
   total,
   id,
-
+  booleano,
   limit,
   offset,
   fecha,

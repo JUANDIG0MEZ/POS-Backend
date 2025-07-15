@@ -17,8 +17,8 @@ class FormatearGetProducto {
     return {
       id: producto.producto_id,
       nombre: producto.nombre,
-      categoria: producto.categoria,
-      medida: producto.medida,
+      categoria: producto.dataValues.categoria,
+      medida: producto.dataValues.medida,
       precio_compra: producto.precio_compra,
       precio_venta: producto.precio_venta,
       cantidad: producto.cantidad,
