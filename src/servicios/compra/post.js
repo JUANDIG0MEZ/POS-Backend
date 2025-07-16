@@ -21,7 +21,7 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
 
     // Validaciones iniciales
     const totalDecimal = new Decimal(total)
-    const pagadoDecimal = new Decimal(total)
+    const pagadoDecimal = new Decimal(pagado)
     if (pagadoDecimal.gt(totalDecimal)) throw new Error('El valor pagado no puede ser mayor al total.')
     if (cliente_id < 2 && (!pagadoDecimal.eq(totalDecimal) || !nombre_cliente)) throw new Error('Para este cliente el valor pagado de la factura debe ser igual al total.')
 
@@ -62,7 +62,7 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
       totalCompraDecimal = totalCompraDecimal.plus(subTotal)
 
       await DetalleCompra.create(detalleCrear, { transaction })
-      await producto.increment('cantidad', { by: detalle.cantidad, transaction })
+      await producto.decrement('cantidad', { by: cantidad, transaction })
     }
 
     const descripcionCompleta = crearDescripcionPagoCompra({ compra_id: compraId, pagado, id_metodo_pago, descripcion })
@@ -74,6 +74,9 @@ async function crearFacturaCompra ({ idUsuario, info, detalles }) {
         pagado: redondear(pagado).toString()
       }, { transaction })
     await secuencia.increment('compra_id', { by: 1, transaction })
+
+    const porPagarDecimal = totalCompraDecimal.minus(pagadoDecimal)
+    await cliente.increment('por_pagarle', { by: porPagarDecimal.toString(), transaction })
 
     // Productos modificados
     const productos = []

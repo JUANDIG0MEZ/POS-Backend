@@ -1,6 +1,10 @@
 const { sequelize, Venta, DetalleVenta, Secuencia, Cliente, Producto } = require('../../database/models')
 const { crearPago } = require('../../servicios/pago/post.js')
-const { multiplicarYRedondear } = require('../../utils/decimales.js')
+const { multiplicarYRedondear, redondear } = require('../../utils/decimales.js')
+const { generarFecha, generarHora } = require('../../utils/fechas.js')
+const Decimal = require('decimal.js')
+const { crearDescripcionAbonoVenta } = require('../abono/utils/index.js')
+const { crearAbono } = require('../abono/post.js')
 async function crearVenta ({ idUsuario, info, detalles }) {
   const transaction = await sequelize.transaction()
 
@@ -16,13 +20,11 @@ async function crearVenta ({ idUsuario, info, detalles }) {
       direccion
     } = info
 
-    // Variables necesarias
-    const fechaActual = new Date()
-    const fechaFormato = fechaActual.toISOString().split('T')[0]
-    const horaFormato = fechaActual.toTimeString().split(' ')[0]
+    const totalDecimal = new Decimal(total)
+    const pagadoDecimal = new Decimal(pagado)
 
-    // Validaciones
-    if (cliente_id < 2 && pagado !== total) {
+    if (pagadoDecimal.gt(totalDecimal)) throw new Error('El abono no puede ser mayor al total')
+    if (cliente_id < 2 && (!pagadoDecimal.eq(totalDecimal) || !nombre_cliente)) {
       throw new Error('Para este cliente el valor pagado de la factura debe ser igual al total')
     }
 
@@ -35,8 +37,8 @@ async function crearVenta ({ idUsuario, info, detalles }) {
       id_usuario: idUsuario,
       venta_id: ventaId,
       id_cliente: cliente.id,
-      fecha: fechaFormato,
-      hora: horaFormato,
+      fecha: generarFecha(),
+      hora: generarHora(),
       id_estado_entrega,
       id_metodo_pago,
       nombre_cliente,
@@ -45,35 +47,42 @@ async function crearVenta ({ idUsuario, info, detalles }) {
 
     const venta = await Venta.create(ventaNueva, { transaction })
     // Agregar los detalles de la compra
+    let totalVentaDecimal = new Decimal(0)
     for (const detalle of detalles) {
       const { producto_id, cantidad, precio } = detalle
       const producto = await Producto.findOne({ where: { id_usuario: idUsuario, producto_id } })
+
+      const subTotal = multiplicarYRedondear(cantidad, precio)
 
       const detalleCrear = {
         id_producto: producto.id,
         id_venta: venta.id,
         cantidad,
         precio,
-        subtotal: multiplicarYRedondear(cantidad, precio)
+        subtotal: subTotal.toString()
       }
+      totalVentaDecimal = totalVentaDecimal.plus(subTotal)
 
       await DetalleVenta.create(detalleCrear, { transaction })
+      await producto.increment('cantidad', { by: cantidad, transaction })
     }
 
-    let descripcionCompleta = ''
-    await venta.reload({ transaction })
-    if (pagado > venta.total) throw new Error('El valor abonado no puede ser mayor al total')
-    if (pagado > 0) {
-      if (id_metodo_pago > 1) descripcionCompleta = 'Info: ' + descripcion
-      descripcionCompleta = `Pago a venta #${ventaId}. ` + descripcionCompleta
-      await crearPago({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: venta.total, descripcion: descripcionCompleta }, transaction)
+    if (pagadoDecimal.gt(0)) {
+      const descripcionCompleta = crearDescripcionAbonoVenta({ venta_id: ventaId, pagado, id_metodo_pago, descripcion })
+      await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor: pagado, descripcion: descripcionCompleta })
     }
 
-    venta.pagado = pagado
-    secuencia.venta_id += 1
+    console.log('total Venta:', totalVentaDecimal.toString())
+    console.log('pagdo Venta', pagado)
 
-    await venta.save({ transaction })
-    await secuencia.save({ transaction })
+    await venta.update({
+      total: redondear(totalVentaDecimal).toString(),
+      pagado: redondear(pagado).toString()
+    }, { transaction })
+    await secuencia.increment('venta_id', { by: 1, transaction })
+
+    const porPagarDecimal = totalVentaDecimal.minus(pagadoDecimal)
+    await cliente.increment('debe', { by: porPagarDecimal.toString(), transaction })
 
     const productos = []
     for (const detalle of detalles) {

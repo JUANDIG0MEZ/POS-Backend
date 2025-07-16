@@ -64,28 +64,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     timestamps: false,
     modelName: 'DetalleVenta',
-    tableName: 'DetalleVenta',
-    hooks: {
-
-      beforeCreate: async (detalle, options) => {
-        const Producto = detalle.sequelize.models.Producto
-        const producto = await Producto.findByPk(detalle.id_producto, {
-          transaction: options.transaction,
-          lock: options.transaction.LOCK.UPDATE
-        })
-
-        const Venta = detalle.sequelize.models.Venta
-        const venta = await Venta.findByPk(detalle.id_venta, {
-          transaction: options.transaction,
-          lock: options.transaction.LOCK.UPDATE
-        })
-
-        await producto.increment('cantidad', { by: -detalle.cantidad, transaction: options.transaction })
-
-        detalle.subtotal = multiplicarYRedondear(detalle.cantidad, detalle.precio)
-        await venta.increment('total', { by: detalle.subtotal, transaction: options.transaction })
-      }
-    }
+    tableName: 'DetalleVenta'
   })
   return DetalleVenta
 }

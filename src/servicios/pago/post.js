@@ -2,11 +2,9 @@ const { Pago, Secuencia, sequelize, Compra, Cliente } = require('../../database/
 const { crearDescripcionPagoCompra } = require('./utils')
 const { Op } = require('sequelize')
 const Decimal = require('decimal.js')
+const { generarFecha, generarHora } = require('../../utils/fechas')
 
 async function crearPago ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
-  const fecha = new Date().toISOString().split('T')[0]
-  const hora = new Date().toTimeString().split(' ')[0]
-
   const secuencia = await Secuencia.findByPk(idUsuario)
 
   const nuevoPago = {
@@ -15,8 +13,8 @@ async function crearPago ({ idUsuario, id_cliente, id_metodo_pago, valor, descri
     id_cliente,
     id_metodo_pago,
     descripcion,
-    fecha,
-    hora,
+    fecha: generarFecha(),
+    hora: generarHora(),
     valor
   }
 
@@ -27,24 +25,19 @@ async function crearPago ({ idUsuario, id_cliente, id_metodo_pago, valor, descri
 async function crearPagoCompra ({ idUsuario, compra_id }, { id_metodo_pago, valor, descripcion }) {
   const transaction = await sequelize.transaction()
   try {
-    const compra = await Compra.findOne({
-      where: { id_usuario: idUsuario, compra_id },
-      transaction,
-      lock: transaction.LOCK.UPDATE
-    })
+    const compra = await Compra.findOne({ where: { id_usuario: idUsuario, compra_id }, transaction, lock: transaction.LOCK.UPDATE })
+    const cliente = await Cliente.findByPk(compra.id_cliente, { transaction, lock: transaction.LOCK.UPDATE })
 
     const valorDecimal = new Decimal(valor)
-
-    if (compra.id_estado_factura === 1) throw new Error('no se pueden hacer abonos a facturas anuladas')
+    if (compra.id_estado_factura === 2) throw new Error('No se pueden hacer abonos a facturas anuladas')
     if (valorDecimal.gt(compra.por_pagar)) throw Error('El pago es mayor a la deuda')
 
-    await compra.increment('pagado', { by: valorDecimal.toString(), transaction })
-
-    //
     const descripcionCompleta = crearDescripcionPagoCompra({ compra_id, valor: valorDecimal.toString(), id_metodo_pago, descripcion })
     await crearPago({ idUsuario, id_cliente: compra.id_cliente, id_metodo_pago, valor, descripcion: descripcionCompleta }, transaction)
 
-    //
+    compra.pagado = valorDecimal.plus(compra.pagado).toString()
+    await cliente.increment('por_pagarle', { by: valorDecimal.negated().toString(), transaction })
+    await compra.save({ transaction })
     await transaction.commit()
     return {
       pagado: compra.pagado
@@ -58,11 +51,11 @@ async function crearPagoCompra ({ idUsuario, compra_id }, { id_metodo_pago, valo
 async function crearPagoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion }) {
   const transaction = await sequelize.transaction()
   try {
-    const cliente = await Cliente.findOne({
-      where: { id_usuario: idUsuario, cliente_id },
-      transaction
-    })
-    if (valor > Number(cliente.por_pagarle)) throw Error('El pago es mayor a la deuda')
+    const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id }, transaction, lock: transaction.LOCK.UPDATE })
+
+    const valorDecimal = new Decimal(valor)
+
+    if (valorDecimal.gt(cliente.por_pagarle)) throw Error('El pago es mayor a la deuda')
 
     const compras = await Compra.findAll({
       where: { id_usuario: idUsuario, id_estado_pago: 1, id_cliente: cliente.id, id_estado_factura: { [Op.ne]: 2 } },
@@ -72,27 +65,27 @@ async function crearPagoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, va
       lock: transaction.LOCK.UPDATE
     })
 
-    let valorRestante = valor
+    let valorRestanteDecimal = valorDecimal
 
     for (const compra of compras) {
-      const porPagar = compra.por_pagar
+      const porPagarDecimal = new Decimal(compra.por_pagar)
 
-      if (valorRestante <= porPagar) {
-        compra.pagado = Number(compra.pagado) + valorRestante
-        valorRestante = 0
-        await compra.save({ transaction })
+      if (valorRestanteDecimal.lte(porPagarDecimal)) {
+        await compra.increment('pagado', { by: valorRestanteDecimal.toString(), transaction })
+        valorRestanteDecimal = new Decimal(0)
         break
       } else {
-        valorRestante = valorRestante - porPagar
-        compra.pagado = compra.total
-        await compra.save({ transaction })
+        await compra.increment('pagado', { by: porPagarDecimal.toString(), transaction })
+        valorRestanteDecimal = valorRestanteDecimal.minus(porPagarDecimal)
       }
     }
 
-    if (valorRestante > 0) {
-      cliente.por_pagarle = cliente.por_pagarle - valorRestante
-      if (Number(cliente.por_pagale) < 0) throw new Error('El saldo a favor del cliente no puede menor a 0')
-      await cliente.save({ transaction })
+    // Pagale al saldo favor
+    if (valorRestanteDecimal.gt(0)) {
+      const saldoFavorDecimal = new Decimal(cliente.por_pagarle)
+      const nuevoSaldoFavorDecimal = saldoFavorDecimal.minus(valorRestanteDecimal)
+      if (nuevoSaldoFavorDecimal.lt(0)) throw new Error('El saldo a favor del cliente no puede ser menor a 0')
+      await cliente.update({ por_pagarle: nuevoSaldoFavorDecimal.toString() })
     }
 
     await cliente.reload({ transaction })

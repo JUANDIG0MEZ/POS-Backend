@@ -2,6 +2,7 @@
 
 const { Model } = require('sequelize')
 const { esNumeroSeguro } = require('../../utils/decimales.js')
+const { default: Decimal } = require('decimal.js')
 module.exports = (sequelize, DataTypes) => {
   class Venta extends Model {
     static associate (models) {
@@ -75,9 +76,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
       validate: {
-        mayorQuePagado (value) {
-          if (value < this.pagado) throw new Error('El valor abonado no puede ser mayor al total')
-        },
         esNumeroSeguro
       }
     },
@@ -129,18 +127,12 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeUpdate: async (venta, options) => {
         if (venta.changed('pagado')) {
-          const nuevoPorPagar = venta.total - venta.pagado
+          const pagadoDecimal = new Decimal(venta.pagado)
+          const totalDecimal = new Decimal(venta.total)
+          const porPagarDecimal = totalDecimal.minus(pagadoDecimal)
+          venta.por_pagar = porPagarDecimal.toString()
 
-          const Cliente = venta.sequelize.models.Cliente
-          const cliente = await Cliente.findByPk(venta.id_cliente, {
-            transaction: options.transaction,
-            lock: options.transaction.LOCK.UPDATE
-          })
-
-          await cliente.increment('debe', { by: nuevoPorPagar - venta.por_pagar, transaction: options.transaction })
-
-          venta.por_pagar = nuevoPorPagar
-          if (venta.por_pagar > 0) venta.estado_pago = 1
+          if (porPagarDecimal.eq(0)) venta.estado_pago = 1
           else venta.estado_pago = 2
         }
       },

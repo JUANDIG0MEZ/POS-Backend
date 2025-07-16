@@ -2,6 +2,7 @@
 
 const { Model } = require('sequelize')
 const { esNumeroSeguro } = require('../../utils/decimales.js')
+const { default: Decimal } = require('decimal.js')
 module.exports = (sequelize, DataTypes) => {
   class Compra extends Model {
     static associate (models) {
@@ -121,24 +122,17 @@ module.exports = (sequelize, DataTypes) => {
 
   }, {
     sequelize,
-    modelName: 'Compra',
     tableName: 'Compra',
     timestamps: false,
     hooks: {
       beforeUpdate: async (compra, options) => {
         if (compra.changed('pagado')) {
-          const nuevoPorPagar = compra.total - compra.pagado
+          const pagadoDecimal = new Decimal(compra.pagado)
+          const totalDecimal = new Decimal(compra.total)
+          const porPagarDecimal = totalDecimal.minus(pagadoDecimal)
 
-          const Cliente = compra.sequelize.models.Cliente
-          const cliente = await Cliente.findByPk(compra.id_cliente, {
-            transaction: options.transaction,
-            lock: options.transaction.LOCK.UPDATE
-          })
-
-          await cliente.increment('por_pagarle', { by: nuevoPorPagar - compra.por_pagar, transaction: options.transaction })
-
-          compra.por_pagar = nuevoPorPagar
-          if (compra.por_pagar > 0) compra.id_estado_pago = 1
+          compra.por_pagar = porPagarDecimal.toString()
+          if (porPagarDecimal.eq(0)) compra.id_estado_pago = 1
           else compra.id_estado_pago = 2
         }
       },
