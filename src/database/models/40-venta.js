@@ -130,10 +130,10 @@ module.exports = (sequelize, DataTypes) => {
           const pagadoDecimal = new Decimal(venta.pagado)
           const totalDecimal = new Decimal(venta.total)
           const porPagarDecimal = totalDecimal.minus(pagadoDecimal)
-          venta.por_pagar = porPagarDecimal.toString()
 
-          if (porPagarDecimal.eq(0)) venta.estado_pago = 1
-          else venta.estado_pago = 2
+          venta.por_pagar = porPagarDecimal.toString()
+          if (porPagarDecimal.eq(0)) venta.id_estado_pago = 1
+          else venta.id_estado_pago = 2
         }
       },
 

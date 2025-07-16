@@ -3,6 +3,7 @@ const { OpcionesGetProducto } = require('./opciones/get')
 const { ErrorUsuario } = require('../../errors/usuario.js')
 const { FormatearGetCategoria, FormatearGetProducto } = require('./formatear')
 const { multiplicarYRedondear } = require('../../utils/decimales.js')
+const { generarFecha, generarHora } = require('../../utils/fechas.js')
 async function crearProducto ({ idUsuario, body }) {
   const transaction = await sequelize.transaction()
   const {
@@ -91,16 +92,11 @@ async function crearAjusteInventario ({ idUsuario, detalles }) {
   try {
     const secuencia = await Secuencia.findOne({ where: { id: idUsuario }, transaction, lock: transaction.LOCK.UPDATE })
 
-    // Variables necesarias
-    const fechaActual = new Date()
-    const fechaFormato = fechaActual.toISOString().split('T')[0]
-    const horaFormato = fechaActual.toTimeString().split(' ')[0]
-
     const ajusteInventario = await AjusteInventario.create({
       id_usuario: idUsuario,
       ajuste_id: secuencia.ajuste_id,
-      fecha: fechaFormato,
-      hora: horaFormato
+      fecha: generarFecha(),
+      hora: generarHora()
     },
     transaction)
 

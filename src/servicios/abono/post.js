@@ -2,7 +2,7 @@ const { Op } = require('sequelize')
 const { Abono, Secuencia, Venta, sequelize, Cliente } = require('../../database/models')
 const { ErrorUsuario } = require('../../errors/usuario')
 const Decimal = require('decimal.js')
-const { crearDescripcionAbonoVenta } = require('./utils')
+const { crearDescripcionAbonoVenta, crearDescripcionAbonoCliente } = require('./utils')
 const { generarFecha, generarHora } = require('../../utils/fechas')
 async function crearAbono ({ idUsuario, id_cliente, id_metodo_pago, valor, descripcion }, transaction) {
   const secuencia = await Secuencia.findByPk(idUsuario)
@@ -52,7 +52,7 @@ async function crearAbonoVenta ({ idUsuario, venta_id }, { id_metodo_pago, valor
 async function crearAbonoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, valor, descripcion }) {
   const transaction = await sequelize.transaction()
   try {
-    const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id }, transaction })
+    const cliente = await Cliente.findOne({ where: { id_usuario: idUsuario, cliente_id }, transaction, lock: transaction.LOCK.UPDATE })
 
     const valorDecimal = new Decimal(valor)
     if (valorDecimal.gt(cliente.debe)) throw ErrorUsuario('El abono es mayor a la deuda')
@@ -66,7 +66,6 @@ async function crearAbonoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, v
     })
 
     let valorRestanteDecimal = valorDecimal
-
     for (const venta of ventas) {
       const porPagarDecimal = new Decimal(venta.por_pagar)
 
@@ -78,19 +77,18 @@ async function crearAbonoCliente ({ idUsuario, cliente_id }, { id_metodo_pago, v
       } else {
         venta.pagado = porPagarDecimal.plus(venta.pagado).toString()
         valorRestanteDecimal = valorRestanteDecimal.minus(porPagarDecimal)
-        venta.save()
+        await venta.save({ transaction })
       }
     }
 
-    if (valorRestanteDecimal.gt(0)) {
-      const debeDecimal = new Decimal(cliente.debe)
-      const nuevoDebeDecimal = debeDecimal.minus(valorRestanteDecimal)
-      if (nuevoDebeDecimal.lt(0)) throw new Error('La deuda del cliente no puede ser negativa')
-      await cliente.update({ debe: nuevoDebeDecimal.toString() })
-    }
+    const debeDecimal = new Decimal(cliente.debe)
+    const nuevoDebeDecimal = debeDecimal.minus(valorDecimal)
+    await cliente.update({ debe: nuevoDebeDecimal.toString() }, { transaction })
+
+    const descripcionCompleta = crearDescripcionAbonoCliente({ valor, id_metodo_pago, descripcion })
+    await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor, descripcion: descripcionCompleta }, transaction)
 
     await cliente.reload({ transaction })
-    await crearAbono({ idUsuario, id_cliente: cliente.id, id_metodo_pago, valor, descripcion }, transaction)
     await transaction.commit()
     return {
       debe: cliente.debe
