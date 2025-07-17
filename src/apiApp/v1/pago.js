@@ -1,12 +1,12 @@
 const express = require('express')
-const { respuesta } = require('./funcion')
-const { crearPagoCompraSchema, crearPagoClienteSchema } = require('../schemas/pagos')
-const { validatorHandler } = require('../middlewares/validatorHandler')
-const { requireUser } = require('../middlewares/autenticationHandler')
+const { respuesta } = require('../../utils/respuestas.js')
+const { crearPagoCompraSchema, crearPagoClienteSchema } = require('../../schemas/api/pagos.js')
+const { validatorHandler } = require('../../middlewares/validatorHandler.js')
+const { requireUser } = require('../../middlewares/autenticationHandler.js')
 const {
   crearPagoCompra,
   crearPagoCliente
-} = require('../servicios/pago/post.js')
+} = require('../../servicios/pago/post.js')
 
 const router = express.Router()
 

@@ -1,6 +1,6 @@
 const express = require('express')
-const { respuesta } = require('./funcion')
-const { validatorHandler } = require('../middlewares/validatorHandler.js')
+const { respuesta } = require('../../utils/respuestas.js')
+const { validatorHandler } = require('../../middlewares/validatorHandler.js')
 
 const router = express.Router()
 
@@ -9,17 +9,17 @@ const {
   cargarCompraEstadoEntrega,
   cargarCompraEstadoPago,
   cargarCompra
-} = require('../servicios/compra/get.js')
+} = require('../../servicios/compra/get.js')
 
 const {
   modificarEstadoEntregaCompra
-} = require('../servicios/compra/patch.js')
+} = require('../../servicios/compra/patch.js')
 
 const {
   crearFacturaCompra
-} = require('../servicios/compra/post.js')
-const { queryComprasSchema, crearCompraSchema, modificarIdEstadoEntregaCompra } = require('../schemas/compra.js')
-const { requireUser } = require('../middlewares/autenticationHandler.js')
+} = require('../../servicios/compra/post.js')
+const { queryComprasSchema, crearCompraSchema, modificarIdEstadoEntregaCompra } = require('../../schemas/api/compra.js')
+const { requireUser } = require('../../middlewares/autenticationHandler.js')
 
 router.get('/',
   requireUser,

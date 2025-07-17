@@ -1,45 +1,47 @@
 const Joi = require('joi')
+
 const {
   id,
-  cantidad,
-  precio,
   total,
   nombreLargo,
-  limit,
+  cantidad,
+  precio,
   offset,
+  limit,
+  enteroQuery,
   fecha,
   orden,
-  enteroQuery
-} = require('./propiedades')
+  direccion
+} = require('../propiedades.js')
 
-// OBTENER \\
+// OBTENER
 
-const paramsComprasSchema = Joi.object({
+const paramsVentasSchema = Joi.object({
   id: id.required()
 })
 
-const queryComprasSchema = Joi.object({
-  compra_id: enteroQuery,
+const queryVentasSchema = Joi.object({
+  venta_id: enteroQuery,
   cliente_id: enteroQuery,
   id_estado_entrega: enteroQuery,
   id_estado_pago: enteroQuery,
   fechaInicio: fecha,
   fechaFinal: fecha,
-  columna: Joi.string().valid('compra_id', 'por_pagar'),
+  columna: Joi.string().valid('venta_id', 'por_pagar'),
   orden,
   limit,
   offset
 })
 
-// CREAR \\
+// CREAR
 
-const detalles = Joi.object({
+const detalle = Joi.object({
   producto_id: id.required(),
   cantidad: cantidad.required(),
   precio: precio.required()
 })
 
-const crearCompraSchema = Joi.object({
+const crearVentaSchema = Joi.object({
   info: Joi.object({
     cliente_id: id.required(),
     pagado: total.required(),
@@ -47,21 +49,21 @@ const crearCompraSchema = Joi.object({
     id_estado_entrega: id.required(),
     id_metodo_pago: id.required(),
     descripcion: nombreLargo.strict(),
-    nombre_cliente: nombreLargo.strict()
+    nombre_cliente: nombreLargo.strict(),
+    direccion
   }),
-  detalles: Joi.array().items(detalles).unique('producto_id').required()
+  detalles: Joi.array().items(detalle).unique('producto_id').required()
 })
 
-// MODIFICAR \\
+// MODIFICAR
 
-const modificarIdEstadoEntregaCompra = Joi.object({
+const modificarIdEstadoEntregaVenta = Joi.object({
   id_estado_entrega: id.required()
 })
 
 module.exports = {
-  paramsComprasSchema,
-  queryComprasSchema,
-  crearCompraSchema,
-  modificarIdEstadoEntregaCompra
-
+  paramsVentasSchema,
+  queryVentasSchema,
+  crearVentaSchema,
+  modificarIdEstadoEntregaVenta
 }

@@ -13,6 +13,16 @@ const transporter = nodemailer.createTransport({
   }
 })
 
+async function autenticarUsuario ({ email, contrasenia }) {
+  const usuarioDB = await Usuario.findOne({ where: { email } })
+  if (!usuarioDB) throw new ErrorUsuario('El usuario no existe')
+  if (!usuarioDB.verificado) throw new ErrorUsuario('Debes agregar el codigo para verificar el correo.')
+  const contraseniaValida = await bcrypt.compare(contrasenia, usuarioDB.contrasenia)
+  if (!contraseniaValida) throw new ErrorUsuario('Contrasenia invalida')
+
+  return usuarioDB
+}
+
 async function enviarCorreoVerificacion (email, codigo) {
   const mailOptions = {
     from: `"${process.env.APP_NAME}" <${process.env.EMAIL_FROM}>`,
@@ -97,6 +107,7 @@ function crearToken (payload) {
 module.exports = {
   crearUsuario,
   crearToken,
+  autenticarUsuario,
   verificarUsuario,
   enviarCorreoVerificacion
 }

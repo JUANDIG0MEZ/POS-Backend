@@ -6,7 +6,7 @@ const {
   id,
   total,
   descripcion
-} = require('./propiedades')
+} = require('../propiedades')
 
 // OBTENER \\
 

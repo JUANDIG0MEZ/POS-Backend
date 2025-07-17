@@ -1,25 +1,24 @@
 const express = require('express')
-const { validatorHandler } = require('../middlewares/validatorHandler')
-const { requireUser } = require('../middlewares/autenticationHandler')
+const { validatorHandler } = require('../../middlewares/validatorHandler.js')
+const { requireUser } = require('../../middlewares/autenticationHandler.js')
 
 const {
   cargarVentaEstadoEntrega,
   cargarVentaEstadoPago,
   cargarVentas,
   cargarVenta
-} = require('../servicios/venta/get.js')
+} = require('../../servicios/venta/get.js')
 
 const {
   crearVenta
-} = require('../servicios/venta/post.js')
+} = require('../../servicios/venta/post.js')
 
 const {
-  modificarDetalleVenta,
   modificarEstadoEntregaVenta
-} = require('../servicios/venta/patch.js')
+} = require('../../servicios/venta/patch.js')
 
-const { respuesta } = require('./funcion')
-const { queryVentasSchema, crearVentaSchema, modificarDetallesVentaSchema, modificarIdEstadoEntregaVenta } = require('../schemas/venta.js')
+const { respuesta } = require('../../utils/respuestas.js')
+const { queryVentasSchema, crearVentaSchema, modificarIdEstadoEntregaVenta } = require('../../schemas/api/venta.js')
 
 const router = express.Router()
 

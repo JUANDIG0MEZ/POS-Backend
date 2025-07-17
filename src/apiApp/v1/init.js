@@ -3,9 +3,9 @@ const express = require('express')
 const {
   cargarMetodosPago,
   cargarConfiguracion
-} = require('../servicios/init/get.js')
-const { respuesta } = require('./funcion')
-const { requireUser } = require('../middlewares/autenticationHandler')
+} = require('../../servicios/init/get.js')
+const { respuesta } = require('../../utils/respuestas.js')
+const { requireUser } = require('../../middlewares/autenticationHandler.js')
 
 const router = express.Router()
 

@@ -9,7 +9,7 @@ const {
   limit,
   offset,
   booleano
-} = require('./propiedades')
+} = require('../propiedades')
 
 // OBTENER
 

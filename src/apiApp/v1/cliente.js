@@ -1,18 +1,18 @@
 const express = require('express')
 const {
   respuesta
-} = require('./funcion')
+} = require('../../utils/respuestas.js')
 
-const { cargarCliente, cargarClientes, cargarClienteTipos, cargarClientesNombres, cargarAbonosCliente, cargarComprasCliente, cargarVentasCliente, cargarPagosCliente } = require('../servicios/cliente/get.js')
-const { crearCliente } = require('../servicios/cliente/post.js')
+const { cargarCliente, cargarClientes, cargarClienteTipos, cargarClientesNombres, cargarAbonosCliente, cargarComprasCliente, cargarVentasCliente, cargarPagosCliente } = require('../../servicios/cliente/get.js')
+const { crearCliente } = require('../../servicios/cliente/post.js')
 const {
   queryClientesSchema,
   crearClienteSchema,
   queryClienteSchema
-} = require('../schemas/cliente.js')
+} = require('../../schemas/api/cliente.js')
 
-const { validatorHandler } = require('../middlewares/validatorHandler.js')
-const { requireUser } = require('../middlewares/autenticationHandler.js')
+const { validatorHandler } = require('../../middlewares/validatorHandler.js')
+const { requireUser } = require('../../middlewares/autenticationHandler.js')
 
 const router = express.Router()
 

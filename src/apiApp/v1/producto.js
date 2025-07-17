@@ -4,7 +4,7 @@ const {
   crearCategoriaSchema,
   crearAjusteInventarioSchema,
   actualizarProductoSchema
-} = require('../schemas/producto')
+} = require('../../schemas/api/producto.js')
 
 const {
   cargarProductos,
@@ -12,23 +12,25 @@ const {
   cargarMedidas,
   cargarAjustesInventario,
   cargarAjusteInventario
-} = require('../servicios/producto/get')
+} = require('../../servicios/producto/get.js')
 
 const {
   modificarProducto
-} = require('../servicios/producto/patch.js')
+} = require('../../servicios/producto/patch.js')
 const {
   crearProducto,
   crearCategoria,
   crearAjusteInventario
-} = require('../servicios/producto/post.js')
+} = require('../../servicios/producto/post.js')
 
-const { validatorHandler } = require('../middlewares/validatorHandler')
-const { respuesta } = require('./funcion.js')
+const { validatorHandler } = require('../../middlewares/validatorHandler.js')
+const { respuesta } = require('../../utils/respuestas.js')
 const express = require('express')
-const { requireUser } = require('../middlewares/autenticationHandler')
+const { requireUser } = require('../../middlewares/autenticationHandler.js')
 
 const router = express.Router()
+
+router.use('/uploads', express.static('uploads'))
 
 router.get('/',
   requireUser,

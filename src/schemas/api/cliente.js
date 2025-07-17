@@ -9,7 +9,7 @@ const {
   limit,
   offset,
   orden
-} = require('./propiedades')
+} = require('../propiedades')
 
 // OBTENER \\
 

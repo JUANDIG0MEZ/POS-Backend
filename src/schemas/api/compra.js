@@ -1,47 +1,45 @@
 const Joi = require('joi')
-
 const {
   id,
-  total,
-  nombreLargo,
   cantidad,
   precio,
-  offset,
+  total,
+  nombreLargo,
   limit,
-  enteroQuery,
+  offset,
   fecha,
   orden,
-  direccion
-} = require('./propiedades.js')
+  enteroQuery
+} = require('../propiedades')
 
-// OBTENER
+// OBTENER \\
 
-const paramsVentasSchema = Joi.object({
+const paramsComprasSchema = Joi.object({
   id: id.required()
 })
 
-const queryVentasSchema = Joi.object({
-  venta_id: enteroQuery,
+const queryComprasSchema = Joi.object({
+  compra_id: enteroQuery,
   cliente_id: enteroQuery,
   id_estado_entrega: enteroQuery,
   id_estado_pago: enteroQuery,
   fechaInicio: fecha,
   fechaFinal: fecha,
-  columna: Joi.string().valid('venta_id', 'por_pagar'),
+  columna: Joi.string().valid('compra_id', 'por_pagar'),
   orden,
   limit,
   offset
 })
 
-// CREAR
+// CREAR \\
 
-const detalle = Joi.object({
+const detalles = Joi.object({
   producto_id: id.required(),
   cantidad: cantidad.required(),
   precio: precio.required()
 })
 
-const crearVentaSchema = Joi.object({
+const crearCompraSchema = Joi.object({
   info: Joi.object({
     cliente_id: id.required(),
     pagado: total.required(),
@@ -49,21 +47,21 @@ const crearVentaSchema = Joi.object({
     id_estado_entrega: id.required(),
     id_metodo_pago: id.required(),
     descripcion: nombreLargo.strict(),
-    nombre_cliente: nombreLargo.strict(),
-    direccion
+    nombre_cliente: nombreLargo.strict()
   }),
-  detalles: Joi.array().items(detalle).unique('producto_id').required()
+  detalles: Joi.array().items(detalles).unique('producto_id').required()
 })
 
-// MODIFICAR
+// MODIFICAR \\
 
-const modificarIdEstadoEntregaVenta = Joi.object({
+const modificarIdEstadoEntregaCompra = Joi.object({
   id_estado_entrega: id.required()
 })
 
 module.exports = {
-  paramsVentasSchema,
-  queryVentasSchema,
-  crearVentaSchema,
-  modificarIdEstadoEntregaVenta
+  paramsComprasSchema,
+  queryComprasSchema,
+  crearCompraSchema,
+  modificarIdEstadoEntregaCompra
+
 }

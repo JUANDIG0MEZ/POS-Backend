@@ -1,9 +1,9 @@
 const express = require('express')
-const { respuesta } = require('./funcion')
-const { validatorHandler } = require('../middlewares/validatorHandler')
-const { crearAbonoVenta, crearAbonoCliente } = require('../servicios/abono/post.js')
-const { crearAbonoVentaSchema, crearAbonoClienteSchema } = require('../schemas/abonos')
-const { requireUser } = require('../middlewares/autenticationHandler.js')
+const { respuesta } = require('../../utils/respuestas.js')
+const { validatorHandler } = require('../../middlewares/validatorHandler.js')
+const { crearAbonoVenta, crearAbonoCliente } = require('../../servicios/abono/post.js')
+const { crearAbonoVentaSchema, crearAbonoClienteSchema } = require('../../schemas/api/abonos.js')
+const { requireUser } = require('../../middlewares/autenticationHandler.js')
 const router = express.Router()
 
 router.post('/venta',
