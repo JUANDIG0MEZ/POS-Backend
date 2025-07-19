@@ -1,9 +1,10 @@
 const { Usuario, sequelize, Secuencia, Configuracion, Cliente } = require('../../database/models')
 const jwt = require('jsonwebtoken')
 const { ErrorUsuario } = require('../../errors/usuario')
-const crypto = require('crypto')
 const nodemailer = require('nodemailer')
 const bcrypt = require('bcrypt')
+
+const JWT_SECRET_AUTH = process.env.JWT_SECRET_AUTH
 
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,
@@ -13,24 +14,14 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-async function autenticarUsuario ({ email, contrasenia }) {
-  const usuarioDB = await Usuario.findOne({ where: { email } })
-  if (!usuarioDB) throw new ErrorUsuario('El usuario no existe')
-  if (!usuarioDB.verificado) throw new ErrorUsuario('Debes agregar el codigo para verificar el correo.')
-  const contraseniaValida = await bcrypt.compare(contrasenia, usuarioDB.contrasenia)
-  if (!contraseniaValida) throw new ErrorUsuario('Contrasenia invalida')
-
-  return usuarioDB
-}
-
-async function enviarCorreoVerificacion (email, codigo) {
+async function enviarCoreoConfirmacion (email, url) {
   const mailOptions = {
     from: `"${process.env.APP_NAME}" <${process.env.EMAIL_FROM}>`,
     to: email,
     subject: 'Verifica tu cuenta',
     html: `
       <h1>¡Bienvenido a ${process.env.APP_NAME}!</h1>
-      <p>Por favor verifica tu email ingresando el siguiente codigo: <code>${codigo}</code></p>
+      <p>Por favor confirma tu email ingresando el siguiente link: <strong><a href=${url}>click aqui!</a></strong></p>
     `
   }
   try {
@@ -40,20 +31,18 @@ async function enviarCorreoVerificacion (email, codigo) {
   }
 }
 
-function generarCodigoVerificacion () {
-  const charts = '0123456789'
-  let codigo = ''
-  const longitudCodigo = 6
-  for (let i = 0; i < longitudCodigo; i++) {
-    const indiceAleatorio = crypto.randomInt(0, charts.length)
-    codigo += charts[indiceAleatorio]
-  }
-  return codigo
+async function registerUser ({ email }) {
+  const token = crearToken({ email }, '3h')
+  const url = process.env.URL_AUTH + `/confirm?token=${token}`
+  await enviarCoreoConfirmacion(email, url)
 }
 
-async function crearUsuario ({ email, contrasenia }) {
+async function confirmUser ({ token, contrasenia }) {
   const transaction = await sequelize.transaction()
   try {
+    const payload = jwt.verify(token, JWT_SECRET_AUTH)
+    const { email } = payload
+
     const usuarioExiste = await Usuario.findOne({
       where: { email },
       transaction,
@@ -62,10 +51,8 @@ async function crearUsuario ({ email, contrasenia }) {
 
     if (usuarioExiste) throw new ErrorUsuario('Este email ya esta registrado')
 
-    const codigoVerificacion = generarCodigoVerificacion()
     const hashedContrasenia = await bcrypt.hash(contrasenia, Number(process.env.BCRYPT_COST))
     const nuevoUsuario = {
-      codigoVerificacion,
       email,
       contrasenia: hashedContrasenia
     }
@@ -76,38 +63,29 @@ async function crearUsuario ({ email, contrasenia }) {
     await Secuencia.create({ id_usuario: usuarioCreado.id, cliente_id: 2 }, { transaction })
     await Configuracion.create({ id_usuario: usuarioCreado.id }, { transaction })
 
-    await enviarCorreoVerificacion(email, codigoVerificacion)
-
     await transaction.commit()
-    return usuarioCreado
   } catch (error) {
     await transaction.rollback()
     throw error
   }
 }
 
-async function verificarUsuario ({ email, codigoVerificacion }) {
+async function loginUser ({ email, contrasenia }) {
   const usuario = await Usuario.findOne({ where: { email } })
-  if (!usuario) throw new ErrorUsuario('Usuario no encontrado')
-  if (usuario.verificado) throw new ErrorUsuario('Usuario ya verificado')
-  if (new Date() > usuario.expiracionCodigo) throw new ErrorUsuario('El codigo ha expirado')
-  if (codigoVerificacion !== usuario.codigoVerificacion) throw new ErrorUsuario('Codigo incorrecto')
+  const contraseniaValida = await bcrypt.compare(contrasenia, usuario.contrasenia)
+  if (!contraseniaValida) throw new ErrorUsuario('Usuario y contrasenia no coinciden')
 
-  usuario.verificado = true
-  usuario.codigoVerificacion = null
-  usuario.expiracionCodigo = null
-  await usuario.save()
-  return usuario
+  const tokenSesion = crearToken({ idUsuario: usuario.id })
+  return tokenSesion
 }
 
-function crearToken (payload) {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '12h' })
+function crearToken (payload, expiresIn = '12h') {
+  return jwt.sign(payload, JWT_SECRET_AUTH, { expiresIn })
 }
 
 module.exports = {
-  crearUsuario,
+  registerUser,
+  confirmUser,
   crearToken,
-  autenticarUsuario,
-  verificarUsuario,
-  enviarCorreoVerificacion
+  loginUser
 }

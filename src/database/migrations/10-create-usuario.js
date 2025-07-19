@@ -19,14 +19,6 @@ module.exports = {
         type: Sequelize.STRING(250)
 
       },
-      verificado: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      codigoVerificacion: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
       expiracionCodigo: {
         type: Sequelize.DATE,
         allowNull: true

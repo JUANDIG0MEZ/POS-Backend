@@ -20,10 +20,11 @@ router.use('/login',
 router.use('/confirm',
   express.static(path.join(__dirname, 'public', 'confirm')))
 
-router.post('/register', registerRouter)
-router.post('/login', loginRouter)
-router.post('/confirm', confirmRouter)
-router.post('/logout', logoutRouter)
+router.use('/login', loginRouter)
+router.use('/register', registerRouter)
+
+router.use('/confirm', confirmRouter)
+router.use('/logout', logoutRouter)
 
 authApp.use(router)
 

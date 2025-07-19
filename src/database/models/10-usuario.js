@@ -76,14 +76,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       type: DataTypes.STRING(250)
     },
-    verificado: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    },
-    codigoVerificacion: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
     expiracionCodigo: {
       type: DataTypes.DATE,
       allowNull: true,

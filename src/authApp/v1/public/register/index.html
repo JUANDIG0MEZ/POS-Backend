@@ -1,1 +1,29 @@
-Register
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <main>
+        <div id="register">
+            <h2>Registrar usuario</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <span for="email">Correo</span>
+                    <input type="email" id="email" placeholder="example@gmail.com" required autocomplete="email">
+                </div>
+                <button type="submit">Registrar usuario</button>
+            </form>
+            <p id="errorMessage"></p>
+        </div>
+        <div id="succesfulMessage">
+            <h2>Usuario registrado</h2>
+            <p>Revisa los mensajes de tu correo</p>
+        </div>
+        
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
